@@ -1,0 +1,30 @@
+[
+	{
+		"id": "2363ff69-cf6c-4453-9e36-360711a8d699",
+		"status": "running",
+		"version": 8.04,
+		"config": "main.xml",
+		"ipAddress": "10.0.0.1"
+	},
+	{
+		"id": "66f98276-449a-41f3-9d8b-228d6bf3bf3e",
+		"status": "running",
+		"version": 8.04,
+		"config": "main.xml",
+		"ipAddress": "10.0.0.1"
+	},
+	{
+		"id": "3be86f69-a5c1-4679-ae81-5ad02819fa40",
+		"status": "running",
+		"version": 8.04,
+		"config": "main.xml",
+		"ipAddress": "10.0.0.1"
+	},
+	{
+		"id": "a804cea0-3e11-44dd-9c62-835e4a78a407",
+		"status": "running",
+		"version": 8.04,
+		"config": "main.xml",
+		"ipAddress": "10.0.0.1"
+	}
+]

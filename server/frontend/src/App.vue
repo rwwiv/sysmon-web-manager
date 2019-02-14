@@ -34,7 +34,7 @@
               <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
             </a>
             <ul class="treeview-menu">
-              <li><router-link to="enterpriseInstall">Enterprise Install</a></router-link>
+              <li><router-link to="enterpriseInstall">Enterprise Install</router-link>
               <li><router-link to="management">Management</router-link></li>
             </ul>
           </li>
@@ -53,7 +53,7 @@
     </div>
     <!-- /.content-wrapper -->
 
-    
+
   </div>
 </template>
 
@@ -75,4 +75,5 @@
     }
   }
 }
+
 </style>

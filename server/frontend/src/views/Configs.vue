@@ -1,90 +1,105 @@
 <template>
 	<section class="content container-fluid">
-		<h1>Monitor</h1>
-	  	<div class="monitor row">
+		<h1>Configuration Management</h1>
+    <div class = "list-header-row">
+		<button>
+		Add New Configuration
+		</button>
+    <!-- <ul v-if "configs.length">
+           <ConfigListItem
+             v-for=config in configs"
+             :key="config.name"
+             :config = "config"
+             @delete="deleteConfig"
+             @edit="editConfig"
+             @view="viewConfig"
+             />
+            </ul> 
+            <p v-else>
+              No configurations. Click add new to make a new configuration.
+            </p>
+            -->
+    </div>
+	  	<div class="config row">
 	  		<div class="col-xs-6">
-	  			<h3>Available Hosts</h3>
-	  			<h4><input type="checkbox" name="selectAll"/>Select All</h4>
-	  			<!-- Individual Hosts -->
+	  			<h3>Available Configurations</h3>
+	  			<!-- Named Configurations -->
 	  			<!-- To do: need a component to drive li element generation -->
-		    	<ul class="list-group list-all-hosts">
-		    		<li class="list-group-item" id="hostID_1">
-		    			<input type="checkbox" name="hostID_1"/>
+		    	<ul class="list-group list-all-configs">
+		    		<li class="list-group-item" id="configID_default">
 		    			<div class="box box-solid box-host">
 		    				<div class="box-header">
-		    					<h4 class="box-title"><i class="fa fa-circle text-success"></i>Host 1</h4>
+		    					<h4 class="box-title"><i class="fa fa-circle text-success"></i>Default Configuration</h4>
 		    					<div class="box-tools pull-right">
+									<button>
+		               View
+		              </button>
+									<button>
+		               Edit
+		              </button>
+									<button>
+		               Delete
+		              </button>
 		    						<i class="fa fa-play"></i>
 		    						<i class="fa fa-wrench"></i>
 		    						<i class="fa fa-trash"></i>
 		    					</div>
-		    				</div>
-		    				<div class="box-body">
-		    					IP Address / Network
-		    				</div>
+		    				</div>	
 		    			</div>
 		    		</li>
-		    		<li class="list-group-item" id="hostID_2">
-		    			<input type="checkbox" name="hostID_2"/>
+		    			<li class="list-group-item" id="configID_1">
 		    			<div class="box box-solid box-host">
 		    				<div class="box-header">
-		    					<h4 class="box-title"><i class="fa fa-circle text-danger"></i>Host 2</h4>
+		    					<h4 class="box-title"><i class="fa fa-circle text-success"></i>Configuration 1</h4>
 		    					<div class="box-tools pull-right">
+									<button>
+		               View
+		              </button>
+									<button>
+		               Edit
+		              </button>
+									<button>
+		               Delete
+		              </button>
 		    						<i class="fa fa-play"></i>
 		    						<i class="fa fa-wrench"></i>
 		    						<i class="fa fa-trash"></i>
 		    					</div>
-		    				</div>
-		    				<div class="box-body">
-		    					IP Address / Network
-		    				</div>
+		    				</div>	
 		    			</div>
 		    		</li>
-		    		<li class="list-group-item" id="hostID_3">
-		    			<input type="checkbox" name="hostID_3"/>
+           	<li class="list-group-item" id="configID_default">
 		    			<div class="box box-solid box-host">
 		    				<div class="box-header">
-		    					<h4 class="box-title"><i class="fa fa-circle text-default"></i>Host 3</h4>
+		    					<h4 class="box-title"><i class="fa fa-circle text-success"></i>Configuration 2</h4>
 		    					<div class="box-tools pull-right">
+									<button>
+		               View
+		              </button>
+									<button>
+		               Edit
+		              </button>
+									<button>
+		               Delete
+		              </button>
 		    						<i class="fa fa-play"></i>
 		    						<i class="fa fa-wrench"></i>
 		    						<i class="fa fa-trash"></i>
 		    					</div>
-		    				</div>
-		    				<div class="box-body">
-		    					IP Address / Network
-		    				</div>
+		    				</div>	
 		    			</div>
 		    		</li>
-
-
 		    	</ul>
 			</div>
 			<!-- Sysmon Configs -->
 			<!-- To do:  Need a component to drive config li element generation -->
-			<div class="col-xs-6">
-				<h3>Available Sysmon Configurations</h3>
-		    	<ul class="list-group">
-		    		<li class="list-group-item">
-						<input type="radio" name="config_select"/>
-		    			<div class="box box-solid box-host">
-		    				
-		    				<div class="box-body">
-		    					Config Name
-		    				</div>
-		    			</div>
-		    		</li>
-		    	</ul>
-	    	</div>
-	  	</div>
-	  	
-
+			</div>
 	</section>
 </template>
 
 <script>
 
-import HelloWorld from '../components/HelloWorld.vue';
+import HelloWorld from './components/HelloWorld.vue';
 export default {
 	components: {
 		HelloWorld
@@ -104,9 +119,7 @@ export default {
 		max-height:400px;
 	}
 
-	.list-all-hosts {
-		/*background-color:#e1e7ef;*/
-	}
+	
 
 	.list-group-item {
 		padding:0px;

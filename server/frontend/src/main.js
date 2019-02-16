@@ -8,6 +8,7 @@ import 'font-awesome/scss/font-awesome.scss';
 import 'admin-lte/dist/css/skins/skin-black.css';
 import 'icheck/skins/minimal/blue.css';
 import 'icheck/icheck';
+import './assets/_css/animate.css';
 import App from './App.vue';
 import router from './router';
 

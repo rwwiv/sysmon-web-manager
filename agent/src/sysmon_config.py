@@ -1,7 +1,7 @@
 import os
 import configparser
 
-__config = configparser.ConfigParser().read('../config.ini')['sysmon']
+__config = configparser.ConfigParser().read('../resources/config.ini')['sysmon']
 
 sysmon_version = None if (__config['SysmonVersion'] == 'None') else __config['SysmonVerision']
 config_name = None if (__config['SysmonVersion'] == 'None') else __config['SysmonVerision']

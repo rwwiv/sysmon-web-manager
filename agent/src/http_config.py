@@ -1,6 +1,6 @@
 import configparser
 
-__config = configparser.ConfigParser().read('../config.ini')['http']
+__config = configparser.ConfigParser().read('../resources/config.ini')['http']
 
 auth_user = __config['AuthUser']
 auth_pass = __config['AuthPass']

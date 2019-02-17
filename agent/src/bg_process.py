@@ -8,6 +8,7 @@ import win32serviceutil
 from apscheduler.schedulers.background import BackgroundScheduler
 from enum import Enum
 from datetime import datetime
+from threading import Thread, Lock
 
 import http_config
 import sysmon_config
@@ -17,6 +18,7 @@ import sysmon
 __config_parser = configparser.ConfigParser()
 __config = __config_parser.read('../resources/config.ini')
 __auth = (http_config.auth_user, http_config.auth_pass)
+__lock = Lock()
 
 
 class ServiceState(Enum):
@@ -75,12 +77,17 @@ def __heartbeat():
                             auth=__auth,
                             data=__data)
     r_json = json.load(response.json())
+    threads = []
     if r_json['updates_needed']['sysmon']:
-        __update_sysmon(r_json['updates_needed']['sysmon_version'])
+        threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
     if r_json['updates_needed']['config']:
-        __update_config(r_json['updates_needed']['config_name'])
+        threads.append(Thread(target=__update_config, args=(r_json['updates_needed']['config_name'],)))
     if r_json['restart']:
         win32serviceutil.RestartService(f'sysmon_{sysmon_config.sysmon_version}')
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
 
 
 def __update_sysmon(version):
@@ -90,9 +97,11 @@ def __update_sysmon(version):
     sysmon.uninstall_sysmon()
     os.remove(f'sysmon_{sysmon_config.sysmon_version}.exe')
     __config['SysmonVersion'] = version
+    __lock.acquire()
     with open('../resources/config.ini', 'w') as config_file:
         __config_parser.write(config_file)
     sysmon.install_sysmon()
+    __lock.release()
 
 
 def __update_config(name):
@@ -101,9 +110,11 @@ def __update_config(name):
         new_file.write(bytes(response.content))
     os.remove(f'{sysmon_config.config_file_name}')
     __config['ConfigName'] = name
+    __lock.acquire()
     with open('../resources/config.ini', 'w') as config_file:
         __config_parser.write(config_file)
     sysmon.update_sysmon_config()
+    __lock.release()
 
 
 def __check_sysmon_state():

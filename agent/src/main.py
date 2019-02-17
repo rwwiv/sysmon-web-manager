@@ -2,17 +2,15 @@ import win32serviceutil
 import win32service
 import win32event
 import servicemanager
-import configparser
+import agent_config
 import sys
 
 import bg_process
 
 
 class SysMonagerAgentService(win32serviceutil.ServiceFramework):
-    __config = configparser.ConfigParser().read('resources/config.ini')['agent']
-
-    _svc_name_ = __config['ServiceName']
-    _svc_display_name_ = __config['DisplayName']
+    _svc_name_ = agent_config.service_name
+    _svc_display_name_ = agent_config.service_name
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)

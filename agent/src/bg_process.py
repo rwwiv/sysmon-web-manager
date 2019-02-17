@@ -31,14 +31,7 @@ class ServiceState(Enum):
 def run():
     if http_config.agent_uuid is None:
         __setup()
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(__heartbeat(), 'interval', seconds=60)
-    scheduler.start()
-    try:
-        while True:
-            time.sleep(2)
-    except SystemExit:
-        scheduler.shutdown()
+    __heartbeat()
 
 
 def __setup():
@@ -87,7 +80,7 @@ def __heartbeat():
     for thread in threads:
         thread.start()
     for thread in threads:
-        thread.join()
+        thread.join(timeout=60)
 
 
 def __update_sysmon(version):
@@ -98,7 +91,7 @@ def __update_sysmon(version):
     os.remove(f'sysmon_{sysmon_config.sysmon_version}.exe')
     __config['SysmonVersion'] = version
     __lock.acquire()
-    with open('../resources/config.ini', 'w') as config_file:
+    with open('resources/config.ini', 'w') as config_file:
         __config_parser.write(config_file)
     sysmon.install_sysmon()
     __lock.release()
@@ -111,7 +104,7 @@ def __update_config(name):
     os.remove(f'{sysmon_config.config_file_name}')
     __config['ConfigName'] = name
     __lock.acquire()
-    with open('../resources/config.ini', 'w') as config_file:
+    with open('resources/config.ini', 'w') as config_file:
         __config_parser.write(config_file)
     sysmon.update_sysmon_config()
     __lock.release()

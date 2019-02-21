@@ -5,8 +5,8 @@ from .heartbeatService import createAgent
 
 def index(request, id):
     if(request.method == 'PUT'):
-        updateAgentStatus(id) 
-        return
+        values = updateAgentStatus(id, request) 
+        return JsonResponse(values)
     elif(request.method == 'POST'):
         values = createAgent(id)
         return JsonResponse(values)

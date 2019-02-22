@@ -3,7 +3,9 @@ from .updateService import getConfig
 from .updateService import getSysmon
 
 def config(request, name):
-    return HttpResponse("Updates/config endpoint")
+    configResponse = getConfig(name)
+    return configResponse
 
 def sysmon(request, version):
-    return HttpResponse("Updates/sysmon endpoint")
+    sysmonResponse = getSysmon(version)
+    return sysmonResponse

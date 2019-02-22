@@ -41,18 +41,26 @@ def __setup():
 
 def __heartbeat():
     if check_sysmon_state() != ServiceState.running:
-
-        now = datetime.now()
-        config['sysmon']['LastRunning'] = now
+        if not agent_config.sysmon_checked_running:
+            time_stopped = datetime.now()
+            config['sysmon']['LastRunning'] = time_stopped
+            config['sysmon']['CheckedRunning'] = 'yes'
+            with open(config.config_file, 'w') as config_file:
+                config_parser.write(config_file)
+        else:
+            time_stopped = agent_config.sysmon_last_running
         sysmon_state_bool = False
         __data = {
             'sysmon_version': agent_config.sysmon_version,
             'agent_config': agent_config.sysmon_config,
             'exec_running': sysmon_state_bool,
-            'exec_last_running_at': now
+            'exec_last_running_at': time_stopped
         }
     else:
         sysmon_state_bool = True
+        config['sysmon']['CheckedRunning'] = 'no'
+        with open(config.config_file, 'w') as config_file:
+            config_parser.write(config_file)
         __data = {
             'sysmon_version': agent_config.sysmon_version,
             'agent_config': agent_config.sysmon_config,

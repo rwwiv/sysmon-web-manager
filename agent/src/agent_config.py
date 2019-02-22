@@ -21,6 +21,7 @@ sysmon_exe = base_path.join(f'sysmon_{sysmon_version}.exe')
 sysmon_config = __sysmon_conf['ConfigName']
 sysmon_config_file = base_path.join(f'sysmon_config_{sysmon_config}.xml')
 sysmon_last_running = __sysmon_conf['LastRunning']
+sysmon_checked_running = __sysmon_conf.getboolean('CheckedRunning')
 
 # HTTP variables
 __http_conf = config['http']

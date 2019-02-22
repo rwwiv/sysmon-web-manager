@@ -48,10 +48,11 @@ def createAgent(requestedUUID):
         CONFIG_NAME_CURRENT = "",
         CONFIG_NAME_NEW = "",
         EXEC_RUNNING = True)
+        newAgent.save()
     else:
         print("Agent already existed")
 
-    newAgent.save()
+    
     
     data = {}
     data ['sysmon_version'] = getSysmonVersion()

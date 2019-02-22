@@ -31,14 +31,14 @@
           <router-link tag="li" to="/" exact-active-class="active" exact>
             <a><i class="fa fa-desktop"></i> <span>Monitor</span></a>
           </router-link>
-
+         
           <li class="treeview">
             <a href="#"><i class="fa fa-cog"></i> <span>Configuration</span>
               <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
             </a>
             <ul class="treeview-menu">
               <router-link tag="li" active-class="active" to="enterpriseInstall"><a>Enterprise Install</a></router-link>
-              <router-link tag="li" active-class="active" to="Configs"><a>Management</a></router-link>
+              <router-link tag="li" active-class="active" to="management"><a>Management</a></router-link>
             </ul>
           </li>
         </ul>
@@ -60,11 +60,12 @@
 </template>
 
 <script>
-  export default {
-    name:'App',
-    methods:{
-    }
+export default {
+  name:'App',
+  methods:{
+
   }
+}
 </script>
 
 <style lang="scss">
@@ -85,16 +86,19 @@
       }
     }
   }
-  .slideInLeft {
-    -webkit-animation: slideInLeft 0.25s;
-    -moz-animation: slideInLeft 0.25s;
-    -o-animation: slideInLeft 0.25s;
-    animation: slideInLeft 0.25s;
-  }
-  .fadeOut {
-    -webkit-animation: fadeOut 0.25s;
-    -moz-animation: fadeOut 0.25s;
-    -o-animation: fadeOut 0.25s;
-    animation: fadeOut 0.25s;
-  }
+}
+
+.slideInLeft {
+  -webkit-animation: slideInLeft 0.25s;
+  -moz-animation: slideInLeft 0.25s;
+  -o-animation: slideInLeft 0.25s;
+  animation: slideInLeft 0.25s;
+}
+
+.fadeOut {
+  -webkit-animation: fadeOut 0.25s;
+  -moz-animation: fadeOut 0.25s;
+  -o-animation: fadeOut 0.25s;
+  animation: fadeOut 0.25s;
+}
 </style>

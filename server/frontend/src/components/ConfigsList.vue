@@ -7,6 +7,9 @@
     </div>
     <!-- /.box-header -->
     <div class="box-body">
+      <div class="col-auto">
+        <button class="btn btn-secondary pull-right">Add New Configuration</button>
+      </div>
       <table class="table no-margin">
         <thead>
           <tr>

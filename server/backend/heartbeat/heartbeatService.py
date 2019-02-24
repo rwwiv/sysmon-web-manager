@@ -47,7 +47,9 @@ def createAgent(requestedUUID):
         SYSMON_VERSION_NEW = "",
         CONFIG_NAME_CURRENT = "",
         CONFIG_NAME_NEW = "",
-        EXEC_RUNNING = True)
+        EXEC_RUNNING = True,
+	NEEDS_UNINSTALL = False,
+	NEEDS_RESTART = False)
         newAgent.save()
     else:
         print("Agent already existed")

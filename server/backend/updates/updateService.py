@@ -1,10 +1,11 @@
 from django.http import FileResponse
 
-def getConfig(requestedName):
-    
-    imported_file = open(f'../configurations/{requestedName}.xml')
+
+def get_config(requested_name):
+    imported_file = open(f'../configurations/{requested_name}.xml', 'rb')
     return FileResponse(imported_file)
 
-def getSysmon(requestedVersion):
-    imported_file = open(f'../sysmon/{requestedVersion}.exe')
+
+def get_sysmon(requested_version):
+    imported_file = open(f'../sysmon/{requested_version}.exe', 'rb')
     return FileResponse(imported_file)

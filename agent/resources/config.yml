@@ -1,0 +1,8 @@
+agent: {checked_exec_running: true, config_name: ExampleConfigName, display_name: SysMonager
+    Agent, exec_last_running: !!timestamp '2019-02-23 00:05:37.850486', service_name: SysMonagerAgent,
+  sysmon_version: ExampleSysmonVersion}
+http:
+  api:
+    heartbeat: /heartbeat
+    updates: {config: /updates/config, sysmon: /updates/sysmon}
+  uuid: null

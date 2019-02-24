@@ -32,13 +32,13 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
         rc = None
         while rc != win32event.WAIT_OBJECT_0:
             bg_process.run()
-            rc = win32event.WaitForSingleObject(self.hWaitStop, 1000 * 60 * 5)  # wait for Stop command sent to service
+            rc = win32event.WaitForSingleObject(self.hWaitStop, 1000 * 60)  # wait for Stop command sent to service
 
 
 if __name__ == "__main__":
     while True:
         bg_process.run()
-        time.sleep(60 * 5)
+        time.sleep(60)
 
     # if len(sys.argv) == 0:
     #     servicemanager.Initialize()

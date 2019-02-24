@@ -1,11 +1,13 @@
 from django.shortcuts import HttpResponse
-from .updateService import getConfig
-from .updateService import getSysmon
+from .updateService import get_config
+from .updateService import get_sysmon
+
 
 def config(request, name):
-    configResponse = getConfig(name)
-    return configResponse
+    config_response = get_config(name)
+    return config_response
+
 
 def sysmon(request, version):
-    sysmonResponse = getSysmon(version)
-    return sysmonResponse
+    sysmon_response = get_sysmon(version)
+    return sysmon_response

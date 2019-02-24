@@ -13,6 +13,7 @@ class agent(models.Model):
     EXEC_RUNNING = models.BooleanField()
     NEEDS_UNINSTALL = models.BooleanField()
     NEEDS_RESTART = models.BooleanField()
+    NEEDS_INSTALL = models.BooleanField()
 
 class user(models.Model):
     USER_ID = models.CharField(max_length=200)

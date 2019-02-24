@@ -31,7 +31,7 @@
           <router-link tag="li" to="/" exact-active-class="active" exact>
             <a><i class="fa fa-desktop"></i> <span>Monitor</span></a>
           </router-link>
-         
+
           <li class="treeview">
             <a href="#"><i class="fa fa-cog"></i> <span>Configuration</span>
               <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
@@ -61,11 +61,11 @@
 
 <script>
 export default {
-  name:'App',
-  methods:{
+  name: 'App',
+  methods: {
 
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss">
@@ -86,7 +86,6 @@ export default {
       }
     }
   }
-}
 
 .slideInLeft {
   -webkit-animation: slideInLeft 0.25s;

@@ -10,21 +10,27 @@ def get_config_name():
     return "example"
 
 
-def get_sysmon_update_flag():
-    return False
+def get_sysmon_update_flag(serverVersion, clientVersion):
+    if(clientVersion == serverVersion):
+        return False
+    else:
+        return True
 
 
-def get_config_update_flag():
-    return False
+def get_config_update_flag(serverVersion, clientVersion):
+    if(clientVersion == serverVersion):
+        return False
+    else:
+        return True
 
 
 def update_agent_status(requested_uuid, incoming_request):
     retrieved_agent = agent.objects.get(UUID=requested_uuid)
     
     updates_data = {
-        'sysmon': get_sysmon_update_flag(),
+        'sysmon': get_sysmon_update_flag(agent.SYSMON_VERSION_NEW, agent.SYSMON_VERSION_CURRENT),
         'sysmon_version': retrieved_agent.SYSMON_VERSION_CURRENT,
-        'config': get_config_update_flag(),
+        'config': get_config_update_flag(agent.CONFIG_NAME_NEW, agent.CONFIG_NAME_CURRENT),
         'config_name': retrieved_agent.CONFIG_NAME_CURRENT
     }
 

@@ -1,4 +1,4 @@
-from heartbeat.models import agent
+from heartbeat.models import Agent
 import json
 
 
@@ -10,27 +10,21 @@ def get_config_name():
     return "example"
 
 
-def get_sysmon_update_flag(serverVersion, clientVersion):
-    if(clientVersion == serverVersion):
-        return False
-    else:
-        return True
+def get_sysmon_update_flag(server_version, client_version):
+    return not client_version == server_version
 
 
-def get_config_update_flag(serverVersion, clientVersion):
-    if(clientVersion == serverVersion):
-        return False
-    else:
-        return True
+def get_config_update_flag(server_version, client_version):
+    return not client_version == server_version
 
 
 def update_agent_status(requested_uuid, incoming_request):
-    retrieved_agent = agent.objects.get(UUID=requested_uuid)
+    retrieved_agent = Agent.objects.get(UUID=requested_uuid)
     
     updates_data = {
-        'sysmon': get_sysmon_update_flag(agent.SYSMON_VERSION_NEW, agent.SYSMON_VERSION_CURRENT),
+        'sysmon': get_sysmon_update_flag(Agent.SYSMON_VERSION_NEW, Agent.SYSMON_VERSION_CURRENT),
         'sysmon_version': retrieved_agent.SYSMON_VERSION_CURRENT,
-        'config': get_config_update_flag(agent.CONFIG_NAME_NEW, agent.CONFIG_NAME_CURRENT),
+        'config': get_config_update_flag(Agent.CONFIG_NAME_NEW, Agent.CONFIG_NAME_CURRENT),
         'config_name': retrieved_agent.CONFIG_NAME_CURRENT
     }
 
@@ -42,13 +36,13 @@ def update_agent_status(requested_uuid, incoming_request):
     }
 
     persist_data = json.loads(incoming_request.body)
-    if('sysmon_version' in persist_data):
+    if 'sysmon_version' in persist_data:
         retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']
-    if('config_name' in persist_data):
+    if 'config_name' in persist_data:
         retrieved_agent.CONFIG_NAME_CURRENT = persist_data['config_name']
-    if('exec_running' in persist_data):
+    if 'exec_running' in persist_data:
         retrieved_agent.EXEC_RUNNING = persist_data['exec_running']
-    if('exec_last_running_at' in persist_data):
+    if 'exec_last_running_at' in persist_data:
         retrieved_agent.EXEC_LAST_RUNNING_AT = persist_data['exec_last_running_at']
 
     retrieved_agent.save()
@@ -56,8 +50,8 @@ def update_agent_status(requested_uuid, incoming_request):
 
 
 def create_agent(requested_uuid):
-    if agent.objects.filter(UUID=requested_uuid).count() == 0:
-        new_agent = agent(UUID=requested_uuid,
+    if Agent.objects.filter(UUID=requested_uuid).count() == 0:
+        new_agent = Agent(UUID=requested_uuid,
                           # TODO record the IP address(es) of the origin of the request
                           IPV4_ADDRESS="",
                           IPV6_ADDRESS="",

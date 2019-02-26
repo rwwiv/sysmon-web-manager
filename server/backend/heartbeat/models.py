@@ -1,6 +1,7 @@
 from django.db import models
 
-class agent(models.Model):
+
+class Agent(models.Model):
     UUID = models.CharField(max_length=200)
     IPV4_ADDRESS = models.CharField(max_length=200)
     IPV6_ADDRESS = models.CharField(max_length=200)
@@ -15,12 +16,14 @@ class agent(models.Model):
     NEEDS_RESTART = models.BooleanField()
     NEEDS_INSTALL = models.BooleanField()
 
-class user(models.Model):
+
+class User(models.Model):
     USER_ID = models.CharField(max_length=200)
     PASSWORD = models.CharField(max_length=200)
     LAST_LOGGED_IN = models.CharField(max_length=200)
     LAST_LOGGED_OUT = models.CharField(max_length=200)
 
-class configuration(models.Model):
+
+class Configuration(models.Model):
     NAME = models.CharField(max_length=200)
     IS_DEFAULT = models.BooleanField()

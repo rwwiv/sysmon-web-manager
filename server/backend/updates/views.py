@@ -1,4 +1,3 @@
-from django.shortcuts import HttpResponse
 from .updateService import get_config
 from .updateService import get_sysmon
 

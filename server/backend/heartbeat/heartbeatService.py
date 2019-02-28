@@ -3,17 +3,12 @@ from os import listdir
 import json
 import ipaddress
 
-def toIpv6(v4):
-    numbers = list(map(int, v4.split('.')))
-    return '2002:{:02x}{:02x}:{:02x}{:02x}::'.format(*numbers)
-
 def get_sysmon_version():
-    return listdir("../sysmon")[0].split('.')[0]
-
+    # return listdir("../sysmon")[0].split('.')[0]
+    return "sysmon_13.37.exe"
 
 def get_config_name():
-    return "example"
-
+    return "agent_config_gifnoc.xml"
 
 def get_sysmon_update_flag(server_version, client_version):
     return not client_version == server_version
@@ -58,8 +53,7 @@ def create_agent(requested_uuid,remoteAddr):
     if Agent.objects.filter(UUID=requested_uuid).count() == 0:
         new_agent = Agent(UUID=requested_uuid,
                           # TODO record the IP address(es) of the origin of the request
-                          IPV4_ADDRESS=remoteAddr,
-                          IPV6_ADDRESS=toIpv6(remoteAddr),
+                          IP_ADDRESS=remoteAddr,
                           ONLINE=True,
                           SYSMON_VERSION_CURRENT="",
                           SYSMON_VERSION_NEW="",
@@ -71,7 +65,7 @@ def create_agent(requested_uuid,remoteAddr):
                           NEEDS_RESTART=False)
         new_agent.save()
     else:
-        print("Agent already existed")
+        print("WARN: Agent already existed")
 
     data = {
         'sysmon_version': get_sysmon_version(),

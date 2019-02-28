@@ -4,10 +4,11 @@ import win32service
 import win32event
 import servicemanager
 import sys
+import yaml
 
 import bg_process
 
-from agent_config import env_config, env_config_file, user_config
+from agent_config import env_config, env_config_filepath, user_config
 
 
 class SysMonagerAgentService(win32serviceutil.ServiceFramework):
@@ -37,7 +38,12 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
 
 if __name__ == "__main__":
     while True:
-        bg_process.run()
+        try:
+            bg_process.run()
+        except:
+            env_config['http']['uuid'] = None
+            with open(env_config_filepath, 'w') as env_config_file:
+                yaml.dump(env_config, env_config_file)
         time.sleep(60 * 5)
 
     # if len(sys.argv) == 0:

@@ -15,7 +15,7 @@ from sysmon import ServiceState, \
             update_sysmon_config, \
             install_sysmon, \
             uninstall_sysmon, \
-            check_sysmon_state
+            check_sysmon_running
 
 __auth = (user_config['http']['auth_user'], user_config['http']['auth_pass'])
 __lock = Lock()
@@ -42,40 +42,51 @@ def __setup():
         yaml.dump(env_config, env_config_file)
 
 
-def __heartbeat():
-    if check_sysmon_state() != ServiceState.running:
-        if not env_config['agent']['checked_exec_running']:
-            time_stopped = datetime.now()
-            env_config['agent']['exec_last_running'] = time_stopped
-            env_config['agent']['checked_exec_running'] = True
-            with open(env_config_filepath, 'w') as env_config_file:
-                yaml.dump(env_config, env_config_file)
-        else:
-            time_stopped = env_config['agent']['exec_last_running']
-        sysmon_state_bool = False
+def __build_request_dict():
+    __data = {}
+    if not env_config['agent']['installed']:
+        return __data
+    if not check_sysmon_running():
         __data = {
-            'sysmon_version': env_config['agent']['sysmon_version'],
-            'config_name': env_config['agent']['config_name'],
-            'exec_running': sysmon_state_bool,
-            'exec_last_running_at': time_stopped
+            'exec_running': False,
+            'exec_last_running_at': env_config['agent']['exec_last_running']
         }
     else:
-        sysmon_state_bool = True
         env_config['http']['checked_exec_running'] = False
         with open(env_config_filepath, 'w') as env_config_file:
             yaml.dump(env_config, env_config_file)
         __data = {
-            'sysmon_version': env_config['agent']['sysmon_version'],
-            'config_name': env_config['agent']['config_name'],
-            'exec_running': sysmon_state_bool
+            'exec_running': True
         }
-    print(__data)
+    if env_config['agent']['sysmon_version'] is not None:
+        __data['sysmon_version'] = env_config['agent']['sysmon_version']
+    if env_config['agent']['config_name'] is not None:
+        __data['config_name']=env_config['agent']['config_name']
+    return __data
+
+
+def __heartbeat():
+    print(__build_request_dict())
     response = requests.put(f'{__protocol}://{user_config["http"]["url"]}'
                             f'{env_config["http"]["api"]["heartbeat"]}'
                             f'/{env_config["http"]["uuid"]}',
-                            auth=__auth,
-                            data=__data)
+                            # auth=__auth,
+                            json=__build_request_dict())
     r_json = response.json()
+    if r_json['install']:
+        threads = []
+        if r_json['updates_needed']['sysmon']:
+            threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
+        if r_json['updates_needed']['config']:
+            threads.append(Thread(target=__update_config, args=(r_json['updates_needed']['config_name'],)))
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join(timeout=60)
+    else:
+        pass
+    if r_json['uninstall']:
+        uninstall_sysmon()
     threads = []
     if r_json['updates_needed']['sysmon']:
         threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
@@ -96,7 +107,10 @@ def __update_sysmon(version):
     with open(f'sysmon_{version}.exe', 'wb') as new_file:
         new_file.write(bytes(response.content))
     uninstall_sysmon()
-    os.remove(f'sysmon_{env_config["agent"]["sysmon_version"]}.exe')
+    try:
+        os.remove(f'sysmon_{env_config["agent"]["sysmon_version"]}.exe')
+    except OSError:
+        pass
     env_config["agent"]["sysmon_version"] = version
     __lock.acquire()
     with open(env_config_filepath, 'w') as env_config_file:
@@ -111,7 +125,10 @@ def __update_config(name):
                             f'/{name}')
     with open(f'agent_config_{name}.xml', 'wb') as new_file:
         new_file.write(bytes(response.content))
-    os.remove(f'agent_config_{env_config["agent"]["config_name"]}.xml')
+    try:
+        os.remove(f'agent_config_{env_config["agent"]["config_name"]}.xml')
+    except OSError:
+        pass
     env_config["agent"]["config_name"] = name
     __lock.acquire()
     with open(env_config_filepath, 'w') as env_config_file:

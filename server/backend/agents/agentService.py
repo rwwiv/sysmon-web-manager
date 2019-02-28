@@ -7,8 +7,7 @@ def get_all_agents():
     for x in all_agents:
         temp = {
             'uuid': x.UUID,
-            'ipv4_address': x.IPV4_ADDRESS,
-            'ipv6_address': x.IPV6_ADDRESS,
+            'ip_address': x.IP_ADDRESS,
             'online': x.ONLINE,
             'sysmon_version_current': x.SYSMON_VERSION_CURRENT,
             'sysmon_version_new': x.SYSMON_VERSION_NEW,

@@ -18,6 +18,10 @@
     });
   });
   export default {
+    data(){
+      return {
+      }
+    },
     components: { AgentList },
   };
 </script>

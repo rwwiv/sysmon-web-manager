@@ -1,9 +1,14 @@
 from heartbeat.models import Agent
+from os import listdir
 import json
+import ipaddress
 
+def toIpv6(v4):
+    numbers = list(map(int, v4.split('.')))
+    return '2002:{:02x}{:02x}:{:02x}{:02x}::'.format(*numbers)
 
 def get_sysmon_version():
-    return "sysmon"
+    return listdir("../sysmon")[0].split('.')[0]
 
 
 def get_config_name():
@@ -54,7 +59,7 @@ def create_agent(requested_uuid,remoteAddr):
         new_agent = Agent(UUID=requested_uuid,
                           # TODO record the IP address(es) of the origin of the request
                           IPV4_ADDRESS=remoteAddr,
-                          IPV6_ADDRESS="",
+                          IPV6_ADDRESS=toIpv6(remoteAddr),
                           ONLINE=True,
                           SYSMON_VERSION_CURRENT="",
                           SYSMON_VERSION_NEW="",

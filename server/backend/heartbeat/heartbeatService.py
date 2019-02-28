@@ -49,11 +49,11 @@ def update_agent_status(requested_uuid, incoming_request):
     return data
 
 
-def create_agent(requested_uuid):
+def create_agent(requested_uuid,remoteAddr):
     if Agent.objects.filter(UUID=requested_uuid).count() == 0:
         new_agent = Agent(UUID=requested_uuid,
                           # TODO record the IP address(es) of the origin of the request
-                          IPV4_ADDRESS="",
+                          IPV4_ADDRESS=remoteAddr,
                           IPV6_ADDRESS="",
                           ONLINE=True,
                           SYSMON_VERSION_CURRENT="",
@@ -61,6 +61,7 @@ def create_agent(requested_uuid):
                           CONFIG_NAME_CURRENT="",
                           CONFIG_NAME_NEW="",
                           EXEC_RUNNING=False,  # sysmon should not be running when the agent calls in
+                          NEEDS_INSTALL=False,
                           NEEDS_UNINSTALL=False,
                           NEEDS_RESTART=False)
         new_agent.save()

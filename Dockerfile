@@ -1,18 +1,36 @@
-FROM ubuntu:18.04
 MAINTAINER William Wernert <william.wernert@gmail.com>
 
-RUN apt update
-RUN apt upgrade -y
+# Build frontend VueJS project for deployment
+FROM node:alpine AS frontend
+COPY ./server/frontend /frontend
+WORKDIR /frontend
+RUN npm install -g @vue/cli
+RUN npm install
+RUN npm run build
 
-RUN mkdir -p /server
-WORKDIR /server
-COPY server .
-
-WORKDIR /server/backend
-RUN apt install -y python3 python3-setuptools python3-pip
+# Set up production environment
+FROM ubuntu:18.04
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+	git \
+	python3 \
+	python3-dev \
+	python3-setuptools \
+	python3-pip \
+	nginx \
+	supervisor \
+	sqlite3 && \
+	pip3 install -U pip setuptools && \
+   rm -rf /var/lib/apt/lists/*
+# Set up Django
+COPY /server/backend /backend
+WORKDIR /backend
 RUN pip3 install -r requirements.txt
+RUN python3 manage.py runserver 0.0.0.0:8000
 
-WORKDIR /server/frontend
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+# Copy built frontend from previous image
+COPY --from=frontend /frontend/dist /frontend/dist
+# Set up nginx
+COPY nginx.conf /etc/nginx/sites-available/default
 
-#This is not finished

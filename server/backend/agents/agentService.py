@@ -19,3 +19,12 @@ def get_all_agents():
         }
         data.append(temp)
     return data
+
+def update_needs_install(requested_uuid):
+    try:
+        retrieved_agent = Agent.objects.get(UUID=requested_uuid)
+        retrieved_agent.NEEDS_INSTALL = True
+        retrieved_agent.save()
+        return 0
+    except:
+        return -1

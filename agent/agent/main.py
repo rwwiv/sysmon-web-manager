@@ -1,16 +1,19 @@
+import time
 import win32serviceutil
 import win32service
 import win32event
 import servicemanager
-import agent_config
 import sys
+import yaml
 
 import bg_process
 
+from agent_config import env_config, env_config_filepath, user_config
+
 
 class SysMonagerAgentService(win32serviceutil.ServiceFramework):
-    _svc_name_ = agent_config.service_name
-    _svc_display_name_ = agent_config.service_name
+    _svc_name_ = env_config['agent']['service_name']
+    _svc_display_name_ = env_config['agent']['display_name']
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -34,9 +37,18 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 0:
-        servicemanager.Initialize()
-        servicemanager.PrepareToHostSingle(SysMonagerAgentService)
-        servicemanager.StartServiceCtrlDispatcher()
-    else:
-        win32serviceutil.HandleCommandLine(SysMonagerAgentService)
+    while True:
+        try:
+            bg_process.run()
+        except:
+            env_config['http']['uuid'] = None
+            with open(env_config_filepath, 'w') as env_config_file:
+                yaml.dump(env_config, env_config_file)
+        time.sleep(60 * 5)
+
+    # if len(sys.argv) == 0:
+    #     servicemanager.Initialize()
+    #     servicemanager.PrepareToHostSingle(SysMonagerAgentService)
+    #     servicemanager.StartServiceCtrlDispatcher()
+    # else:
+    #     win32serviceutil.HandleCommandLine(SysMonagerAgentService)

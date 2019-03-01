@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "admin-lte": "^2.4.8",
+    "axios": "^0.18.0",
     "bootstrap": "^3.4.0",
     "font-awesome": "^4.7.0",
+    "icheck": "^1.0.2",
     "ionicons": "^4.5.5",
     "vue": "^2.5.22",
     "vue-router": "^3.0.1",

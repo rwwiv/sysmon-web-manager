@@ -14,7 +14,8 @@ def get_all_agents():
             'config_name_current': x.CONFIG_NAME_CURRENT,
             'config_name_new': x.CONFIG_NAME_NEW,
             'exec_running': x.EXEC_RUNNING,
-            'exec_last_running_at': x.EXEC_LAST_RUNNING_AT
+            'exec_last_running_at': x.EXEC_LAST_RUNNING_AT,
+            'needs_install': x.NEEDS_INSTALL
         }
         data.append(temp)
     return data

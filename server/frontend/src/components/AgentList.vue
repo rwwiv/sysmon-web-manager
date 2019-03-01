@@ -19,14 +19,14 @@
         </thead>
         <tbody>
           <tr v-for="agent in agents" :key="agent.id">
-            <td>{{ agent.ipAddress ? agent.ipAddress : 'N/A' }}</td>
+            <td>{{ agent.ip_address ? agent.ip_address : 'N/A' }}</td>
             <td>
-              <span class="label" :class="currentStatusLabel(agent.online)">
-              {{ agent.online ? 'Online' : 'Offline' }}
+              <span class="label" :class="currentStatusLabel(agent.online, agent.needs_install)">
+              {{ currentStatusText(agent.online, agent.needs_install) }}
             </span>
             </td>
-            <td>{{ agent.config_name ? agent.config_name : 'N/A' }}</td>
-            <td class="center-text">{{ agent.sysmon_version ? agent.sysmon_version : 'N/A' }}</td>
+            <td>{{ agent.config_name_current ? agent.config_name_current : 'N/A' }}</td>
+            <td class="center-text">{{ agent.sysmon_version_current ? agent.sysmon_version_current : 'N/A' }}</td>
             <td class="center-text control-icons">
               <a @click="runSysmon(agent.uuid)">
                 <i class="fa fa-play"></i>
@@ -55,7 +55,7 @@
             </div>
             <!-- /.modal-header -->
             <div class="modal-body">
-              <h5><b>Current Sysmon Config:</b><br/>{{selectedAgent.config_name ? selectedAgent.config_name : 'No configuration file is currently associated with this agent/host.'}}</h5>
+              <h5><b>Current Sysmon Config:</b><br/>{{selectedAgent.config_name_current ? selectedAgent.config_name_current : 'No configuration file is currently associated with this agent/host.'}}</h5>
               <h5><b>Available Sysmon Configs:</b></h5>
                 <select v-model="selectedConfig">
                   <option disabled value="">Select New Sysmon Config</option>
@@ -103,20 +103,30 @@
       displayAgent(agent){
         this.selectedAgent = agent;
       },
-      currentStatusLabel(agentStatus){
+      currentStatusLabel(agentStatus, needsInstall){
+        if(needsInstall){
+          return 'label-primary';
+        }
         if(agentStatus){
           return 'label-success';
         }
-        else {
-          return 'label-danger';
+        return 'label-danger';
+      },
+      currentStatusText(agentStatus, needsInstall){
+        if(needsInstall){
+          return 'New';
         }
-        return 'label-default';
+        if(agentStatus){
+          return 'Online';
+        }
+        return 'Offline';
       },
       runSysmon(agentID){
         //As of 2-27-19 this API call responds with a 404
         axios.post('http://127.0.0.1:8000/agents/'+agentID)
         .then(response =>{
           console.log(response);
+          this.getHostList();
         })
         .catch(e =>{
           console.log(e.message);
@@ -134,6 +144,7 @@
             console.log(e.message);
           });
           $('#agent-modal').modal('hide');
+          this.getHostList();
         }
         else {
           console.log('No selection made.');
@@ -144,21 +155,25 @@
         axios.delete('http://127.0.0.1:8000/agents/'+agentID)
         .then(response =>{
           console.log(response);
+          this.getHostList();
         })
         .catch(e => {
           console.log(e.message);
         });
+      },
+      getHostList(){
+        axios.get('http://127.0.0.1:8000/agents', { crossdomain: true })
+        .then(response => {
+          this.agents = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          this.errors.push(e)
+        })
       }
     },
     mounted:function(){
-      axios.get('http://127.0.0.1:8000/agents', { crossdomain: true })
-      .then(response => {
-        this.agents = response.data;
-        console.log(response.data);
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
+      this.getHostList();
     }
   };
 

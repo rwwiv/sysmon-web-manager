@@ -24,13 +24,13 @@ RUN apt-get update && \
 	pip3 install -U pip setuptools && \
    rm -rf /var/lib/apt/lists/*
 # Set up Django
-COPY /server/backend /backend
+COPY ./server/backend /backend
 WORKDIR /backend
 RUN pip3 install -r requirements.txt
 RUN python3 manage.py runserver 0.0.0.0:8000
 
 # Copy built frontend from previous image
-COPY --from=frontend /frontend/dist /frontend/dist
+COPY --from=frontend /frontend/dist /frontend
 # Set up nginx
 COPY nginx.conf /etc/nginx/sites-available/default
 

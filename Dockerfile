@@ -1,5 +1,3 @@
-MAINTAINER William Wernert <william.wernert@gmail.com>
-
 # Build frontend VueJS project for deployment
 FROM node:alpine AS frontend
 COPY ./server/frontend /frontend
@@ -10,6 +8,7 @@ RUN npm run build
 
 # Set up production environment
 FROM ubuntu:18.04
+MAINTAINER William Wernert <william.wernert@gmail.com>
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \

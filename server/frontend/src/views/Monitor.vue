@@ -18,9 +18,9 @@
     });
   });
   export default {
-    data(){
+    data() {
       return {
-      }
+      };
     },
     components: { AgentList },
   };

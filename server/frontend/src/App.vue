@@ -31,16 +31,11 @@
           <router-link tag="li" to="/" exact-active-class="active" exact>
             <a><i class="fa fa-desktop"></i> <span>Monitor</span></a>
           </router-link>
+          <router-link tag="li" to="management" active-class="active">
+            <a><i class="fa fa-cog"></i> <span>Management</span></a>
+          </router-link>
 
-          <li class="treeview">
-            <a href="#"><i class="fa fa-cog"></i> <span>Configuration</span>
-              <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
-            </a>
-            <ul class="treeview-menu">
-              <router-link tag="li" active-class="active" to="enterpriseInstall"><a>Enterprise Install</a></router-link>
-              <router-link tag="li" active-class="active" to="management"><a>Management</a></router-link>
-            </ul>
-          </li>
+          
         </ul>
         <!-- /.sidebar-menu -->
       </section>

@@ -8,7 +8,7 @@ def index(request, id):
         values = update_agent_status(id, request)
         return JsonResponse(values)
     elif request.method == 'POST':
-        values = create_agent(id)
+        values = create_agent(id, request.META.get('REMOTE_ADDR'))
         return JsonResponse(values)
     else:
         raise Http404()

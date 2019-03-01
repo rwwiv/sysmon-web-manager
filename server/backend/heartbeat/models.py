@@ -3,8 +3,7 @@ from django.db import models
 
 class Agent(models.Model):
     UUID = models.CharField(max_length=200)
-    IPV4_ADDRESS = models.CharField(max_length=200)
-    IPV6_ADDRESS = models.CharField(max_length=200)
+    IP_ADDRESS = models.CharField(max_length=200)
     ONLINE = models.BooleanField()
     SYSMON_VERSION_CURRENT = models.CharField(max_length=200)
     SYSMON_VERSION_NEW = models.CharField(max_length=200)
@@ -27,3 +26,7 @@ class User(models.Model):
 class Configuration(models.Model):
     NAME = models.CharField(max_length=200)
     IS_DEFAULT = models.BooleanField()
+
+class Sysmon(models.Model):
+    NAME = models.CharField(max_length=200)
+    IS_CURRENT = models.BooleanField()

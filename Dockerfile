@@ -1,5 +1,5 @@
 # Build frontend VueJS project for deployment
-FROM node:alpine AS frontend
+FROM node:lts
 COPY ./server/frontend /frontend
 WORKDIR /frontend
 RUN npm install -g @vue/cli
@@ -32,4 +32,6 @@ RUN python3 manage.py runserver 0.0.0.0:8000
 COPY --from=frontend /frontend/dist /frontend
 # Set up nginx
 COPY nginx.conf /etc/nginx/sites-available/default
+COPY start.sh /
 
+CMD ["/start.sh"]

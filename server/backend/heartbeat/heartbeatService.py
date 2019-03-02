@@ -67,7 +67,7 @@ def create_agent(requested_uuid,remoteAddr):
         print("WARN: Agent already existed")
 
     data = {
-        'sysmon_version': get_sysmon_version(),
-        'config_name': get_config_name()
+        'sysmon_version': get_sysmon_version().NAME,
+        'config_name': get_config_name().NAME
     }
     return data

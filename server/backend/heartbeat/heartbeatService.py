@@ -61,7 +61,8 @@ def create_agent(requested_uuid,remoteAddr):
                           EXEC_RUNNING=False,
                           NEEDS_INSTALL=False,
                           NEEDS_UNINSTALL=False,
-                          NEEDS_RESTART=False)
+                          NEEDS_RESTART=False,
+                          ATTEMPTED_INSTALL=False)
         new_agent.save()
     else:
         print("WARN: Agent already existed")

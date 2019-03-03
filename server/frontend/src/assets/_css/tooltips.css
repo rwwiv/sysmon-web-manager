@@ -1,0 +1,21 @@
+.popper {
+  background-color: rgb(34,45,50);
+  color: #fff;
+  padding: 5px;
+  border: 1px rgb(34,45,50) solid;
+  -moz-box-shadow: rgba(0,0,0,0.4) 0 0 6px 0;
+  -webkit-box-shadow: rgba(0,0,0,0.4) 0 0 6px 0;
+  box-shadow: rgba(0,0,0,0.4) 0 0 6px 0;
+}
+.popper[x-placement^="top"] .popper__arrow {
+  border-color:rgb(34,45,50) transparent transparent transparent;
+}
+.popper[x-placement^="bottom"] .popper__arrow {
+  border-color: transparent transparent rgb(34,45,50) transparent;
+}
+.popper[x-placement^="right"] .popper__arrow {
+  border-color: transparent rgb(34,45,50) transparent transparent;
+}
+.popper[x-placement^="left"] .popper__arrow {
+  border-color: transparent transparent transparent rgb(34,45,50);
+}

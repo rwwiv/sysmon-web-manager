@@ -4,15 +4,17 @@ matrix:
       python:
         - "3.7"
       dist: xenial
+      before_install: cd server/backend
       install:
-       - pip install -r server/backend/requirements.txt
+       - pip install -r requirements.txt
       script:
-       - python server/backend/manage.py test
+       - python manage.py test
       
     - language: node_js
       node_js:
         - "lts/*"
       before_install:
+       - cd server/frontend
        - npm i -g @vue/cli
       script:
        - npm run test

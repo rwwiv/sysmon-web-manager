@@ -106,11 +106,12 @@ def __update_sysmon(version):
                             f'/{version}')
     with open(f'sysmon_{version}.exe', 'wb') as new_file:
         new_file.write(bytes(response.content))
-    uninstall_sysmon()
-    try:
-        os.remove(f'sysmon_{env_config["agent"]["sysmon_version"]}.exe')
-    except OSError:
-        pass
+    if version != env_config['agent']['sysmon_version']:
+        uninstall_sysmon()
+        try:
+            os.remove(f'sysmon_{env_config["agent"]["sysmon_version"]}.exe')
+        except OSError:
+            pass
     env_config["agent"]["sysmon_version"] = version
     __lock.acquire()
     with open(env_config_filepath, 'w') as env_config_file:
@@ -125,10 +126,11 @@ def __update_config(name):
                             f'/{name}')
     with open(f'agent_config_{name}.xml', 'wb') as new_file:
         new_file.write(bytes(response.content))
-    try:
-        os.remove(f'agent_config_{env_config["agent"]["config_name"]}.xml')
-    except OSError:
-        pass
+    if name != env_config['agent']['config_name']:
+        try:
+            os.remove(f'agent_config_{env_config["agent"]["config_name"]}.xml')
+        except OSError:
+            pass
     env_config["agent"]["config_name"] = name
     __lock.acquire()
     with open(env_config_filepath, 'w') as env_config_file:

@@ -14,6 +14,7 @@ class Agent(models.Model):
     NEEDS_UNINSTALL = models.BooleanField()
     NEEDS_RESTART = models.BooleanField()
     NEEDS_INSTALL = models.BooleanField()
+    ATTEMPTED_INSTALL = models.BooleanField()
 
 
 class User(models.Model):

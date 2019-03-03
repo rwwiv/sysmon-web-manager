@@ -1,3 +1,5 @@
+dist: xenial
+language: minimal
 matrix:
   include:
     - language: python

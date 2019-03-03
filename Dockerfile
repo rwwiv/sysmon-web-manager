@@ -1,5 +1,5 @@
 # Build frontend VueJS project for deployment
-FROM node:lts
+FROM node:lts as frontend
 COPY ./server/frontend /frontend
 WORKDIR /frontend
 RUN npm install -g @vue/cli

@@ -1,8 +1,15 @@
-agent: {checked_exec_running: true, config_name: null, display_name: SysMonager
-    Agent, exec_last_running: '2019-02-24 16:54:16', service_name: SysMonagerAgent,
-  sysmon_version: null, installed: false}
+agent:
+  checked_exec_running: true
+  config_name: gifnoc
+  display_name: SysMonager Agent
+  exec_last_running: '2019-02-24 16:54:16'
+  installed: false
+  service_name: SysMonagerAgent
+  sysmon_version: '8.04'
 http:
   api:
     heartbeat: /heartbeat
-    updates: {config: /updates/config, sysmon: /updates/sysmon}
-  uuid: 0ac1b39b-b6ce-45a2-b7b7-57d6b1087daa
+    updates:
+      config: /updates/config
+      sysmon: /updates/sysmon
+  uuid: b9849d27-a6f2-42fb-a564-bd262024e537

@@ -38,7 +38,7 @@
                 <i class="fa fa-trash"></i>
               </a>
             </td>
-            
+
           </tr>
         </tbody>
       </table>
@@ -68,7 +68,7 @@
             <!-- /.modal-body -->
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" @click="saveConfig(selectedAgent.uuid, selectedConfig)">Save changes</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>              
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
             <!-- /.modal-footer -->
           </div>
@@ -82,99 +82,98 @@
 
 <script>
   import axios from 'axios';
-  /***
+  /** *
   * To Do: the available configs needs to come from the /configs API call
   * which is non-functional as of 2-27-19.
-  ***/
+  ** */
   import availableSysmonConfigs from '../../agentAvailableSysmonConfigSample.json';
 
   export default {
     name: 'AgentList',
     data() {
-      return { 
+      return {
         agents: [],
         errors: [],
         availableSysmonConfigs,
         selectedAgent: '',
-        selectedConfig:'',
-      }
+        selectedConfig: '',
+      };
     },
-    methods:{
-      displayAgent(agent){
+    methods: {
+      displayAgent(agent) {
         this.selectedAgent = agent;
       },
-      currentStatusLabel(agentStatus, needsInstall){
-        if(needsInstall){
+      currentStatusLabel(agentStatus, needsInstall) {
+        if (needsInstall) {
           return 'label-primary';
         }
-        if(agentStatus){
+        if (agentStatus) {
           return 'label-success';
         }
         return 'label-danger';
       },
-      currentStatusText(agentStatus, needsInstall){
-        if(needsInstall){
+      currentStatusText(agentStatus, needsInstall) {
+        if (needsInstall) {
           return 'New';
         }
-        if(agentStatus){
+        if (agentStatus) {
           return 'Online';
         }
         return 'Offline';
       },
-      runSysmon(agentID){
-        //As of 2-27-19 this API call responds with a 404
-        axios.post('http://127.0.0.1:8000/agents/'+agentID)
-        .then(response =>{
+      runSysmon(agentID) {
+        // As of 2-27-19 this API call responds with a 404
+        axios.post(`http://127.0.0.1:8000/agents/${agentID}`)
+        .then((response) => {
           console.log(response);
           this.getHostList();
         })
-        .catch(e =>{
+        .catch((e) => {
           console.log(e.message);
         });
       },
-      saveConfig(agentID, config){
-        //To Do:  On successful patch, need to update list view to reflect change in selected config.  
-        //As of 2-27-19 this API call responds with a 404
-        if(config){
-          axios.patch('http://127.0.0.1:8000/agents/'+agentID+'/config/'+config)
-          .then(response =>{
+      saveConfig(agentID, config) {
+        // To Do:  On successful patch, need to update list view to reflect change in selected config.
+        // As of 2-27-19 this API call responds with a 404
+        if (config) {
+          axios.patch(`http://127.0.0.1:8000/agents/${agentID}/config/${config}`)
+          .then((response) => {
             console.log(response);
           })
-          .catch(e =>{
+          .catch((e) => {
             console.log(e.message);
           });
           $('#agent-modal').modal('hide');
           this.getHostList();
-        }
-        else {
+        } else {
           console.log('No selection made.');
         }
       },
-      uninstallSysmon(agentID){
-        //As of 2-27-19 this API call responds with a 404
-        axios.delete('http://127.0.0.1:8000/agents/'+agentID)
-        .then(response =>{
+      uninstallSysmon(agentID) {
+        // As of 2-27-19 this API call responds with a 404
+        axios.delete(`http://127.0.0.1:8000/agents/${agentID}`)
+        .then((response) => {
           console.log(response);
           this.getHostList();
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e.message);
         });
       },
-      getHostList(){
+      getHostList() {
         axios.get('http://127.0.0.1:8000/agents', { crossdomain: true })
-        .then(response => {
+        .then((response) => {
           this.agents = response.data;
           console.log(response.data);
         })
-        .catch(e => {
-          this.errors.push(e)
-        })
-      }
+        .catch((e) => {
+          this.errors.push(e);
+        });
+      },
     },
-    mounted:function(){
+    mounted() {
       this.getHostList();
-    }
+    },
   };
 
 </script>

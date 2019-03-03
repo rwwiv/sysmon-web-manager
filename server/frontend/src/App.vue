@@ -35,7 +35,7 @@
             <a><i class="fa fa-cog"></i> <span>Management</span></a>
           </router-link>
 
-          
+
         </ul>
         <!-- /.sidebar-menu -->
       </section>

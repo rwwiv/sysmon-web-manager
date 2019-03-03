@@ -11,12 +11,12 @@
         <tbody>
           <tr>
             <td class="select-all">
-              <input type="checkbox" id="checkbox-checkAll" value="checkAll" name="checkAll" v-model="selectAll"/><label for="checkAll">Select All</label>
+              <label for="checkAll">Select All</label>
+              <input type="checkbox" value="checkAll" id="checkAll" v-model="selectAll"/>
             </td>
-            
             <td class="edit-all-options" align="right">
               <label for="manage-all">Manage Selected:</label>
-              <select name="manage-all" v-model="manageAllSelected">
+              <select id="manage-all" v-model="manageAllSelected">
                 <option disabled value="">
                   Select an Option
                 </option>
@@ -42,10 +42,10 @@
         </tbody>
       </table>
 
-<!-- 
-*** HOST LIST *** 
-* Generate single install button if new_agent, else offer management options. 
-* <popper> component is required for tooltip functionality. 
+<!--
+*** HOST LIST ***
+* Generate single install button if new_agent, else offer management options.
+* <popper> component is required for tooltip functionality.
 -->
       <table class="table no-margin">
         <thead>
@@ -76,10 +76,10 @@
             <td>{{ agent.config_name_current ? agent.config_name_current : 'N/A' }}</td>
             <td class="center-text">{{ agent.sysmon_version_current ? agent.sysmon_version_current : 'N/A' }}</td>
 
-<!-- 
-*** INDIVIDUAL HOST MANAGEMENT *** 
-* Generate single install button if new_agent, else offer management options. 
-* <popper> component is required for tooltip functionality. 
+<!--
+*** INDIVIDUAL HOST MANAGEMENT ***
+* Generate single install button if new_agent, else offer management options.
+* <popper> component is required for tooltip functionality.
 -->
             <td class="center-text control-icons">
 <!-- v-if: New Agent -->
@@ -157,7 +157,7 @@
                     <i class="fa fa-trash"></i>
                   </a>
                 </popper>
-              </div> 
+              </div>
 <!-- end v-else: Existing Agent -->
             </td>
 <!-- end INDIVIDUAL HOST MANAGEMENT -->
@@ -166,10 +166,10 @@
       </table>
 <!-- HOST LIST -->
     </div>
-<!-- 
-*** EDIT SYSMON CONFIG MODAL *** 
-* Generate single install button if new_agent, else offer management options. 
-* <popper> component is required for tooltip functionality. 
+<!--
+*** EDIT SYSMON CONFIG MODAL ***
+* Generate single install button if new_agent, else offer management options.
+* <popper> component is required for tooltip functionality.
 -->
     <div class="modal fade" id="agent-modal" tabindex="-1" role="dialog" aria-labelledby="agent-modal-label">
         <div class="modal-dialog" role="document">
@@ -194,7 +194,7 @@
 <!-- /.modal-body -->
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" @click="saveConfig(selectedAgent.uuid, selectedConfig)">Save changes</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>              
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
 <!-- /.modal-footer -->
           </div>
@@ -210,173 +210,171 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
-  /***
+  /** *
   * To Do: the available configs needs to come from the /configs API call
   * which is non-functional as of 2-27-19.
-  ***/
+  ** */
   import availableSysmonConfigs from '../../agentAvailableSysmonConfigSample.json';
 
   export default {
     name: 'AgentList',
     data() {
-      return { 
+      return {
         agents: [],
         errors: [],
         sysmonConfigs: [],
         availableSysmonConfigs,
         selectedAgent: '',
-        selectedConfig:'',
+        selectedConfig: '',
         checkedAgents: [],
-        selectAll:false,
-        manageAllSelected: ''
-      }
+        selectAll: false,
+        manageAllSelected: '',
+      };
     },
     components: {
-      'popper': Popper
+      popper: Popper,
     },
-    methods:{
-      displayAgent(agent){
+    methods: {
+      displayAgent(agent) {
         this.selectedAgent = agent;
       },
-      currentStatusLabel(agentStatus, needsInstall = false){
-        if(needsInstall){
+      currentStatusLabel(agentStatus, needsInstall = false) {
+        if (needsInstall) {
           return 'label-primary';
         }
-        if(agentStatus){
+        if (agentStatus) {
           return 'label-success';
         }
         return 'label-danger';
       },
-      currentStatusText(agentStatus, needsInstall = false){
-        if(needsInstall){
+      currentStatusText(agentStatus, needsInstall = false) {
+        if (needsInstall) {
           return 'New';
         }
-        if(agentStatus){
+        if (agentStatus) {
           return 'Online';
         }
         return 'Offline';
       },
-      saveConfig(agentID, config){  
-        if(config){
-          axios.patch('http://localhost:8000/agents/'+agentID+'/config/'+config)
-          .then(response =>{
+      saveConfig(agentID, config) {
+        if (config) {
+          axios.patch(`http://localhost:8000/agents/${agentID}/config/${config}`)
+          .then((response) => {
             console.log(response);
           })
-          .catch(e =>{
+          .catch((e) => {
             console.log(e.message);
           });
           $('#agent-modal').modal('hide');
           this.getHostList();
-        }
-        else {
+        } else {
           console.log('No selection made.');
         }
       },
-      runSysmon(agentID){
-        axios.post('http://localhost:8000/agents/updates/' + agentID)
-        .then(response =>{
+      runSysmon(agentID) {
+        axios.post(`http://localhost:8000/agents/updates/${agentID}`)
+        .then((response) => {
           console.log(response);
           this.getHostList();
         })
-        .catch(e =>{
+        .catch((e) => {
           console.log(e.message);
         });
       },
-      installSysmon(agentID){
-        axios.patch('http://localhost:8000/updates/' + agentID)
-        .then(response => {
+      installSysmon(agentID) {
+        axios.patch(`http://localhost:8000/updates/${agentID}`)
+        .then((response) => {
           console.log(response);
           this.getHostList();
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e.message);
         });
       },
-      uninstallSysmon(agentID){
-        axios.delete('http://localhost:8000/agents/'+ agentID)
-        .then(response =>{
+      uninstallSysmon(agentID) {
+        axios.delete(`http://localhost:8000/agents/${agentID}`)
+        .then((response) => {
           console.log(response);
           this.getHostList();
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e.message);
         });
       },
-      getHostList(){
+      getHostList() {
         axios.get('http://localhost:8000/agents')
-        .then(response => {
+        .then((response) => {
           this.agents = response.data;
           console.log(response.data);
         })
-        .catch(e => {
-          this.errors.push(e)
-        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
       },
-      getAvailableSysmonConfigs(){
+      getAvailableSysmonConfigs() {
         axios.get('http://localhost:8000/configs')
-        .then(response => {
+        .then((response) => {
           this.sysmonConfigs = response.data;
           console.log(response.data);
         })
-        .catch(e => {
-          this.errors.push(e)
-        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
       },
-      selectAllAgents(){
+      selectAllAgents() {
         this.checkedAgents = [];
-        if(!this.selectAll){
-          for (let i in this.agents) {
+        if (!this.selectAll) {
+          for (let i = 0; i < this.agents.length; i++) {
             this.checkedAgents.push(this.agents[i].uuid);
           }
-        }        
+        }
       },
-      manageAllAgents(){
-        let currentCheckedAgents = JSON.stringify(this.checkedAgents);
-        switch(this.manageAllSelected){
-          case "install":
-            axios.post('http://localhost:8000/multi/install',currentCheckedAgents)
-            .then(response => {
+      manageAllAgents() {
+        const currentCheckedAgents = JSON.stringify(this.checkedAgents);
+        switch (this.manageAllSelected) {
+          case 'install':
+            axios.post('http://localhost:8000/multi/install', currentCheckedAgents)
+            .then((response) => {
               console.log(response.data);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log(e.message);
             });
-            
-          break;
-          case "restart":
 
           break;
-          case "update":
+          case 'restart':
 
           break;
-          case "config":
+          case 'update':
 
           break;
-          case "uninstall":
+          case 'config':
+
+          break;
+          case 'uninstall':
 
           break;
           default:
-            //Nothing selected
+            // Nothing selected
           break;
         }
-      }
+      },
     },
-    mounted:function(){
+    mounted() {
       this.getHostList();
       this.getAvailableSysmonConfigs();
-      let that = this;
-      //Handle iCheckBox in the host list table head.
-      jQuery('#checkbox-checkAll').on('ifChanged', function(e){
-        if(e.target.checked){
+      const that = this;
+      // Handle iCheckBox in the host list table head.
+      jQuery('#checkbox-checkAll').on('ifChanged', (e) => {
+        if (e.target.checked) {
           that.selectAllAgents();
           that.selectAll = true;
-        }
-        else {
+        } else {
           that.selectAllAgents();
           that.selectAll = false;
         }
       });
-    }
+    },
   };
 
 </script>
@@ -389,7 +387,7 @@ thead{
   font-size:20px;
 }
 .select-all {
-  
+
 }
 .edit-all td{
   border:0;

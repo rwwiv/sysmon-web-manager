@@ -1,5 +1,5 @@
 # Build frontend VueJS project for deployment
-FROM node:lts
+FROM node:lts as frontend
 COPY ./server/frontend /frontend
 WORKDIR /frontend
 RUN npm install -g @vue/cli
@@ -26,7 +26,6 @@ RUN apt-get update && \
 COPY ./server/backend /backend
 WORKDIR /backend
 RUN pip3 install -r requirements.txt
-RUN python3 manage.py runserver 0.0.0.0:8000
 
 # Copy built frontend from previous image
 COPY --from=frontend /frontend/dist /frontend

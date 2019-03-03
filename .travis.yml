@@ -11,7 +11,7 @@ matrix:
       
     - language: node_js
       node_js:
-        - "lts"
+        - "lts/*"
       before_install:
        - npm i -g @vue/cli
       script:

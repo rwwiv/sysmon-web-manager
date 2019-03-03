@@ -34,16 +34,6 @@ def update_agent_status(requested_uuid, incoming_request):
             'restart': retrieved_agent.NEEDS_RESTART,
             'install': retrieved_agent.NEEDS_INSTALL
         }
-    persist_data = json.loads(incoming_request.body)
-
-    if 'sysmon_version' in persist_data:
-        retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']
-    if 'config_name' in persist_data:
-        retrieved_agent.CONFIG_NAME_CURRENT = persist_data['config_name']
-    if 'exec_running' in persist_data:
-        retrieved_agent.EXEC_RUNNING = persist_data['exec_running']
-    if 'exec_last_running_at' in persist_data:
-        retrieved_agent.EXEC_LAST_RUNNING_AT = persist_data['exec_last_running_at']
     else:
         updates_data = {
             'sysmon': False,
@@ -55,6 +45,17 @@ def update_agent_status(requested_uuid, incoming_request):
             'restart': retrieved_agent.NEEDS_RESTART,
             'install': retrieved_agent.NEEDS_INSTALL
         }
+    persist_data = json.loads(incoming_request.body)
+
+    if 'sysmon_version' in persist_data:
+        retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']
+    if 'config_name' in persist_data:
+        retrieved_agent.CONFIG_NAME_CURRENT = persist_data['config_name']
+    if 'exec_running' in persist_data:
+        retrieved_agent.EXEC_RUNNING = persist_data['exec_running']
+    if 'exec_last_running_at' in persist_data:
+        retrieved_agent.EXEC_LAST_RUNNING_AT = persist_data['exec_last_running_at']
+
     retrieved_agent.save()
     return data
 

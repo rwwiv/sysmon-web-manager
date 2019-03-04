@@ -6,9 +6,13 @@ environment:
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - cd agent
+  - python -m pip install --upgrade pip
   - python -m pip install -r requirements.txt
 test_script:
   - python tests\test.py
+#build_script:
+build: off
+deploy: off
 notifications:
   - provider: Email
     to:

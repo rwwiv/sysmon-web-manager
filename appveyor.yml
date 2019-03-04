@@ -1,0 +1,16 @@
+version: 0.1.{build}-{branch}
+image: Visual Studio 2017
+environment:
+  matrix:
+    - PYTHON: "C:\Python37-x64"
+install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - cd agent
+  - python -m pip install -r requirements.txt
+test_script:
+  - python tests\test.py
+notifications:
+  - provider: Email
+    to:
+      - william.wernert@gmail.com
+    on_build_status_changed: true

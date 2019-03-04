@@ -4,7 +4,7 @@ environment:
   matrix:
     - PYTHON: "C:\Python37-x64"
 install:
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
   - cd agent
   - python -m pip install --upgrade pip
   - python -m pip install -r requirements.txt

@@ -9,23 +9,22 @@ matrix:
       before_install: cd server/backend
       install:
         - pip install codecov
+        - pip install coverage
         - pip install -r requirements.txt
       script:
         - python manage.py test
+        - coverage run manage.py test
         - codecov
     - language: node_js
       node_js:
         - "lts/*"
       before_install:
         - cd server/frontend
-      install:
         - npm i -g codecov
         - npm i -g @vue/cli
       script:
-        - istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec
+        - nyc --reporter=lcov --reporter=text-lcov npm run test:unit
         - codecov
-        - npm run test:unit
-        - npm run build
     - language: minimal
       dist: xenial
       services: docker

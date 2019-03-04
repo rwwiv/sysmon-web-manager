@@ -9,8 +9,10 @@ install:
   - python -m pip install --upgrade pip
   - python -m pip install -r requirements.txt
   - python -m pip install codecov
+  - python -m pip install coverage
 test_script:
   - python tests\test.py
+  - coverage run tests\test.py
   - codecov
 #build_script:
 build: off

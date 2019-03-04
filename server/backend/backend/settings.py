@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'updates.apps.UpdatesConfig',
     'heartbeat.apps.HeartbeatConfig',
+    'multi.apps.MultiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'corsheaders',

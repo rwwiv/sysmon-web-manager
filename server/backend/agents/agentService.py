@@ -16,7 +16,7 @@ def get_all_agents():
             'exec_running': x.EXEC_RUNNING,
             'exec_last_running_at': x.EXEC_LAST_RUNNING_AT,
             'needs_install': x.NEEDS_INSTALL,
-            'new_agent': x.ATTEMPTED_INSTALL
+            'new_agent': not x.ATTEMPTED_INSTALL
         }
         data.append(temp)
     return data
@@ -27,18 +27,6 @@ def update_needs_install(requested_uuid):
         retrieved_agent.NEEDS_INSTALL = True
         retrieved_agent.ATTEMPTED_INSTALL = True
         retrieved_agent.save()
-        return 0
-    except:
-        return -1
-
-def multi_sysmon_install(requested_uuids):
-    all_uuids = json.loads(requested_uuids.body)
-    try:
-        for rq in all_uuids:
-            agent_to_ping = Agents.objects.get(UUID=rq['uuid'])
-            agent_to_ping.NEEDS_INSTALL = True
-            agent_to_ping.ATTEMPTED_INSTALL = True
-            agent_to_ping.save()
         return 0
     except:
         return -1

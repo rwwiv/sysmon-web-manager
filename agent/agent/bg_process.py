@@ -1,18 +1,15 @@
 import requests
 import uuid
-import json
 import os
 import win32serviceutil
 import yaml
-from datetime import datetime
 from threading import Thread, Lock
 
 
 from agent_config import env_config, env_config_filepath, user_config
 
 
-from sysmon import ServiceState, \
-            update_sysmon_config, \
+from sysmon import update_sysmon_config, \
             install_sysmon, \
             uninstall_sysmon, \
             check_sysmon_running
@@ -73,26 +70,25 @@ def __heartbeat():
                             # auth=__auth,
                             json=__build_request_dict())
     r_json = response.json()
-    if r_json['install']:
-        threads = []
-        if r_json['updates_needed']['sysmon']:
-            threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
-        if r_json['updates_needed']['config']:
-            threads.append(Thread(target=__update_config, args=(r_json['updates_needed']['config_name'],)))
+    if 'install' in r_json & r_json['install']:
+        threads = [
+            Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)),
+            Thread(target=__update_config, args=(r_json['updates_needed']['config_name'],))
+        ]
         for thread in threads:
             thread.start()
         for thread in threads:
             thread.join(timeout=60)
     else:
         pass
-    if r_json['uninstall']:
+    if 'uninstall' in r_json & r_json['uninstall']:
         uninstall_sysmon()
     threads = []
-    if r_json['updates_needed']['sysmon']:
+    if 'sysmon' in r_json['updates_needed'] & r_json['updates_needed']['sysmon']:
         threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
-    if r_json['updates_needed']['config']:
+    if 'config' in r_json['updates_needed'] & r_json['updates_needed']['config']:
         threads.append(Thread(target=__update_config, args=(r_json['updates_needed']['config_name'],)))
-    if r_json['restart']:
+    if 'restart' in r_json & r_json['restart']:
         win32serviceutil.RestartService(f'sysmon_{env_config["agent"]["sysmon_version"]}')
     for thread in threads:
         thread.start()

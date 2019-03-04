@@ -8,8 +8,10 @@ install:
   - cd agent
   - python -m pip install --upgrade pip
   - python -m pip install -r requirements.txt
+  - python -m pip install codecov
 test_script:
   - python tests\test.py
+  - codecov
 #build_script:
 build: off
 deploy: off

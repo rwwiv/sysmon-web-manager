@@ -8,17 +8,22 @@ matrix:
       dist: xenial
       before_install: cd server/backend
       install:
+        - pip install codecov
         - pip install -r requirements.txt
       script:
         - python manage.py test
+        - codecov
     - language: node_js
       node_js:
         - "lts/*"
       before_install:
         - cd server/frontend
+      install:
+        - npm i -g codecov
         - npm i -g @vue/cli
       script:
-        - npm run lint
+        - istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec
+        - codecov
         - npm run test:unit
         - npm run build
     - language: minimal

@@ -30,3 +30,12 @@ def update_needs_install(requested_uuid):
         return 0
     except:
         return -1
+
+def update_needs_restart(requested_uuid):
+    try:
+        retrieved_agent = Agent.objects.get(UUID=requested_uuid)
+        retrieved_agent.NEEDS_RESTART = True
+        retrieved_agent.save()
+        return 0
+    except:
+        return -1

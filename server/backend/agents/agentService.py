@@ -1,6 +1,7 @@
 from heartbeat.models import Agent
 import json
 
+
 def get_all_agents():
     all_agents = Agent.objects.all()
     data = []
@@ -21,6 +22,7 @@ def get_all_agents():
         data.append(temp)
     return data
 
+
 def update_needs_install(requested_uuid):
     try:
         retrieved_agent = Agent.objects.get(UUID=requested_uuid)
@@ -30,6 +32,7 @@ def update_needs_install(requested_uuid):
         return 0
     except:
         return -1
+
 
 def update_needs_restart(requested_uuid):
     try:

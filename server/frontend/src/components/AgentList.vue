@@ -336,6 +336,7 @@
             axios.post('http://localhost:8000/multi/install', currentCheckedAgents)
             .then((response) => {
               console.log(response.data);
+              this.getHostList();
             })
             .catch((e) => {
               console.log(e.message);

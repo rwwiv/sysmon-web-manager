@@ -21,6 +21,11 @@ def get_config_update_flag(server_version, client_version):
 
 def update_agent_status(requested_uuid, incoming_request):
     retrieved_agent = Agent.objects.get(UUID=requested_uuid)
+    persist_data = json.loads(incoming_request.body)
+    
+    if persist_data['exec_running']:
+        retrieved_agent.NEEDS_INSTALL = False
+    
     if retrieved_agent.NEEDS_INSTALL:
         updates_data = {
             'sysmon': get_sysmon_update_flag(Agent.SYSMON_VERSION_NEW, Agent.SYSMON_VERSION_CURRENT),
@@ -45,7 +50,6 @@ def update_agent_status(requested_uuid, incoming_request):
             'restart': retrieved_agent.NEEDS_RESTART,
             'install': retrieved_agent.NEEDS_INSTALL
         }
-    persist_data = json.loads(incoming_request.body)
 
     if 'sysmon_version' in persist_data:
         retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']

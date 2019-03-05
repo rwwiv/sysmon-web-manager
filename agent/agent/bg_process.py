@@ -63,7 +63,6 @@ def __build_request_dict():
 
 
 def __heartbeat():
-    print(__build_request_dict())
     response = requests.put(f'{__protocol}://{user_config["http"]["url"]}'
                             f'{env_config["http"]["api"]["heartbeat"]}'
                             f'/{env_config["http"]["uuid"]}',

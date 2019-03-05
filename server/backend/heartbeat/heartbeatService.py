@@ -17,25 +17,38 @@ def get_config_name():
 
 
 def get_sysmon_update_flag(server_version, client_version):
-    return not client_version == server_version
+    return client_version != server_version
 
 
 def get_config_update_flag(server_version, client_version):
-    return not client_version == server_version
+    return client_version != server_version
 
 
 def update_agent_status(requested_uuid, incoming_request):
     retrieved_agent = Agent.objects.get(UUID=requested_uuid)
     persist_data = json.loads(incoming_request.body)
     
-    if persist_data['exec_running']:
+    if persist_data.get('installed', False):
         retrieved_agent.NEEDS_INSTALL = False
-    
-    if retrieved_agent.NEEDS_INSTALL:
         updates_data = {
-            'sysmon': get_sysmon_update_flag(Agent.SYSMON_VERSION_NEW, Agent.SYSMON_VERSION_CURRENT),
+            'sysmon': get_sysmon_update_flag(retrieved_agent.SYSMON_VERSION_NEW, retrieved_agent.SYSMON_VERSION_CURRENT),
+            'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
+        }
+        if updates_data['sysmon']:
+            updates_data['sysmon_verion'] = retrieved_agent.SYSMON_VERSION_NEW
+        if updates_data['config']:
+            updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
+        data = {
+            'updates_needed': updates_data,
+            'uninstall': retrieved_agent.NEEDS_UNINSTALL,
+            'restart': retrieved_agent.NEEDS_RESTART,
+            'install': retrieved_agent.NEEDS_INSTALL
+        }
+    elif retrieved_agent.NEEDS_INSTALL:
+        updates_data = {
+            'sysmon': get_sysmon_update_flag(retrieved_agent.SYSMON_VERSION_NEW, retrieved_agent.SYSMON_VERSION_CURRENT),
             'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW,
-            'config': get_config_update_flag(Agent.CONFIG_NAME_NEW, Agent.CONFIG_NAME_CURRENT),
+            'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
             'config_name': retrieved_agent.CONFIG_NAME_NEW
         }
         data = {
@@ -45,25 +58,12 @@ def update_agent_status(requested_uuid, incoming_request):
             'install': retrieved_agent.NEEDS_INSTALL
         }
     else:
-        updates_data = {
-            'sysmon': False,
-            'config': False
-        }
-        data = {
-            'updates_needed': updates_data,
-            'uninstall': retrieved_agent.NEEDS_UNINSTALL,
-            'restart': retrieved_agent.NEEDS_RESTART,
-            'install': retrieved_agent.NEEDS_INSTALL
-        }
+        data = {}
 
-    if 'sysmon_version' in persist_data:
-        retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']
-    if 'config_name' in persist_data:
-        retrieved_agent.CONFIG_NAME_CURRENT = persist_data['config_name']
-    if 'exec_running' in persist_data:
-        retrieved_agent.EXEC_RUNNING = persist_data['exec_running']
-    if 'exec_last_running_at' in persist_data:
-        retrieved_agent.EXEC_LAST_RUNNING_AT = persist_data['exec_last_running_at']
+    retrieved_agent.SYSMON_VERSION_CURRENT = persist_data.get('sysmon_version', '')
+    retrieved_agent.CONFIG_NAME_CURRENT = persist_data.get('config_name', '')
+    retrieved_agent.EXEC_RUNNING = persist_data.get('exec_running', False)
+    retrieved_agent.EXEC_LAST_RUNNING_AT = persist_data.get('exec_last_running_at', '')
 
     retrieved_agent.save()
     return data

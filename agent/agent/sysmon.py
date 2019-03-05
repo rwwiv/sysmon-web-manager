@@ -2,6 +2,7 @@ import subprocess
 import win32serviceutil
 from enum import Enum
 from datetime import datetime
+from threading import Lock
 
 import yaml
 
@@ -33,7 +34,7 @@ def check_sysmon_running():
     try:
         status = win32serviceutil.QueryServiceStatus(f'sysmon_{env_config["agent"]["sysmon_version"]}')
     except WindowsError:
-        status_enum = ServiceState.stopped
+        return False
     else:
         switch = {
             # see https://docs.microsoft.com/en-us/windows/desktop/api/winsvc/ns-winsvc-_service_status for reference

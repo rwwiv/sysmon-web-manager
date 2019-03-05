@@ -8,20 +8,22 @@ matrix:
       dist: xenial
       before_install: cd server/backend
       install:
+        - pip install codecov
+        - pip install coverage
         - pip install -r requirements.txt
       script:
-        - python manage.py test
-      
+        - coverage run --source='.' manage.py test
+        - codecov
     - language: node_js
       node_js:
         - "lts/*"
       before_install:
         - cd server/frontend
+        - npm i -g codecov
         - npm i -g @vue/cli
       script:
-        - npm run lint
-        - npm run test:unit
-        - npm run build
+        - nyc --reporter=lcov --reporter=text-lcov npm run test:unit
+        - codecov
     - language: minimal
       dist: xenial
       services: docker

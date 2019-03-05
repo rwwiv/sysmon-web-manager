@@ -1,8 +1,8 @@
 agent:
-  checked_exec_running: true
+  checked_exec_running: false
   config_name: gifnoc
   display_name: SysMonager Agent
-  exec_last_running: '2019-02-24 16:54:16'
+  exec_last_running: null
   installed: false
   service_name: SysMonagerAgent
   sysmon_version: '8.04'
@@ -12,4 +12,5 @@ http:
     updates:
       config: /updates/config
       sysmon: /updates/sysmon
-  uuid: b9849d27-a6f2-42fb-a564-bd262024e537
+  checked_exec_running: false
+  uuid: f9c2b64d-9651-4eb6-a68a-e90d770df2bf

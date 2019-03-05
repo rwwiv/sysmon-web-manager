@@ -7,13 +7,18 @@ import ipaddress
 
 
 def get_sysmon_version():
-    return Sysmon.objects.get(IS_CURRENT = True)
+    # return Sysmon.objects.get(IS_CURRENT=True)
+    return "8.04"
+
 
 def get_config_name():
-    return Configuration.objects.get(IS_DEFAULT = True)
+    # return Configuration.objects.get(IS_DEFAULT=True)
+    return "gifnoc"
+
 
 def get_sysmon_update_flag(server_version, client_version):
     return not client_version == server_version
+
 
 def get_config_update_flag(server_version, client_version):
     return not client_version == server_version
@@ -21,6 +26,11 @@ def get_config_update_flag(server_version, client_version):
 
 def update_agent_status(requested_uuid, incoming_request):
     retrieved_agent = Agent.objects.get(UUID=requested_uuid)
+    persist_data = json.loads(incoming_request.body)
+    
+    if persist_data['exec_running']:
+        retrieved_agent.NEEDS_INSTALL = False
+    
     if retrieved_agent.NEEDS_INSTALL:
         updates_data = {
             'sysmon': get_sysmon_update_flag(Agent.SYSMON_VERSION_NEW, Agent.SYSMON_VERSION_CURRENT),
@@ -45,7 +55,6 @@ def update_agent_status(requested_uuid, incoming_request):
             'restart': retrieved_agent.NEEDS_RESTART,
             'install': retrieved_agent.NEEDS_INSTALL
         }
-    persist_data = json.loads(incoming_request.body)
 
     if 'sysmon_version' in persist_data:
         retrieved_agent.SYSMON_VERSION_CURRENT = persist_data['sysmon_version']
@@ -60,10 +69,10 @@ def update_agent_status(requested_uuid, incoming_request):
     return data
 
 
-def create_agent(requested_uuid, remoteAddr):
+def create_agent(requested_uuid, remote_addr):
     if Agent.objects.filter(UUID=requested_uuid).count() == 0:
         new_agent = Agent(UUID=requested_uuid,
-                          IP_ADDRESS=remoteAddr,
+                          IP_ADDRESS=remote_addr,
                           ONLINE=True,
                           SYSMON_VERSION_CURRENT="",
                           SYSMON_VERSION_NEW=get_sysmon_version(),
@@ -79,7 +88,9 @@ def create_agent(requested_uuid, remoteAddr):
         print("WARN: Agent already existed")
 
     data = {
-        'sysmon_version': get_sysmon_version().NAME,
-        'config_name': get_config_name().NAME
+        'sysmon_version': get_sysmon_version(),
+        'config_name': get_config_name()
+        # 'sysmon_version': get_sysmon_version().NAME,
+        # 'config_name': get_config_name().NAME
     }
     return data

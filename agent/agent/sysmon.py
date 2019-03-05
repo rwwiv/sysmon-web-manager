@@ -2,6 +2,7 @@ import subprocess
 import win32serviceutil
 from enum import Enum
 from datetime import datetime
+from threading import Lock
 
 import yaml
 

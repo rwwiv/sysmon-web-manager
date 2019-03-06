@@ -7,7 +7,7 @@ env_config_filepath = f'{base_path}\\..\\resources\\config.yml'
 env_config = None
 with open(env_config_filepath, 'r') as env_config_file:
     try:
-        env_config = yaml.load(env_config_file)
+        env_config = yaml.load(env_config_file, Loader=yaml.FullLoader)
     except yaml.YAMLError as exc:
         exit(-1)
 try:

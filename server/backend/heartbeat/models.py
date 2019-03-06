@@ -9,7 +9,7 @@ class Agent(models.Model):
     SYSMON_VERSION_NEW = models.CharField(max_length=200)
     CONFIG_NAME_CURRENT = models.CharField(max_length=200)
     CONFIG_NAME_NEW = models.CharField(max_length=200)
-    EXEC_LAST_RUNNING_AT = models.CharField(max_length=200)
+    EXEC_LAST_RUNNING_AT = models.CharField(max_length=200, blank=True, null=True)
     EXEC_RUNNING = models.BooleanField()
     NEEDS_UNINSTALL = models.BooleanField()
     NEEDS_RESTART = models.BooleanField()
@@ -27,6 +27,7 @@ class User(models.Model):
 class Configuration(models.Model):
     NAME = models.CharField(max_length=200)
     IS_DEFAULT = models.BooleanField()
+
 
 class Sysmon(models.Model):
     NAME = models.CharField(max_length=200)

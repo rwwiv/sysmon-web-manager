@@ -215,5 +215,5 @@ modules.xml
 
 # End of https://www.gitignore.io/api/jetbrains+all
 
-sysmon*.xml
+agent_config_*.xml
 *.exe

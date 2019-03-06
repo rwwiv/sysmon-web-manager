@@ -258,7 +258,7 @@
       },
       saveConfig(agentID, config) {
         if (config) {
-          axios.patch('http://localhost:8000/agents/' + agentID + '/config/' + config)
+          axios.patch(`http://localhost:8000/agents/${agentID}/config/${config}`)
           .then((response) => {
             console.log(response);
           })
@@ -272,7 +272,7 @@
         }
       },
       runSysmon(agentID) {
-        axios.post('http://localhost:8000/agents/updates/' + agentID)
+        axios.post(`http://localhost:8000/agents/updates/${agentID}`)
         .then((response) => {
           console.log(response);
           this.getHostList();
@@ -282,7 +282,7 @@
         });
       },
       installSysmon(agentID) {
-        axios.patch('http://localhost:8000/agents/updates/' + agentID)
+        axios.patch(`http://localhost:8000/agents/updates/${agentID}`)
         .then((response) => {
           console.log(response);
           this.getHostList();
@@ -292,7 +292,7 @@
         });
       },
       uninstallSysmon(agentID) {
-        axios.delete('http://localhost:8000/agents/' + agentID)
+        axios.delete(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
           console.log(response);
           this.getHostList();

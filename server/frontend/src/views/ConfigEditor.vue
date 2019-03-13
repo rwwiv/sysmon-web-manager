@@ -9,8 +9,16 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
   import ConfigEd from '../components/ConfigEditorInput.vue';
 
+  $(document).ready(() => {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_minimal-blue',
+      radioClass: 'iradio_minimal-blue',
+    });
+  });
   export default {
       components: { ConfigEd },
     };

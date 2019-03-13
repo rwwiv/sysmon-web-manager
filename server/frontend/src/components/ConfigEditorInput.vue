@@ -1,7 +1,8 @@
 <template>
   <div style="display: block;" id="configEd">
+    <xml id="config" src="../sysmonconfig-export.xml"></xml>
   <label for="configEd" id="configEdLabel">Edit configuration and then click save.</label>
-    <div class="textWrapper"><textarea cols="2" rows="10" id="editingConfig"></textarea></div>
+    <div class="textWrapper"><textarea cols="2" rows="20" id="editingConfig"></textarea></div>
   <div class="col-auto">
     <button class="btn btn-secondary pull-right">Save Changes</button>
   </div>
@@ -17,6 +18,8 @@
   textarea
   {
     width:100%;
+    overflow-y: auto;
+    overflow-x: auto;
   }
   .textWrapper
   {

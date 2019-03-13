@@ -1,0 +1,27 @@
+<template>
+  <div style="display: block;" id="configEd">
+  <label for="configEd" id="configEdLabel">Edit configuration and then click save.</label>
+    <div class="textWrapper"><textarea cols="2" rows="10" id="editingConfig"></textarea></div>
+  <div class="col-auto">
+    <button class="btn btn-secondary pull-right">Save Changes</button>
+  </div>
+  </div>
+</template>
+<script>
+    export default {
+        name: 'ConfigEditorInput.vue',
+    };
+</script>
+
+<style scoped>
+  textarea
+  {
+    width:100%;
+  }
+  .textWrapper
+  {
+    border:1px solid #999999;
+    margin:5px 0;
+    padding:3px;
+  }
+</style>

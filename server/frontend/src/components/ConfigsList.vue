@@ -29,9 +29,9 @@
               </a>
             </td>
             <td class="center-text">
-              <a @click="editConfig(config.name)">
-                <i class="fa fa-wrench"></i>
-              </a>
+              <router-link to="ConfigEditor" active-class="active">
+                <a><i class="fa fa-wrench"></i> </a>
+              </router-link>
             </td>
           </tr>
         </tbody>
@@ -40,33 +40,17 @@
   </div>
 </template>
 <script>
-  import axios from 'axios';
-  import configs from '../../configsList.json';
+import configs from '../../configsList.json';
 
 export default {
   name: 'ConfigsList',
   data() {
     return {
       configs,
+      editConfig: '',
+      viewConfig: '',
     };
   },
-  methods: {
-    // goal with viewConfig is just to display it in the console//
-    viewConfig(name) {
-      axios.get(`/updates/config/${name}`).then((response) => {
-        console.log(response.data);
-      });
-    },
-    // goal with edit is to display xml in an editable form //
-    editConfig(name) {
-      axios.get(`/configs/${name}`).then((response) => {
-        var xmlText = response.data;
-        console.log(xmlText);
-        axios.post(`/configs/${name}`);
-      });
-    },
-  },
-
 };
 </script>
 

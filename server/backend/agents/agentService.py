@@ -2,6 +2,7 @@ from heartbeat.models import Agent
 import json
 from logging_service import agents_logging_service as log
 
+
 def get_all_agents():
     all_agents = Agent.objects.all()
     data = []
@@ -20,7 +21,7 @@ def get_all_agents():
             'new_agent': not x.ATTEMPTED_INSTALL
         }
         data.append(temp)
-    log.debug(f"{len(data)}agents retrieved")
+    log.debug(f"{len(data)} agents retrieved")
     return data
 
 
@@ -45,6 +46,7 @@ def update_needs_restart(requested_uuid):
     except:
         log.err(f"Failed to update needs restart flag for {requested_uuid}")
         return -1
+
 
 def update_needs_uninstall(requested_uuid):
     try:

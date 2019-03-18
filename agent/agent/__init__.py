@@ -3,7 +3,6 @@ import win32serviceutil
 import win32service
 import win32event
 import servicemanager
-import sys
 
 import bg_process
 
@@ -38,7 +37,7 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
 if __name__ == "__main__":
     while True:
         bg_process.run()
-        time.sleep(60)
+        time.sleep(30)
 
     # if len(sys.argv) == 0:
     #     servicemanager.Initialize()

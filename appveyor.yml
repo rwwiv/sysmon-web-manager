@@ -1,0 +1,28 @@
+version: 0.1.{build}-{branch}
+image:
+  - Visual Studio 2017
+environment:
+  matrix:
+    - PYTHON: "C:\\Python37"
+      PYTHON_VERSION: "3.7.*"
+      PYTHON_ARCH: "64"
+install:
+  - set "PATH=%PYTHON%;%PYTHON%/Scripts;%PYTHON%/Library/bin;%PATH%"
+  - python --version
+  - cd agent
+  - python -m pip install --upgrade pip
+  - python -m pip install -r requirements.txt
+  - python -m pip install codecov
+  - python -m pip install coverage
+test_script:
+  - python tests\test.py
+  - coverage run tests\test.py
+  - codecov
+#build_script:
+build: off
+deploy: off
+notifications:
+  - provider: Email
+    to:
+      - william.wernert@gmail.com
+    on_build_status_changed: true

@@ -1,9 +1,8 @@
 import subprocess
 import win32serviceutil
+import yaml
 from enum import Enum
 from datetime import datetime
-
-import yaml
 
 from agent_config import env_config, env_config_filepath
 
@@ -32,8 +31,8 @@ def uninstall_sysmon():
 def check_sysmon_running():
     try:
         status = win32serviceutil.QueryServiceStatus(f'sysmon_{env_config["agent"]["sysmon_version"]}')
-    except WindowsError:
-        status_enum = ServiceState.stopped
+    except:
+        return False
     else:
         switch = {
             # see https://docs.microsoft.com/en-us/windows/desktop/api/winsvc/ns-winsvc-_service_status for reference

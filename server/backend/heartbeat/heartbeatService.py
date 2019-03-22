@@ -1,6 +1,7 @@
 from heartbeat.models import Agent
 from heartbeat.models import Sysmon
 from heartbeat.models import Configuration
+from logging_service import heartbeat_logging_service as log
 from os import listdir
 import json
 import ipaddress
@@ -47,9 +48,9 @@ def update_agent_status(requested_uuid, incoming_request):
     elif retrieved_agent.NEEDS_INSTALL:
         updates_data = {
             'sysmon': get_sysmon_update_flag(retrieved_agent.SYSMON_VERSION_NEW, retrieved_agent.SYSMON_VERSION_CURRENT),
-            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW,
+            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW.NAME,
             'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
-            'config_name': retrieved_agent.CONFIG_NAME_NEW
+            'config_name': retrieved_agent.CONFIG_NAME_NEW.NAME
         }
         data = {
             'updates_needed': updates_data,
@@ -84,8 +85,9 @@ def create_agent(requested_uuid, remote_addr):
                           NEEDS_RESTART=False,
                           ATTEMPTED_INSTALL=False)
         new_agent.save()
+        log.debug(f'Agent with UUID{requested_uuid} created succesfully')
     else:
-        print("WARN: Agent already existed")
+        log.err('Agent already exists')
 
     data = {
         'sysmon_version': get_sysmon_version(),

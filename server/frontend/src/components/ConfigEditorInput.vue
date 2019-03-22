@@ -3,7 +3,7 @@
     <button class= "btn btn-secondary pull-left">Select a file to add a new configuration. <input type= "file" @change="loadConfig"></button>
       <textarea id="inputTextToSave" v-model="text" @loadstart="loadConfig"></textarea>
     <button class="btn btn-secondary pull-left">Validate</button>
-    <button class="btn btn-secondary pull-right">Save Changes</button>
+    <button class="btn btn-secondary pull-right" @click="saveConfig">Save Changes </button>
   </div>
 </template>
 <script>
@@ -19,6 +19,11 @@
               document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
             };
             reader.readAsText(file);
+          },
+          saveConfig() {
+            const textToSave = document.getElementById('inputTextToSave').value;
+            document.getElementById('inputTextToSave').value = 'File saved.';
+            // not sure how to send the text back to the server
           },
           viewConfig() {
             axios.get('http://localhost:8080/file.txt').then(response => response.data);

@@ -8,29 +8,23 @@
     <!-- /.box-header -->
     <div class="box-body">
       <div class="col-auto">
-        <button class="btn btn-secondary pull-right">Add New Configuration</button>
+        <router-link to="ConfigEditor" active-class="active" button class="btn btn-secondary pull-right">Add New Configuration</router-link>
       </div>
       <table class="table no-margin">
         <thead>
           <tr>
             <th>Name</th>
             <th>Is Default?</th>
-            <th class = "center-text icon-column">View</th>
-            <th class = "center-text icon-column">Edit</th>
+            <th class = "center-text icon-column">View/Edit</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="config in configs" :key="config.name">
-            <td>{{ config.name }}</td>
-            <td>{{ config.isDefault }}</td>
-            <td class="center-text">
-              <a @click="viewConfig(config.name)">
-                <i class="fa fa-search-plus"></i>
-              </a>
-            </td>
+            <td>{{ config.NAME }}Name</td>
+            <td>{{ config.IS_DEFAULT }}Default Status</td>
             <td class="center-text">
               <router-link to="ConfigEditor" active-class="active">
-                <a><i class="fa fa-wrench"></i> </a>
+                <a><i class="fa fa-search-plus"></i> </a>
               </router-link>
             </td>
           </tr>

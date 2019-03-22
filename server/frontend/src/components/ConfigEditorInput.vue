@@ -1,17 +1,29 @@
 <template>
-  <div style="display: block;" id="configEd">
-    <xml id="config" src="../sysmonconfig-export.xml"></xml>
-  <label for="configEd" id="configEdLabel">Edit configuration. Validate and save using the buttons below.</label>
-    <div class="textWrapper"><textarea cols="2" rows="20" id="editingConfig"></textarea></div>
-  <div class="col-auto">
+  <div>
+    <button class= "btn btn-secondary pull-left">Select a file to add a new configuration. <input type= "file" @change="loadConfig"></button>
+      <textarea id="inputTextToSave" v-model="text" @loadstart="loadConfig"></textarea>
     <button class="btn btn-secondary pull-left">Validate</button>
     <button class="btn btn-secondary pull-right">Save Changes</button>
   </div>
-  </div>
 </template>
 <script>
-    export default {
-        name: 'ConfigEditorInput.vue',
+  import axios from 'axios';
+
+  export default {
+        // name: 'ConfigEditorInput.vue',
+        methods: {
+          loadConfig(ev) {
+            const file = ev.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function (fileLoadedEvent) {
+              document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
+            };
+            reader.readAsText(file);
+          },
+          viewConfig() {
+            axios.get('http://localhost:8080/file.txt').then(response => response.data);
+          },
+        },
     };
 </script>
 

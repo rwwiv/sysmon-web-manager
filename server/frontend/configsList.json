@@ -1,22 +1,22 @@
 [
     {    
       "name": "SwiftOnSecurity",
-      "isDefault": "Default",
+      "isDefault": "True",
       "filepath": "../../"
     },
     {
       "name": "Config1",
-      "isDefault": "",
+      "isDefault": "False",
       "filepath": "../../"
     },
     {
       "name": "Config2",
-      "isDefault": "",
+      "isDefault": "False",
       "filepath": "../../"
     },
     {
       "name": "Config3",
-      "isDefault": "",
+      "isDefault": "False",
       "filepath": "../../"
     }
   ]

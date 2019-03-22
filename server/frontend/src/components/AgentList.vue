@@ -61,7 +61,7 @@
         </thead>
         <tbody>
           <tr v-for="agent in agents" :key="agent.id">
-            <td><input class="agent-checkbox" type="checkbox" :id="agent.uuid" :value="agent.uuid" v-model="checkedAgents"/></td>
+            <td><input class="agent-checkbox" :class="currentCheckAgentIsNew(agent.new_agent)" type="checkbox" :id="agent.uuid" :value="agent.uuid" v-model="checkedAgents"/></td>
             <td>{{ agent.ip_address ? agent.ip_address : 'N/A' }}</td>
             <td>
               <span class="label" :class="currentStatusLabel(agent.online, agent.new_agent)">
@@ -95,19 +95,6 @@
                   </div>
                   <a slot="reference" @click="installSysmon(agent.uuid)">
                     <i class="fa fa-download"></i>
-                  </a>
-                </popper>
-                <popper
-                  trigger="hover"
-                  :options="{
-                    placement:'top',
-                    modifiers: {offset: {offset: '0,5px'}}
-                  }">
-                  <div class="popper">
-                    Edit Sysmon Config
-                  </div>
-                  <a slot="reference" data-toggle="modal" data-target="#agent-modal" @click="displayAgent(agent)">
-                    <i class="fa fa-wrench"></i>
                   </a>
                 </popper>
               </div>
@@ -229,6 +216,7 @@
         checkedAgents: [],
         selectAll: false,
         manageAllSelected: '',
+        timer: '',
       };
     },
     components: {
@@ -237,6 +225,12 @@
     methods: {
       displayAgent(agent) {
         this.selectedAgent = agent;
+      },
+      currentCheckAgentIsNew(agentStatus) {
+        if (agentStatus) {
+          return 'agent-is-new';
+        }
+        return '';
       },
       currentStatusLabel(agentStatus, needsInstall = false) {
         if (needsInstall) {
@@ -329,11 +323,19 @@
           }
         }
       },
+      selectNewAgents() {
+        this.checkedAgents = [];
+        for (let i = 0; i < this.agents.length; i++) {
+          if (this.agents[i].new_agent) {
+            this.checkedAgents.push(this.agents[i].uuid);
+          }
+        }
+      },
       manageAllAgents() {
-        const currentCheckedAgents = JSON.stringify(this.checkedAgents);
         switch (this.manageAllSelected) {
           case 'install':
-            axios.post('http://localhost:8000/multi/install', currentCheckedAgents)
+            this.selectNewAgents();
+            axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgents))
             .then((response) => {
               console.log(response.data);
               this.getHostList();
@@ -360,13 +362,17 @@
           break;
         }
       },
+      stopHostListAutoUpdate() {
+        clearInterval(this.timer);
+      },
     },
     mounted() {
       this.getHostList();
+      this.timer = setInterval(this.getHostList, 15000);
       this.getAvailableSysmonConfigs();
       const that = this;
       // Handle iCheckBox in the host list table head.
-      jQuery('#checkbox-checkAll').on('ifChanged', (e) => {
+      jQuery('#checkAll').on('ifChanged', (e) => {
         if (e.target.checked) {
           that.selectAllAgents();
           that.selectAll = true;
@@ -375,6 +381,9 @@
           that.selectAll = false;
         }
       });
+    },
+    beforeDestroy() {
+      clearInterval(this.timer);
     },
   };
 

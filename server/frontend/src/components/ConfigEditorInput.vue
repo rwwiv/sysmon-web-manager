@@ -31,10 +31,12 @@
   textarea
   {
     width:100%;
+    height: 30em;
+    min-height: fit-content;
     overflow-y: auto;
     overflow-x: auto;
   }
-  .textWrapper
+  textWrapper
   {
     border:1px solid #999999;
     margin:5px 0;

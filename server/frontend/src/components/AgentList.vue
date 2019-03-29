@@ -266,7 +266,7 @@
         }
       },
       runSysmon(agentID) {
-        axios.post(`http://localhost:8000/agents/updates/${agentID}`)
+        axios.post(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
           console.log(response);
           this.getHostList();
@@ -276,7 +276,7 @@
         });
       },
       installSysmon(agentID) {
-        axios.patch(`http://localhost:8000/agents/updates/${agentID}`)
+        axios.patch(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
           console.log(response);
           this.getHostList();

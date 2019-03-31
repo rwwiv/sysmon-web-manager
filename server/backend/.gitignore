@@ -129,9 +129,6 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/django
-<<<<<<< HEAD
-=======
-
 
 # Created by https://www.gitignore.io/api/jetbrains+all
 # Edit at https://www.gitignore.io/?templates=jetbrains+all
@@ -221,4 +218,4 @@ modules.xml
  .idea/sonarlint
 
 # End of https://www.gitignore.io/api/jetbrains+all
->>>>>>> master
+logs/

@@ -21,7 +21,7 @@
         <tbody>
           <tr v-for="config in configs" :key="config.name">
             <td>{{ config.NAME }}Name</td>
-            <td>{{ config.IS_DEFAULT }}Default Status</td>
+            <td>{{ config.IS_DEFAULT ? 'Default': '' }}Default Status</td>
             <td class="center-text">
               <router-link to="ConfigEditor" active-class="active">
                 <a><i class="fa fa-search-plus"></i> </a>

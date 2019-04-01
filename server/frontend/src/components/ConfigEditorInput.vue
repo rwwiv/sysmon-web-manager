@@ -2,7 +2,7 @@
   <div>
     <button class= "btn btn-secondary pull-left">Select a file to add a new configuration. <input type= "file" @change="loadConfig"></button>
       <textarea id="inputTextToSave" v-model="text" @loadstart="loadConfig"></textarea>
-    <button class="btn btn-secondary pull-left">Validate</button>
+    <button class="btn btn-secondary pull-left" @click="validateConfig">Validate</button>
     <label for="configName"> Configuration Name</label><input type="text" @change="nameConfig(configName.data)" id="configName" width="auto" v-model="text">
     <button class="btn btn-secondary pull-right" @click="saveConfig">Save Changes </button>
   </div>
@@ -11,44 +11,62 @@
   import axios from 'axios';
 
   let configName;
+  let didValidate = 0;
+  let XMLconfig;
+  let inputTextToSave;
   export default {
-        // name: 'ConfigEditorInput.vue',
+    // name: 'ConfigEditorInput.vue',
 
-        methods: {
-          nameConfig(name) {
-            configName = name;
-          },
-          loadConfig(ev) {
-            const file = ev.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function (fileLoadedEvent) {
-              document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
-              document.getElementById('configName').value = file.name;
-            };
-            reader.readAsText(file);
-          },
-          saveConfig() {
-            let confirmMsg;
-            let responseStatus;
-            axios.get(`http://localhost:8000/configs/${configName}`).then((response) => {
-              responseStatus = response.status;
-            })
-            if (responseStatus !== '400') {
-              confirmMsg = 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.';
-            } else {
-              confirmMsg = 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration, change the configuration name.'
-            }
-            if (confirm(confirmMsg)) {
-              const textToSave = document.getElementById('inputTextToSave').value;
-              document.getElementById('inputTextToSave').value = 'File saved.';
-            }
-            // not sure how to send the text data back to the server
-          },
-          viewConfig() {
-            axios.get('http://localhost:8080/file.txt').then(response => response.data);
-          },
-        },
-    };
+    methods: {
+      nameConfig(name) {
+        configName = name;
+      },
+      loadConfig(ev) {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function (fileLoadedEvent) {
+          document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
+          document.getElementById('configName').value = file.name;
+        };
+        reader.readAsText(file);
+      },
+      saveConfig() {
+        let confirmMsg;
+        let responseStatus;
+        if (didValidate === 0) {
+          confirm('Please validate before saving.');// this works
+        } else {
+          axios.get(`http://localhost:8000/configs/${configName}`).then((response) => {
+            responseStatus = response.status;
+          });
+          if (responseStatus !== '400') {
+            confirmMsg = 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.';
+          } else {
+            confirmMsg = 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.';
+          } // this works
+          if (confirm(confirmMsg)) {
+             inputTextToSave = document.getElementById('inputTextToSave').value;
+            document.getElementById('inputTextToSave').value = 'File saved.';
+          }
+          // not sure how to send the text data back to the server
+        }
+      },
+      validateConfig() {
+        const helper = new DOMParser();
+        try {
+          XMLconfig = helper.parseFromString(inputTextToSave, 'text/xml'); // this never throws an exception
+          // alert(inputTextToSave.toString());
+          didValidate = 1;
+          alert('Validation Complete');
+        } catch (e) {
+          alert('XML Parsing Error');
+          didValidate = 0;
+          // alert(e.getError());
+          // alert(result.value.toString());
+        }
+      },
+    },
+  };
 </script>
 
 <style scoped>

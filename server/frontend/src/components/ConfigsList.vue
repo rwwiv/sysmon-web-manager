@@ -46,15 +46,20 @@ export default {
       viewConfig: '',
     };
   },
+  methods: {
+    getAllConfigs() {
+      axios.get('http://localhost:8000/configs')
+        .then((response) => {
+          this.configs = response.data;
+          console.log(response.data);
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+    },
+  },
   mounted() {
-    axios.get('http://127.0.0.1:8000/configs', { crossdomain: true })
-      .then((response) => {
-        this.configs = response.data;
-        console.log(response.data);
-      })
-      .catch((e) => {
-        this.errors.push(e);
-      });
+  this.getAllConfigs();
   },
 };
 </script>

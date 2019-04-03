@@ -8,30 +8,24 @@
     <!-- /.box-header -->
     <div class="box-body">
       <div class="col-auto">
-        <button class="btn btn-secondary pull-right">Add New Configuration</button>
+        <router-link to="ConfigEditor" active-class="active" button class="btn btn-secondary pull-right">Add New Configuration</router-link>
       </div>
       <table class="table no-margin">
         <thead>
           <tr>
             <th>Name</th>
             <th>Is Default?</th>
-            <th class = "center-text icon-column">View</th>
-            <th class = "center-text icon-column">Edit</th>
+            <th class = "center-text icon-column">View/Edit</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="config in configs" :key="config.name">
-            <td>{{ config.name }}</td>
-            <td>{{ config.isDefault }}</td>
+          <tr v-for="config in configs" :key="config.NAME">
+            <td>{{ config.NAME }}Name</td>
+            <td>{{ config.IS_DEFAULT ? 'Default': '' }}Default Status</td>
             <td class="center-text">
-              <a @click="viewConfig(config.name)">
-                <i class="fa fa-search-plus"></i>
-              </a>
-            </td>
-            <td class="center-text">
-              <a @click="editConfig(config.name)">
-                <i class="fa fa-wrench"></i>
-              </a>
+              <router-link to="ConfigEditor" active-class="active">
+                <a><i class="fa fa-search-plus"></i> </a>
+              </router-link>
             </td>
           </tr>
         </tbody>
@@ -40,16 +34,32 @@
   </div>
 </template>
 <script>
-import configs from '../../configsList.json';
+  import axios from 'axios';
 
 export default {
   name: 'ConfigsList',
   data() {
     return {
-      configs,
+      configs: [],
+      errors: [],
       editConfig: '',
       viewConfig: '',
     };
+  },
+  methods: {
+    getAllConfigs() {
+      axios.get('http://localhost:8000/configs')
+        .then((response) => {
+          this.configs = response.data;
+          console.log(response.data);
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+    },
+  },
+  mounted() {
+  this.getAllConfigs();
   },
 };
 </script>

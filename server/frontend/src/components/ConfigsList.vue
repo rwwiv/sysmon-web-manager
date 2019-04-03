@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="config in configs" :key="config.name">
+          <tr v-for="config in configs" :key="config.NAME">
             <td>{{ config.NAME }}Name</td>
             <td>{{ config.IS_DEFAULT ? 'Default': '' }}Default Status</td>
             <td class="center-text">

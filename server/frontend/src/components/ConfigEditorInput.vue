@@ -53,8 +53,8 @@
           } // this works
           if (confirm(confirmMsg)) {
              this.inputTextToSave = document.getElementById('inputTextToSave').value;
-             axios.post(`http://localhost:8000/configs/${this.configName}`, this.inputTextToSave.value).then((response) => {
-              responseStatus = response.status; // this works
+             axios.post(`http://localhost:8000/configs/${this.configName}`).then((response) => {
+              responseStatus = response.status; // this works but the inputText may not
               });
             document.getElementById('inputTextToSave').value = 'File saved.';
             document.getElementById('configNameBox').value = '';

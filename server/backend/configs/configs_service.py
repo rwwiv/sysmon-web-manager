@@ -6,7 +6,8 @@ def get_all_configs():
     all_configs = Configuration.objects.all()
     data = []
     for x in all_configs:
-        temp = {'name': x.NAME }
+        temp = {'name': x.NAME, 
+                'is_default': x.IS_DEFAULT}
         data.append(temp)
     log.debug(f"{len(data)} configurations retrieved")
     return data
@@ -18,6 +19,8 @@ def create_configs(config_name):
             NAME = config_name,
             IS_DEFAULT = False
         )
+        with open(f'../configuration_files/{config_name}.xml','w+'):
+            pass
         new_config.save()
         log.debug(f'Config with name {config_name} created succesfully')
         return 0
@@ -29,8 +32,25 @@ def create_configs(config_name):
 def retrieve_config(config_name):
     config = Configuration.objects.filter(NAME=config_name)
     if(len(config) == 1):
-        log.debug(f'config with name {config_name} updated succesfully')
-        return 0 #retrieve the config and return it somehow
+        config_retrieved = ''
+        with open(f"../configuration_files/{config_name}.xml") as config:
+            for line in config.readlines():
+                config_retrieved += line
+        
+        return config_retrieved
     else:
         log.err('Config does not exist')
-        return -1 #return empty
+        raise Exception
+
+def update_config(config_name, config_body):
+    config = Configuration.objects.filter(NAME=config_name)
+
+    if(len(config) == 1):
+        with open(f"../configuration_files/{config_name}.xml","a") as config:
+            config.truncate(0)
+            for line in config_body.decode("utf-8").split('\n'):
+                config.write(f'{line}\n')
+        pass
+    else:
+        log.err('Config does not exist')
+        raise Exception

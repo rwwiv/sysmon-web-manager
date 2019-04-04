@@ -16,7 +16,7 @@ def index(request):
 def configs(request, name):
     if request.method == 'POST':
         log.debug(f"POST request recieved at configs endpoint for {name} config") 
-        if create_configs(name) >= 0:
+        if create_configs(name,request.body) >= 0:
             return HttpResponse('Succesfully created config')
         else:
             return HttpResponseBadRequest()

@@ -5,6 +5,9 @@
     <button class="btn btn-secondary pull-left" @click="validateConfig">Validate</button>
     <label for="configNameBox"> Configuration Name</label><input type="text" @change="nameConfig(configNameBox.value)" id="configNameBox" width="auto" v-model="text">
     <button class="btn btn-secondary pull-right" @click="saveConfig">Save Changes </button>
+    <parsererror id = "errorBox" v-model="text">
+    <sourcetext></sourcetext>
+</parsererror>
   </div>
 </template>
 <script>
@@ -17,8 +20,9 @@
         configName: '',
         didValidate: '',
         XMLconfig: XMLDocument,
+        file: '',
         inputTextToSave: '',
-      }
+      };
     },
     methods: {
       nameConfig(name) {
@@ -30,6 +34,7 @@
         reader.onload = function (fileLoadedEvent) {
           document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
           document.getElementById('configNameBox').value = file.name;
+          this.file = file;
         };
         reader.readAsText(file);
       },
@@ -51,9 +56,15 @@
           } else {
             confirmMsg = 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.';
           } // this works
-          if (confirm(confirmMsg)) {
+          if (confirm(confirmMsg)) { // need to first convert to xml from string and then check if valid
              this.inputTextToSave = document.getElementById('inputTextToSave').value;
-             axios.post(`http://localhost:8000/configs/${this.configName}`).then((response) => {
+             const formData = new FormData();
+             formData.append('file', this.file);
+             axios.post(`http://localhost:8000/configs/${this.configName}`, formData, {
+             headers: {
+                 'Content-Type': 'multipart/form-data',
+               },
+             }).then((response) => {
               responseStatus = response.status; // this works but the inputText may not
               });
             document.getElementById('inputTextToSave').value = 'File saved.';
@@ -62,19 +73,18 @@
           // not sure how to send the text data back to the server
         }
       },
-      validateConfig() {
-        const helper = new DOMParser();
-        try {
-          this.XMLconfig = helper.parseFromString(this.inputTextToSave, 'text/xml'); // this never throws an exception
-          // alert(inputTextToSave.toString());
-          this.didValidate = 1;
-          alert('Validation Complete');
-        } catch (e) {
-          alert('XML Parsing Error');
-          this.didValidate = 0;
-          // alert(e.getError());
-          // alert(result.value.toString());
-        }
+      validateConfig() { // check encoding?
+        var helper = new DOMParser();
+        document.getElementById('errorBox').value = helper.parseFromString(this.inputTextToSave, 'application/xml');
+        this.XMLconfig = helper.parseFromString(this.inputTextToSave, 'application/xml');
+        // if(this.XMLconfig)
+        this.didValidate = 1;
+        alert('Validation Complete');
+        // alert('XML Parsing Error');
+       // this.didValidate = 0;
+       // if ((this.XMLconfig))
+      //  {
+      //  }
       },
     },
   };

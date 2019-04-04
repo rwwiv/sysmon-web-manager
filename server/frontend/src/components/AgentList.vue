@@ -199,11 +199,6 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
-  /** *
-  * To Do: the available configs needs to come from the /configs API call
-  * which is non-functional as of 2-27-19.
-  ** */
-  import availableSysmonConfigs from '../../agentAvailableSysmonConfigSample.json';
 
   export default {
     name: 'AgentList',
@@ -212,7 +207,6 @@
         agents: [],
         errors: [],
         sysmonConfigs: [],
-        availableSysmonConfigs,
         selectedAgent: '',
         selectedConfig: '',
         checkedAgents: [],

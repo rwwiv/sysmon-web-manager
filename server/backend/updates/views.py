@@ -1,5 +1,5 @@
-from .updateService import get_config
-from .updateService import get_sysmon
+from .update_service import get_config
+from .update_service import get_sysmon
 
 
 def config(request, name):

@@ -4,6 +4,7 @@ from .agentService import get_all_agents
 from .agentService import update_needs_install
 from .agentService import update_needs_restart
 from .agentService import update_needs_uninstall
+from .agentService import update_config
 from  logging_service import agents_logging_service as log
 
 
@@ -49,6 +50,16 @@ def updates(request, uuid):
     else:
         log.warn('Request with no mapping recieved raising 404')
         raise Http404()
+
+def set_config(request, uuid, name):
+    if request.method == 'PATCH':
+        log.debug(f'Config update recieved for agent {uuid} with config {name}')
+        success = update_config(uuid, name)
+
+        if success == 0:
+            return HttpResponse("Succesful update")
+        else:
+            return HttpResponseBadRequest("Update failed")
 
 
 

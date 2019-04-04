@@ -1,9 +1,12 @@
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseBadRequest
 
 
 def get_config(requested_name):
-    imported_file = open(f'../configurations/agent_config_{requested_name}.xml', 'rb')
-    return FileResponse(imported_file)
+    try:
+        imported_file = open(f'../configuration_files/agent_config_{requested_name}.xml', 'rb')
+        return FileResponse(imported_file)
+    except:
+        return HttpResponseBadRequest("config did not exist")
 
 
 def get_sysmon(requested_version):

@@ -199,11 +199,6 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
-  /** *
-  * To Do: the available configs needs to come from the /configs API call
-  * which is non-functional as of 2-27-19.
-  ** */
-  import availableSysmonConfigs from '../../agentAvailableSysmonConfigSample.json';
 
   export default {
     name: 'AgentList',
@@ -212,7 +207,6 @@
         agents: [],
         errors: [],
         sysmonConfigs: [],
-        availableSysmonConfigs,
         selectedAgent: '',
         selectedConfig: '',
         checkedAgents: [],
@@ -350,10 +344,17 @@
             .catch((e) => {
               console.log(e.message);
             });
-
           break;
           case 'restart':
-
+            axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgents))
+            .then((response) => {
+              //Debug
+              //console.log(response.data);
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
           break;
           case 'update':
 
@@ -362,7 +363,16 @@
 
           break;
           case 'uninstall':
-
+          console.log(this.checkedAgents);
+            axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgents))
+            .then((response) => {
+              //Debug
+              //console.log(response.data);
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
           break;
           default:
             // Nothing selected

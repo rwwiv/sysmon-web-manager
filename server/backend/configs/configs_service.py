@@ -14,7 +14,7 @@ def get_all_configs():
     return data
 
 
-def create_configs(config_name):
+def create_configs(config_name,config_body):
     if Configuration.objects.filter(NAME=config_name).count() == 0:
         new_config = Configuration(
             NAME = config_name,
@@ -24,7 +24,8 @@ def create_configs(config_name):
             os.makedirs('../configuration_files')
         
         with open(f'../configuration_files/agent_config_{config_name}.xml','w+'):
-            pass
+            for line in config_body.decode("utf-8").split('\n'):
+                config.write(f'{line}\n')
         new_config.save()
         log.debug(f'Config with name {config_name} created succesfully')
         return 0

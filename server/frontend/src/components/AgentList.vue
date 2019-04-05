@@ -344,10 +344,17 @@
             .catch((e) => {
               console.log(e.message);
             });
-
           break;
           case 'restart':
-
+            axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgents))
+            .then((response) => {
+              //Debug
+              //console.log(response.data);
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
           break;
           case 'update':
 

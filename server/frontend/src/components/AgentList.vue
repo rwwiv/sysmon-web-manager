@@ -356,7 +356,16 @@
 
           break;
           case 'uninstall':
-
+          console.log(this.checkedAgents);
+            axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgents))
+            .then((response) => {
+              //Debug
+              //console.log(response.data);
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+            });
           break;
           default:
             // Nothing selected

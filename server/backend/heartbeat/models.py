@@ -1,6 +1,29 @@
 from django.db import models
 
 
+class User(models.Model):
+    USER_ID = models.CharField(max_length=200, primary_key=True)
+    PASSWORD = models.CharField(max_length=200)
+    LAST_LOGGED_IN = models.CharField(max_length=200)
+    LAST_LOGGED_OUT = models.CharField(max_length=200)
+
+
+class Configuration(models.Model):
+    NAME = models.CharField(max_length=200, primary_key=True)
+    IS_DEFAULT = models.BooleanField()
+
+
+class Sysmon(models.Model):
+    VERSION = models.CharField(max_length=200, primary_key=True)
+    IS_CURRENT = models.BooleanField()
+
+
+class Group(models.Model):
+    NAME = models.CharField(max_length=200, primary_key=True)
+    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.SET_NULL)
+    SYSMON = models.ForeignKey(Sysmon, on_delete=models.SET_NULL)
+
+
 class Agent(models.Model):
     UUID = models.CharField(max_length=200, primary_key=True)
     IP_ADDRESS = models.CharField(max_length=200)
@@ -15,27 +38,4 @@ class Agent(models.Model):
     NEEDS_RESTART = models.BooleanField()
     NEEDS_INSTALL = models.BooleanField()
     ATTEMPTED_INSTALL = models.BooleanField()
-    GROUP_NAME = models.CharField(max_length=200)
-
-
-class User(models.Model):
-    USER_ID = models.CharField(max_length=200, primary_key=True)
-    PASSWORD = models.CharField(max_length=200)
-    LAST_LOGGED_IN = models.CharField(max_length=200)
-    LAST_LOGGED_OUT = models.CharField(max_length=200)
-
-
-class Configuration(models.Model):
-    NAME = models.CharField(max_length=200, primary_key=True)
-    IS_DEFAULT = models.BooleanField()
-
-
-class Sysmon(models.Model):
-    NAME = models.CharField(max_length=200, primary_key=True)
-    IS_CURRENT = models.BooleanField()
-
-
-class Group(models.Model):
-    NAME = models.CharField(max_length=200, primary_key=True)
-    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.CASCADE)
-    SYSMON = models.ForeignKey(Sysmon, on_delete=models.CASCADE)
+    GROUP = models.ForeignKey(Group, on_delete=models.SET_NULL)

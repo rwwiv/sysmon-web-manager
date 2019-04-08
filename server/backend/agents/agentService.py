@@ -68,5 +68,5 @@ def update_config(uuid, name):
         retrieved_agent.save()
         return 0
     except Exception as e:
-        log.err(f"Filied to update config for agent{uuid}")
+        log.err(f"Failied to update config for agent{uuid}")
         return -1

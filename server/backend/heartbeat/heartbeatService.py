@@ -8,13 +8,11 @@ import ipaddress
 
 
 def get_sysmon_version():
-    # return Sysmon.objects.get(IS_CURRENT=True)
-    return "8.04"
+    return Sysmon.objects.get(IS_CURRENT=True)
 
 
 def get_config_name():
-    # return Configuration.objects.get(IS_DEFAULT=True)
-    return "gifnoc"
+    return Configuration.objects.get(IS_DEFAULT=True)
 
 
 def get_sysmon_update_flag(server_version, client_version):

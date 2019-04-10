@@ -20,8 +20,8 @@ class Sysmon(models.Model):
 
 class Group(models.Model):
     NAME = models.CharField(max_length=200, primary_key=True)
-    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.SET_NULL)
-    SYSMON = models.ForeignKey(Sysmon, on_delete=models.SET_NULL)
+    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.SET_NULL,null=True)
+    SYSMON = models.ForeignKey(Sysmon, on_delete=models.SET_NULL, null=True)
 
 
 class Agent(models.Model):
@@ -38,4 +38,4 @@ class Agent(models.Model):
     NEEDS_RESTART = models.BooleanField()
     NEEDS_INSTALL = models.BooleanField()
     ATTEMPTED_INSTALL = models.BooleanField()
-    GROUP = models.ForeignKey(Group, on_delete=models.SET_NULL)
+    GROUP = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)

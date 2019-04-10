@@ -7,6 +7,7 @@ def get_all_agents():
     all_agents = Agent.objects.all()
     data = []
     for x in all_agents:
+        log.debug("ping")
         temp = {
             'uuid': x.UUID,
             'ip_address': x.IP_ADDRESS,
@@ -18,7 +19,8 @@ def get_all_agents():
             'exec_running': x.EXEC_RUNNING,
             'exec_last_running_at': x.EXEC_LAST_RUNNING_AT,
             'needs_install': x.NEEDS_INSTALL,
-            'new_agent': not x.ATTEMPTED_INSTALL
+            'new_agent': not x.ATTEMPTED_INSTALL,
+            'group': x.GROUP.NAME
         }
         data.append(temp)
     log.debug(f"{len(data)} agents retrieved")

@@ -8,6 +8,7 @@ from logging_service import groups_logging_service as log
 
 def index(request):
     if request.method == 'GET':
+        log.debug('Get request recieved at groups endpoint')
         return JsonResponse(get_all_groups(), safe=False)
     else:
         log.warn('Request with no mapping recieved raising 404')
@@ -15,6 +16,7 @@ def index(request):
 
 def creation(request, name):
     if request.method == 'POST':
+        log.debug('Post request recieved at groups endpoint')
         success_flag = create_group(name,json.loads(request.body.decode('utf-8')))
         if success_flag < 0:
             return HttpResponseBadRequest(f"Creation of group {name} failed")
@@ -27,6 +29,7 @@ def creation(request, name):
 
 def associate(request, agent, group):
     if request.method == 'PATCH':
+        log.deubg('Patch request recieved at groups endpoint')
         success_flag = associate_agent_to_group(group, agent)
         if success_flag < 0:
             return HttpResponseBadRequest(f'association of agent {agent} to group {group} failed')

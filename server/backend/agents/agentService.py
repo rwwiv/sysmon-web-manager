@@ -33,6 +33,7 @@ def update_needs_install(requested_uuid):
         retrieved_agent.NEEDS_INSTALL = True
         retrieved_agent.ATTEMPTED_INSTALL = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs install flag updated")
         return 0
     except:
         log.err(f"Failed to update needs install flag for {requested_uuid}")
@@ -44,6 +45,7 @@ def update_needs_restart(requested_uuid):
         retrieved_agent = Agent.objects.get(UUID=requested_uuid)
         retrieved_agent.NEEDS_RESTART = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs restart flag updated")
         return 0
     except:
         log.err(f"Failed to update needs restart flag for {requested_uuid}")
@@ -56,6 +58,7 @@ def update_needs_uninstall(requested_uuid):
         retrieved_agent.NEEDS_UNINSTALL = True
         retrieved_agent.ATTEMPTED_INSTALL = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs uninstall flag updated")
         return 0
     except:
         log.err(f"Failed to update needs uninstall flag for {requested_uuid}")
@@ -68,7 +71,8 @@ def update_config(uuid, name):
         retrieved_config = Configuration.objects.get(NAME=name)
         retrieved_agent.CONFIG_NAME_NEW = retrieved_config.NAME
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} configuration set to {name}")
         return 0
     except Exception as e:
-        log.err(f"Failied to update config for agent{uuid}")
+        log.err(f"Failed to associate {name} config to agent {uuid}")
         return -1

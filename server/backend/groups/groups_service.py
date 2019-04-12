@@ -16,12 +16,13 @@ def create_group(name, json):
                                   CONFIGURATION = config,
                                   SYSMON = sysmon)
                 new_group.save()
+                log.debug(f'Group {name} created succesfully and is associated with sysmon version {sysmon.version} and configuration {config.name}')
                 return 1
             except Exception as e:
                 log.err(f'Configuration {config.name} is not on server')
                 return -1
         except Exception as e:
-            log.err(f'sysmon version {sysmon.name} is not on server')
+            log.err(f'sysmon version {sysmon.version} is not on server')
             return -1
 
 
@@ -32,9 +33,10 @@ def associate_agent_to_group(group_name, agent_uuid):
 
         agent.GROUP = group
         agent.save()
+        log.debug(f'associated agent{agent_uuid} with group {group_name}')
         return 1
     except:
-        log.err(f'failed to accosiated agent{agent_uuid} with group {group_name}')
+        log.err(f'failed to associated agent{agent_uuid} with group {group_name}')
         return -1
 
 

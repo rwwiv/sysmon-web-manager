@@ -1,6 +1,5 @@
-from heartbeat.models import Agent
-import json
-from agents.agentService import update_needs_install
+from agents.agent_service import update_needs_install
+
 
 def multi_sysmon_install(UUIDs):
     string_uuids = str(UUIDs.body)

@@ -1,4 +1,4 @@
-from heartbeat.models import Agent
+from heartbeat.models import Agent, Configuration
 import json
 from logging_service import agents_logging_service as log
 
@@ -56,4 +56,16 @@ def update_needs_uninstall(requested_uuid):
         return 0
     except:
         log.err(f"Failed to update needs uninstall flag for {requested_uuid}")
+        return -1
+
+
+def update_config(uuid, name):
+    try:
+        retrieved_agent = Agent.objects.get(UUID=uuid)
+        retrieved_config = Configuration.objects.get(NAME=name)
+        retrieved_agent.CONFIG_NAME_NEW = retrieved_config.NAME
+        retrieved_agent.save()
+        return 0
+    except Exception as e:
+        log.err(f"Filied to update config for agent{uuid}")
         return -1

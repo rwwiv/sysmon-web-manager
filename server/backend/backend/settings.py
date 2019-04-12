@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'updates.apps.UpdatesConfig',
     'heartbeat.apps.HeartbeatConfig',
     'multi.apps.MultiConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'corsheaders',

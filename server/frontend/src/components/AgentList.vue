@@ -172,11 +172,13 @@
               <h5><b>Available Sysmon Configs:</b></h5>
                 <select v-model="selectedConfig">
                   <option disabled value="">Select New Sysmon Config</option>
-                  <option v-for="config in availableSysmonConfigs" :key="config.id" v-bind:value="config.name">{{config.name}}</option>
+                  <option v-for="config in sysmonConfigs" :key="config.id" v-bind:value="config.name">{{config.name}}</option>
                 </select>
+              <!--  Could offer to edit the config file from here
                 <router-link v-if="selectedConfig" class="edit-config-link" :to="{name: 'management', query:{configFile: selectedConfig}}" data-dismiss="modal">
                   <i class="fa fa-gear"></i> Edit this config file.
                 </router-link>
+              -->
             </div>
 <!-- /.modal-body -->
             <div class="modal-footer">
@@ -278,7 +280,8 @@
       installSysmon(agentID) {
         axios.patch(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
-          console.log(response);
+          //Debug
+          //console.log(response);
           this.getHostList();
         })
         .catch((e) => {
@@ -288,6 +291,7 @@
       uninstallSysmon(agentID) {
         axios.delete(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
+          //Debug
           console.log(response);
           this.getHostList();
         })
@@ -299,7 +303,8 @@
         axios.get('http://localhost:8000/agents')
         .then((response) => {
           this.agents = response.data;
-          console.log(response.data);
+          //Debug
+          //console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -309,6 +314,7 @@
         axios.get('http://localhost:8000/configs')
         .then((response) => {
           this.sysmonConfigs = response.data;
+          //Debug
           console.log(response.data);
         })
         .catch((e) => {
@@ -337,7 +343,8 @@
             this.selectNewAgents();
             axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgents))
             .then((response) => {
-              console.log(response.data);
+              //Debug
+              //console.log(response.data);
               this.getHostList();
             })
             .catch((e) => {

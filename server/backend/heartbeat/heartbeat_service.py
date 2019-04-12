@@ -1,10 +1,7 @@
-from heartbeat.models import Agent
-from heartbeat.models import Sysmon
-from heartbeat.models import Configuration
-from logging_service import heartbeat_logging_service as log
-from os import listdir
 import json
-import ipaddress
+
+from heartbeat.models import Agent
+from logging_service import heartbeat_logging_service as log
 
 
 def get_sysmon_version():

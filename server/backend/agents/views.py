@@ -1,10 +1,9 @@
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import HttpResponse
-from django.http import Http404, JsonResponse, HttpResponseBadRequest
-from .agentService import get_all_agents
-from .agentService import update_needs_install
-from .agentService import update_needs_restart
-from .agentService import update_needs_uninstall
-from  logging_service import agents_logging_service as log
+
+from logging_service import agents_logging_service as log
+from .agent_service import get_all_agents, update_config, update_needs_install, update_needs_restart, \
+    update_needs_uninstall
 
 
 def index(request):
@@ -49,6 +48,17 @@ def updates(request, uuid):
     else:
         log.warn('Request with no mapping recieved raising 404')
         raise Http404()
+
+
+def set_config(request, uuid, name):
+    if request.method == 'PATCH':
+        log.debug(f'Config update recieved for agent {uuid} with config {name}')
+        success = update_config(uuid, name)
+
+        if success == 0:
+            return HttpResponse("Succesful update")
+        else:
+            return HttpResponseBadRequest("Update failed")
 
 
 

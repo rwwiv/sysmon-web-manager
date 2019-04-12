@@ -13,4 +13,4 @@ http:
       config: /updates/config
       sysmon: /updates/sysmon
   checked_exec_running: false
-  uuid: 97d86112-c1fc-404d-aa04-6d52b6d56a71
+  uuid: e77e2103-7f52-4d7e-a7ef-a5c66d798abf

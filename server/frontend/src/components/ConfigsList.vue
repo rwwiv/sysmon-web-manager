@@ -20,8 +20,8 @@
         </thead>
         <tbody>
           <tr v-for="config in configs" :key="config.name">
-            <td>{{ config.name }}Name</td>
-            <td>{{ config.is_default ? 'Default': '' }}Default Status</td>
+            <td>{{ config.name }}</td>
+            <td >{{ config.is_default ? 'Default': '' }}</td>
             <td class="center-text">
               <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
                            active-class="active">
@@ -50,6 +50,12 @@ export default {
     };
   },
   methods: {
+    // openConfig(name) {
+    //   axios.get('http://localhost:8000/configs/', name).then((response) => {
+    //       const reader = new FileReader();
+    //       ConfigEditorInput.methods.inputTextToSave = reader.readAsText(response.data)
+    //
+    // },
     getAllConfigs() {
       axios.get('http://localhost:8000/configs')
         .then((response) => {

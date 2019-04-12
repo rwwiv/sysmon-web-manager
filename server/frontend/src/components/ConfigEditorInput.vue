@@ -5,6 +5,8 @@
     <button class="btn btn-secondary pull-left" @click="validateConfig">Validate</button>
     <label for="configNameBox"> Configuration Name</label><input type="text" @change="nameConfig(configNameBox.value)" id="configNameBox" width="auto" v-model="text">
     <button class="btn btn-secondary pull-right" @click="saveConfig">Save Changes </button>
+    <b></b>
+    <input type="checkbox" name="makeDefault" value="isDefault">Check the box to set this configuration as the default.<br>
     <parsererror id = "errorBox" v-model="text">
     <sourcetext></sourcetext>
 </parsererror>
@@ -51,7 +53,7 @@
           axios.get('http://localhost:8000/configs/', this.configName).then((response) => {
             responseStatus = response.status;
           });
-          if (responseStatus !== '400') {
+          if (responseStatus !== 400) {
             confirmMsg = 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.';
           } else {
             confirmMsg = 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.';
@@ -66,9 +68,10 @@
                },
              }).then((response) => {
               responseStatus = response.status; // this works but the inputText may not
-              });
+              }); // , document.getElementById('isDefault').checked
             document.getElementById('inputTextToSave').value = 'File saved.';
             document.getElementById('configNameBox').value = '';
+            document.getElementById('isDefault').checked = false;
           }
           // not sure how to send the text data back to the server
         }
@@ -99,10 +102,5 @@
     overflow-y: auto;
     overflow-x: auto;
   }
-  textWrapper
-  {
-    border:1px solid #999999;
-    margin:5px 0;
-    padding:3px;
-  }
+
 </style>

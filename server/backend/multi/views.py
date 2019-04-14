@@ -1,8 +1,8 @@
 from django.shortcuts import HttpResponse
 from django.http import Http404, JsonResponse,HttpResponseBadRequest
-from .multiService import multi_sysmon_install
-from .multiService import multi_sysmon_uninstall
-from .multiService import multi_sysmon_restart
+from .multi_service import multi_sysmon_install
+from .multi_service import multi_sysmon_uninstall
+from .multi_service import multi_sysmon_restart
 
 def install(request):
     if request.method == 'POST':

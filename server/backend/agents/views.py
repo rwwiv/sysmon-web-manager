@@ -61,6 +61,9 @@ def set_config(request, uuid, name):
             return HttpResponse("Succesful update")
         else:
             return HttpResponseBadRequest("Update failed")
+    else:
+        log.warn('Request with no mapping recieved raising 404')
+        raise Http404()
 
 
 

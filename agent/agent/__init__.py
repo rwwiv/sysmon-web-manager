@@ -35,9 +35,24 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
 
 
 if __name__ == "__main__":
+    __env_config_api = env_config['api']
+    __env_config_api['retry'] = 0
+
+    # Testing code
+    __env_config_testing = env_config['testing']
+    __env_config_testing['config_built'] = False
+    #
+
+    bg_process.__write_yaml()
     while True:
-        bg_process.run()
-        time.sleep(30)
+
+        # bg_process.run()
+
+        # Testing code
+        bg_process.testing_run()
+        #
+
+        time.sleep(1)
 
     # if len(sys.argv) == 0:
     #     servicemanager.Initialize()

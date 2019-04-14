@@ -1,16 +1,18 @@
 agent:
   checked_exec_running: false
-  config_name: gifnoc
   display_name: SysMonager Agent
   exec_last_running: null
-  installed: false
   service_name: SysMonagerAgent
-  sysmon_version: '8.04'
-http:
-  api:
-    heartbeat: /heartbeat
-    updates:
-      config: /updates/config
-      sysmon: /updates/sysmon
-  checked_exec_running: false
-  uuid: 97d86112-c1fc-404d-aa04-6d52b6d56a71
+  uuid: e8420958-d255-48de-862c-7df07d3c4140
+api:
+  heartbeat: /heartbeat
+  retry: 5
+  updates:
+    config: /updates/config
+    sysmon: /updates/sysmon
+sysmon:
+  config_name: null
+  installed: false
+  version: null
+testing:
+  config_built: true

@@ -17,13 +17,13 @@ def get_all_configs():
 def create_configs(config_name,config_body):
     if Configuration.objects.filter(NAME=config_name).count() == 0:
         new_config = Configuration(
-            NAME = config_name,
-            IS_DEFAULT = False
+            NAME=config_name,
+            IS_DEFAULT=False
         )
         if not os.path.exists('../configuration_files'):
             os.makedirs('../configuration_files')
         
-        with open(f'../configuration_files/agent_config_{config_name}.xml','w+'):
+        with open(f'../configuration_files/agent_config_{config_name}.xml', 'w+') as config:
             for line in config_body.decode("utf-8").split('\n'):
                 config.write(f'{line}\n')
         new_config.save()
@@ -48,10 +48,11 @@ def retrieve_config(config_name):
         log.err(f'Config {config_name} does not exist')
         raise Exception
 
+
 def update_config(config_name, config_body):
     config = Configuration.objects.filter(NAME=config_name)
 
-    if(len(config) == 1):
+    if len(config) == 1:
         with open(f"../configuration_files/agent_config_{config_name}.xml","a") as config:
             config.truncate(0)
             for line in config_body.decode("utf-8").split('\n'):

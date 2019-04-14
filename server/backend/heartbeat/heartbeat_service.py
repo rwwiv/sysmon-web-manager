@@ -40,7 +40,7 @@ def update_agent_status(requested_uuid, incoming_request):
             'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
         }
         if updates_data['sysmon']:
-            updates_data['sysmon_verion'] = retrieved_agent.SYSMON_VERSION_NEW
+            updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
         if updates_data['config']:
             updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
         data = {
@@ -52,9 +52,9 @@ def update_agent_status(requested_uuid, incoming_request):
     elif retrieved_agent.NEEDS_INSTALL:
         updates_data = {
             'sysmon': get_sysmon_update_flag(retrieved_agent.SYSMON_VERSION_NEW, retrieved_agent.SYSMON_VERSION_CURRENT),
-            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW.NAME,
+            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW,
             'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
-            'config_name': retrieved_agent.CONFIG_NAME_NEW.NAME
+            'config_name': retrieved_agent.CONFIG_NAME_NEW
         }
         data = {
             'updates_needed': updates_data,

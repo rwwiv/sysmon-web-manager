@@ -4,23 +4,23 @@ from logging_service import agents_logging_service as log
 
 
 def get_all_agents():
-    all_agents = Agent.objects.all()
+    agents = Agent.objects.all()
     data = []
-    for x in all_agents:
+    for agent in agents:
         log.debug("ping")
         temp = {
-            'uuid': x.UUID,
-            'ip_address': x.IP_ADDRESS,
-            'online': x.ONLINE,
-            'sysmon_version_current': x.SYSMON_VERSION_CURRENT,
-            'sysmon_version_new': x.SYSMON_VERSION_NEW,
-            'config_name_current': x.CONFIG_NAME_CURRENT,
-            'config_name_new': x.CONFIG_NAME_NEW,
-            'exec_running': x.EXEC_RUNNING,
-            'exec_last_running_at': x.EXEC_LAST_RUNNING_AT,
-            'needs_install': x.NEEDS_INSTALL,
-            'new_agent': not x.ATTEMPTED_INSTALL,
-            'group': x.GROUP.NAME
+            'uuid': agent.UUID,
+            'ip_address': agent.IP_ADDRESS,
+            'online': agent.ONLINE,
+            'sysmon_version_current': agent.SYSMON_VERSION_CURRENT,
+            'sysmon_version_new': agent.SYSMON_VERSION_NEW,
+            'config_name_current': agent.CONFIG_NAME_CURRENT,
+            'config_name_new': agent.CONFIG_NAME_NEW,
+            'exec_running': agent.EXEC_RUNNING,
+            'exec_last_running_at': agent.EXEC_LAST_RUNNING_AT,
+            'needs_install': agent.NEEDS_INSTALL,
+            'new_agent': not agent.ATTEMPTED_INSTALL,
+            'group': agent.GROUP.NAME
         }
         data.append(temp)
     log.debug(f"{len(data)} agents retrieved")

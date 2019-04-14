@@ -62,7 +62,7 @@ def testing_run():
             __heartbeat()
             __env_config_api['retry'] = 0
             __write_yaml()
-        except:
+        except ConnectionError:
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
@@ -74,7 +74,7 @@ def testing_run():
             __setup()
             __env_config_api['retry'] = 0
             __write_yaml()
-        except:
+        except ConnectionError:
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
@@ -101,9 +101,9 @@ def __build_initial_config():
 
 def __build_request_dict():
     __data = {
-        'installed': __env_config_agent['installed']
+        'installed': __env_config_sysmon['installed']
     }
-    if not __env_config_agent['installed']:
+    if not __env_config_sysmon['installed']:
         return __data
     if not check_sysmon_running():
             __data['exec_running'] = False
@@ -130,7 +130,7 @@ def __heartbeat():
         __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
     else:
         threads = []
-        if r_json.get('updates_needed', None):
+        if r_json.get('updates_needed', False):
             if r_json['updates_needed'].get('sysmon', False):
                 threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
             if r_json['updates_needed'].get('config', False):
@@ -143,7 +143,7 @@ def __heartbeat():
             thread.join(timeout=60)
     if r_json.get('uninstall', False):
         uninstall_sysmon()
-        __env_config_agent['installed'] = False
+        __env_config_sysmon['installed'] = False
         __env_config_lock.acquire()
         __write_yaml()
         __env_config_lock.release()
@@ -164,7 +164,7 @@ def __update_sysmon(version):
         __write_yaml()
         __env_config_lock.release()
         install_sysmon()
-        __env_config_agent['installed'] = True
+        __env_config_sysmon['installed'] = True
         __env_config_lock.acquire()
         __write_yaml()
         __env_config_lock.release()
@@ -176,7 +176,7 @@ def __update_sysmon(version):
         pass
     else:
         install_sysmon()
-        __env_config_agent['installed'] = True
+        __env_config_sysmon['installed'] = True
         __env_config_lock.acquire()
         __write_yaml()
         __env_config_lock.release()
@@ -223,7 +223,7 @@ def __initial_install(version, name):
         __env_config_agent['sysmon_version'] = version
         __write_yaml()
     install_sysmon()
-    __env_config_agent['installed'] = True
+    __env_config_sysmon['installed'] = True
     __env_config_lock.acquire()
     __write_yaml()
     __env_config_lock.release()

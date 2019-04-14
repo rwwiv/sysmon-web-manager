@@ -94,6 +94,7 @@ ipython_config.py
 
 # pyenv
 .python-version
+.vscode/
 
 # celery beat schedule file
 celerybeat-schedule
@@ -109,6 +110,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+django_env/
 
 # Spyder project settings
 .spyderproject

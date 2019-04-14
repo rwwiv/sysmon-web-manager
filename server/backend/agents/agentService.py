@@ -4,21 +4,23 @@ from logging_service import agents_logging_service as log
 
 
 def get_all_agents():
-    all_agents = Agent.objects.all()
+    agents = Agent.objects.all()
     data = []
-    for x in all_agents:
+    for agent in agents:
+        log.debug("ping")
         temp = {
-            'uuid': x.UUID,
-            'ip_address': x.IP_ADDRESS,
-            'online': x.ONLINE,
-            'sysmon_version_current': x.SYSMON_VERSION_CURRENT,
-            'sysmon_version_new': x.SYSMON_VERSION_NEW,
-            'config_name_current': x.CONFIG_NAME_CURRENT,
-            'config_name_new': x.CONFIG_NAME_NEW,
-            'exec_running': x.EXEC_RUNNING,
-            'exec_last_running_at': x.EXEC_LAST_RUNNING_AT,
-            'needs_install': x.NEEDS_INSTALL,
-            'new_agent': not x.ATTEMPTED_INSTALL
+            'uuid': agent.UUID,
+            'ip_address': agent.IP_ADDRESS,
+            'online': agent.ONLINE,
+            'sysmon_version_current': agent.SYSMON_VERSION_CURRENT,
+            'sysmon_version_new': agent.SYSMON_VERSION_NEW,
+            'config_name_current': agent.CONFIG_NAME_CURRENT,
+            'config_name_new': agent.CONFIG_NAME_NEW,
+            'exec_running': agent.EXEC_RUNNING,
+            'exec_last_running_at': agent.EXEC_LAST_RUNNING_AT,
+            'needs_install': agent.NEEDS_INSTALL,
+            'new_agent': not agent.ATTEMPTED_INSTALL,
+            'group': agent.GROUP.NAME
         }
         data.append(temp)
     log.debug(f"{len(data)} agents retrieved")
@@ -31,6 +33,7 @@ def update_needs_install(requested_uuid):
         retrieved_agent.NEEDS_INSTALL = True
         retrieved_agent.ATTEMPTED_INSTALL = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs install flag updated")
         return 0
     except:
         log.err(f"Failed to update needs install flag for {requested_uuid}")
@@ -42,6 +45,7 @@ def update_needs_restart(requested_uuid):
         retrieved_agent = Agent.objects.get(UUID=requested_uuid)
         retrieved_agent.NEEDS_RESTART = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs restart flag updated")
         return 0
     except:
         log.err(f"Failed to update needs restart flag for {requested_uuid}")
@@ -52,7 +56,9 @@ def update_needs_uninstall(requested_uuid):
     try:
         retrieved_agent = Agent.objects.get(UUID=requested_uuid)
         retrieved_agent.NEEDS_UNINSTALL = True
+        retrieved_agent.ATTEMPTED_INSTALL = True
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} needs uninstall flag updated")
         return 0
     except:
         log.err(f"Failed to update needs uninstall flag for {requested_uuid}")
@@ -65,7 +71,8 @@ def update_config(uuid, name):
         retrieved_config = Configuration.objects.get(NAME=name)
         retrieved_agent.CONFIG_NAME_NEW = retrieved_config.NAME
         retrieved_agent.save()
+        log.debug(f"Agent {requested_uuid} configuration set to {name}")
         return 0
     except Exception as e:
-        log.err(f"Filied to update config for agent{uuid}")
+        log.err(f"Failed to associate {name} config to agent {uuid}")
         return -1

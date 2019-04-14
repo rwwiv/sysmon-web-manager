@@ -2,19 +2,23 @@ from heartbeat.models import Agent
 from heartbeat.models import Sysmon
 from heartbeat.models import Configuration
 from logging_service import heartbeat_logging_service as log
-from os import listdir
 import json
-import ipaddress
 
 
 def get_sysmon_version():
-    # return Sysmon.objects.get(IS_CURRENT=True)
-    return "8.04"
+    try:
+        return Sysmon.objects.get(IS_CURRENT=True).VERSION
+    except:
+        log.err("No default sysmon version on server")
+        return ""
 
 
 def get_config_name():
-    # return Configuration.objects.get(IS_DEFAULT=True)
-    return "gifnoc"
+    try:
+        return Configuration.objects.get(IS_DEFAULT=True).NAME
+    except:
+        log.err('No default configuration on server')
+        return ""
 
 
 def get_sysmon_update_flag(server_version, client_version):

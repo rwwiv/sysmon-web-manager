@@ -61,7 +61,7 @@
         </thead>
         <tbody>
           <tr v-for="agent in agents" :key="agent.id">
-            <td><input class="agent-checkbox" :class="currentCheckAgentIsNew(agent.new_agent)" type="checkbox" :id="agent.uuid" :value="agent.uuid" v-model="checkedAgents"/></td>
+            <td><input class="agent-checkbox" :class="currentCheckAgentIsNew(agent.new_agent)" type="checkbox" :id="agent.uuid" :value="agent" v-model="checkedAgents" @change="getSelectedAgentIDs"/></td>
             <td>{{ agent.ip_address ? agent.ip_address : 'N/A' }}</td>
             <td>
               <span class="label" :class="currentStatusLabel(agent.online, agent.new_agent)">
@@ -190,6 +190,14 @@
         </div>
     </div>
 <!-- End EDIT SYSMON CONFIG MODAL -->
+
+
+<!-- Loading: Covers entire host list -->
+
+    <div id="loadingOverlay" class="overlay hidden">
+      <i class="fa fa-refresh fa-spin"></i>
+    </div>
+
   </div>
 <!-- /.box -->
 </template>
@@ -199,11 +207,6 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
-  /** *
-  * To Do: the available configs needs to come from the /configs API call
-  * which is non-functional as of 2-27-19.
-  ** */
-  import availableSysmonConfigs from '../../agentAvailableSysmonConfigSample.json';
 
   export default {
     name: 'AgentList',
@@ -212,10 +215,10 @@
         agents: [],
         errors: [],
         sysmonConfigs: [],
-        availableSysmonConfigs,
         selectedAgent: '',
         selectedConfig: '',
         checkedAgents: [],
+        checkedAgentsIDs: [],
         selectAll: false,
         manageAllSelected: '',
         timer: '',
@@ -252,6 +255,19 @@
         }
         return 'Offline';
       },
+      hideLoadingState() {
+        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+        if (!loaderIsNotVisible) {
+          $('#loadingOverlay').addClass('hidden');
+        }
+      },
+      showLoadingState() {
+        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+
+        if (loaderIsNotVisible) {
+          $('#loadingOverlay').removeClass('hidden');
+        }
+      },
       saveConfig(agentID, config) {
         if (config) {
           axios.patch(`http://localhost:8000/agents/${agentID}/config/${config}`)
@@ -268,43 +284,52 @@
         }
       },
       runSysmon(agentID) {
+        this.showLoadingState();
         axios.post(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
           console.log(response);
+          this.hideLoadingState();
           this.getHostList();
         })
         .catch((e) => {
           console.log(e.message);
+          this.hideLoadingState();
         });
       },
       installSysmon(agentID) {
+        this.showLoadingState();
         axios.patch(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
-          //Debug
-          //console.log(response);
+          // Debug
+          // console.log(response);
+          this.hideLoadingState();
           this.getHostList();
         })
         .catch((e) => {
+          this.hideLoadingState();
           console.log(e.message);
         });
       },
       uninstallSysmon(agentID) {
+        this.showLoadingState();
         axios.delete(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
-          //Debug
+          // Debug
           console.log(response);
+          this.hideLoadingState();
           this.getHostList();
         })
         .catch((e) => {
           console.log(e.message);
+          this.hideLoadingState();
         });
       },
       getHostList() {
         axios.get('http://localhost:8000/agents')
         .then((response) => {
           this.agents = response.data;
-          //Debug
-          //console.log(response.data);
+          // Debug
+          // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -314,46 +339,69 @@
         axios.get('http://localhost:8000/configs')
         .then((response) => {
           this.sysmonConfigs = response.data;
-          //Debug
-          console.log(response.data);
+          // Debug
+          // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
         });
       },
+      // Grab IDs from Selected Agents
+      getSelectedAgentIDs() {
+        this.checkedAgentsIDs = [];
+        for (let i = 0; i < this.checkedAgents.length; i++) {
+          this.checkedAgentsIDs.push(this.checkedAgents[i].uuid);
+        }
+      },
+      // Grab all Agent Objects
       selectAllAgents() {
         this.checkedAgents = [];
         if (!this.selectAll) {
           for (let i = 0; i < this.agents.length; i++) {
-            this.checkedAgents.push(this.agents[i].uuid);
+            this.checkedAgents.push(this.agents[i]);
           }
         }
+        this.getSelectedAgentIDs();
       },
-      selectNewAgents() {
-        this.checkedAgents = [];
-        for (let i = 0; i < this.agents.length; i++) {
-          if (this.agents[i].new_agent) {
-            this.checkedAgents.push(this.agents[i].uuid);
+      // Grab only NEW && Selected agents
+      selectedNewAgents() {
+        this.checkedAgentsIDs = [];
+        for (let i = 0; i < this.checkedAgents.length; i++) {
+          if (this.checkedAgents[i].new_agent) {
+            this.checkedAgentsIDs.push(this.checkedAgents[i].uuid);
           }
         }
       },
       manageAllAgents() {
         switch (this.manageAllSelected) {
           case 'install':
-            this.selectNewAgents();
-            axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgents))
+            this.showLoadingState();
+            this.selectedNewAgents();
+            axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgentsIDs))
             .then((response) => {
-              //Debug
-              //console.log(response.data);
+              // Debug
+              // console.log(response.data);
+              this.hideLoadingState();
               this.getHostList();
             })
             .catch((e) => {
               console.log(e.message);
+              this.hideLoadingState();
             });
-
           break;
           case 'restart':
-
+            this.showLoadingState();
+            axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgentsIDs))
+            .then((response) => {
+              // Debug
+              // console.log(response.data);
+              this.hideLoadingState();
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+              this.hideLoadingState();
+            });
           break;
           case 'update':
 
@@ -362,7 +410,18 @@
 
           break;
           case 'uninstall':
-
+            this.showLoadingState();
+            axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgentsIDs))
+            .then((response) => {
+              // Debug
+              // console.log(response.data);
+              this.hideLoadingState();
+              this.getHostList();
+            })
+            .catch((e) => {
+              console.log(e.message);
+              this.hideLoadingState();
+            });
           break;
           default:
             // Nothing selected
@@ -375,7 +434,7 @@
     },
     mounted() {
       this.getHostList();
-      this.timer = setInterval(this.getHostList, 15000);
+      this.timer = setInterval(this.getHostList, 10000);
       this.getAvailableSysmonConfigs();
       const that = this;
       // Handle iCheckBox in the host list table head.

@@ -20,63 +20,109 @@ __config_lock = Lock()
 __sysmon_lock = Lock()
 __protocol = "http"
 
+__env_config_agent = env_config['agent']
+__env_config_api = env_config['api']
+__env_config_sysmon = env_config['sysmon']
+__env_config_testing = env_config['testing']
+
+
+def __write_yaml():
+    with open(env_config_filepath, 'w') as env_config_file:
+        yaml.dump(env_config, env_config_file)
+
 
 def run():
-    retry = 0
-    if retry > 5:
+    if __env_config_api['retry'] > 5:
         exit()
-    if env_config['http']['uuid'] is None:
+    if __env_config_agent['uuid'] is None:
         try:
             __setup()
+            __env_config_api['retry'] = 0
+            __write_yaml()
         except ConnectionError:
             print('Could not reach server, trying again.')
-            retry = retry + 1
+            __env_config_api['retry'] += 1
+            __write_yaml()
     try:
         __heartbeat()
+        __env_config_api['retry'] = 0
+        __write_yaml()
     except ConnectionError:
         print('Could not reach server, trying again.')
-        retry = retry + 1
+        __env_config_api['retry'] += 1
+        __write_yaml()
+
+
+def testing_run():
+    if __env_config_api['retry'] >= 5:
+        print('Exiting...')
+        exit()
+    if __env_config_testing['config_built']:
+        try:
+            __heartbeat()
+            __env_config_api['retry'] = 0
+            __write_yaml()
+        except ConnectionError:
+            print('Could not reach server, trying again.')
+            __env_config_api['retry'] += 1
+            __write_yaml()
+    else:
+        __build_initial_config()
+        __env_config_testing['config_built'] = True
+        __write_yaml()
+        try:
+            __setup()
+            __env_config_api['retry'] = 0
+            __write_yaml()
+        except ConnectionError:
+            print('Could not reach server, trying again.')
+            __env_config_api['retry'] += 1
+            __write_yaml()
 
 
 def __setup():
-    env_config['http']['uuid'] = str(uuid.uuid4())
     response = requests.post(f'{__protocol}://{user_config["http"]["url"]}'
-                             f'{env_config["http"]["api"]["heartbeat"]}'
-                             f'/{env_config["http"]["uuid"]}')
+                             f'{__env_config_api["heartbeat"]}'
+                             f'/{__env_config_agent["uuid"]}')
     r_json = response.json()
-    with open(env_config_filepath, 'w') as env_config_file:
-        yaml.dump(env_config, env_config_file)
-    env_config['agent']['sysmon_version'] = r_json['sysmon_version']
-    env_config['agent']['config_name'] = r_json['config_name']
-    with open(env_config_filepath, 'w') as env_config_file:
-        yaml.dump(env_config, env_config_file)
+    __env_config_agent['sysmon_version'] = r_json['sysmon_version']
+    __env_config_agent['config_name'] = r_json['config_name']
+    __write_yaml()
+
+
+def __build_initial_config():
+    __env_config_agent['uuid'] = str(uuid.uuid4())
+    __env_config_agent['checked_exec_running'] = False
+    __env_config_sysmon['config_name'] = None
+    __env_config_sysmon['version'] = None
+    __env_config_sysmon['installed'] = False
+    __write_yaml()
 
 
 def __build_request_dict():
     __data = {
-        'installed': env_config['agent']['installed']
+        'installed': __env_config_sysmon['installed']
     }
-    if not env_config['agent']['installed']:
+    if not __env_config_sysmon['installed']:
         return __data
     if not check_sysmon_running():
             __data['exec_running'] = False
-            __data['exec_last_running_at'] = env_config['agent']['exec_last_running']
+            __data['exec_last_running_at'] = __env_config_agent['exec_last_running']
     else:
-        env_config['http']['checked_exec_running'] = False
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __env_config_agent['checked_exec_running'] = False
+        __write_yaml()
         __data['exec_running'] = True
-    if env_config['agent']['sysmon_version'] is not None:
-        __data['sysmon_version'] = env_config['agent']['sysmon_version']
-    if env_config['agent']['config_name'] is not None:
-        __data['config_name'] = env_config['agent']['config_name']
+    if __env_config_agent['sysmon_version'] is not None:
+        __data['sysmon_version'] = __env_config_agent['sysmon_version']
+    if __env_config_agent['config_name'] is not None:
+        __data['config_name'] = __env_config_agent['config_name']
     return __data
 
 
 def __heartbeat():
     response = requests.put(f'{__protocol}://{user_config["http"]["url"]}'
-                            f'{env_config["http"]["api"]["heartbeat"]}'
-                            f'/{env_config["http"]["uuid"]}',
+                            f'{__env_config_api["heartbeat"]}'
+                            f'/{__env_config_agent["uuid"]}',
                             # auth=__auth,
                             json=__build_request_dict())
     r_json = response.json()
@@ -84,7 +130,7 @@ def __heartbeat():
         __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
     else:
         threads = []
-        if 'updates_needed' in r_json:
+        if r_json.get('updates_needed', False):
             if r_json['updates_needed'].get('sysmon', False):
                 threads.append(Thread(target=__update_sysmon, args=(r_json['updates_needed']['sysmon_version'],)))
             if r_json['updates_needed'].get('config', False):
@@ -96,17 +142,16 @@ def __heartbeat():
         for thread in threads:
             thread.join(timeout=60)
     if r_json.get('uninstall', False):
-        env_config['agent']['installed'] = False
-        __env_config_lock.acquire()
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
-        __env_config_lock.release()
         uninstall_sysmon()
+        __env_config_sysmon['installed'] = False
+        __env_config_lock.acquire()
+        __write_yaml()
+        __env_config_lock.release()
 
 
 def __update_sysmon(version):
     response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
-                            f'{env_config["http"]["api"]["updates"]["sysmon"]}'
+                            f'{__env_config_api["updates"]["sysmon"]}'
                             f'/{version}')
     if not os.path.isfile(f'sysmon_{version}.exe'):
         __sysmon_lock.acquire()
@@ -114,16 +159,14 @@ def __update_sysmon(version):
             new_file.write(bytes(response.content))
         __sysmon_lock.release()
         uninstall_sysmon()
-        env_config['agent']['sysmon_version'] = version
+        __env_config_agent['sysmon_version'] = version
         __env_config_lock.acquire()
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __write_yaml()
         __env_config_lock.release()
         install_sysmon()
-        env_config['agent']['installed'] = True
+        __env_config_sysmon['installed'] = True
         __env_config_lock.acquire()
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __write_yaml()
         __env_config_lock.release()
         try:
             os.remove(f'sysmon_{env_config["agent"]["sysmon_version"]}.exe')
@@ -133,15 +176,15 @@ def __update_sysmon(version):
         pass
     else:
         install_sysmon()
-        env_config['agent']['installed'] = True
+        __env_config_sysmon['installed'] = True
         __env_config_lock.acquire()
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __write_yaml()
         __env_config_lock.release()
+
 
 def __update_config(name):
     response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
-                            f'{env_config["http"]["api"]["updates"]["config"]}'
+                            f'{__env_config_api["updates"]["config"]}'
                             f'/{name}')
     if not os.path.isfile(f'agent_config_{name}.xml'):
         __sysmon_lock.acquire()
@@ -150,8 +193,7 @@ def __update_config(name):
         __sysmon_lock.release()
         env_config["agent"]["config_name"] = name
         __env_config_lock.acquire()
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __write_yaml()
         __env_config_lock.release()
         update_sysmon_config()
         try:
@@ -163,28 +205,25 @@ def __update_config(name):
 
 
 def __initial_install(version, name):
-    response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
-                            f'{env_config["http"]["api"]["updates"]["config"]}'
-                            f'/{name}')
+    config_response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
+                                   f'{__env_config_api["updates"]["config"]}'
+                                   f'/{name}')
     if not os.path.isfile(f'agent_config_{name}.xml'):
         with open(f'agent_config_{name}.xml', 'wb') as new_file:
-            new_file.write(bytes(response.content))
+            new_file.write(bytes(config_response.content))
         env_config["agent"]["config_name"] = name
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
-    response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
-                                f'{env_config["http"]["api"]["updates"]["sysmon"]}'
-                                f'/{version}')
+        __write_yaml()
+    sysmon_response = requests.get(f'{__protocol}://{user_config["http"]["url"]}'
+                                   f'{__env_config_api["updates"]["sysmon"]}'
+                                   f'/{version}')
     if not os.path.isfile(f'sysmon_{version}.exe'):
         with open(f'sysmon_{version}.exe', 'wb') as new_file:
-            new_file.write(bytes(response.content))
+            new_file.write(bytes(sysmon_response.content))
         uninstall_sysmon()
-        env_config['agent']['sysmon_version'] = version
-        with open(env_config_filepath, 'w') as env_config_file:
-            yaml.dump(env_config, env_config_file)
+        __env_config_agent['sysmon_version'] = version
+        __write_yaml()
     install_sysmon()
-    env_config['agent']['installed'] = True
+    __env_config_sysmon['installed'] = True
     __env_config_lock.acquire()
-    with open(env_config_filepath, 'w') as env_config_file:
-        yaml.dump(env_config, env_config_file)
+    __write_yaml()
     __env_config_lock.release()

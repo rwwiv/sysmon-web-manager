@@ -18,7 +18,7 @@
         didValidate: '',
         XMLconfig: XMLDocument,
         inputTextToSave: '',
-      }
+      };
     },
     methods: {
       nameConfig(name) {
@@ -33,7 +33,7 @@
         };
         reader.readAsText(file);
       },
-      didNotValidate(){
+      didNotValidate() {
         this.didValidate = 0;
       },
       saveConfig() {

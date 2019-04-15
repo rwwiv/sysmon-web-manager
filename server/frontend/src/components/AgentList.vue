@@ -255,16 +255,16 @@
         }
         return 'Offline';
       },
-      hideLoadingState(){
-        let loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
-        if(!loaderIsNotVisible){
+      hideLoadingState() {
+        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+        if (!loaderIsNotVisible) {
           $('#loadingOverlay').addClass('hidden');
         }
       },
-      showLoadingState(){
-        let loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
-        
-        if(loaderIsNotVisible){
+      showLoadingState() {
+        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+
+        if (loaderIsNotVisible) {
           $('#loadingOverlay').removeClass('hidden');
         }
       },
@@ -300,8 +300,8 @@
         this.showLoadingState();
         axios.patch(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
-          //Debug
-          //console.log(response);
+          // Debug
+          // console.log(response);
           this.hideLoadingState();
           this.getHostList();
         })
@@ -314,7 +314,7 @@
         this.showLoadingState();
         axios.delete(`http://localhost:8000/agents/${agentID}`)
         .then((response) => {
-          //Debug
+          // Debug
           console.log(response);
           this.hideLoadingState();
           this.getHostList();
@@ -328,8 +328,8 @@
         axios.get('http://localhost:8000/agents')
         .then((response) => {
           this.agents = response.data;
-          //Debug
-          //console.log(response.data);
+          // Debug
+          // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -339,21 +339,21 @@
         axios.get('http://localhost:8000/configs')
         .then((response) => {
           this.sysmonConfigs = response.data;
-          //Debug
-          //console.log(response.data);
+          // Debug
+          // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
         });
       },
-      //Grab IDs from Selected Agents
-      getSelectedAgentIDs(){
+      // Grab IDs from Selected Agents
+      getSelectedAgentIDs() {
         this.checkedAgentsIDs = [];
-        for(let i = 0; i < this.checkedAgents.length; i++){
+        for (let i = 0; i < this.checkedAgents.length; i++) {
           this.checkedAgentsIDs.push(this.checkedAgents[i].uuid);
         }
       },
-      //Grab all Agent Objects
+      // Grab all Agent Objects
       selectAllAgents() {
         this.checkedAgents = [];
         if (!this.selectAll) {
@@ -363,7 +363,7 @@
         }
         this.getSelectedAgentIDs();
       },
-      //Grab only NEW && Selected agents
+      // Grab only NEW && Selected agents
       selectedNewAgents() {
         this.checkedAgentsIDs = [];
         for (let i = 0; i < this.checkedAgents.length; i++) {
@@ -379,8 +379,8 @@
             this.selectedNewAgents();
             axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgentsIDs))
             .then((response) => {
-              //Debug
-              //console.log(response.data);
+              // Debug
+              // console.log(response.data);
               this.hideLoadingState();
               this.getHostList();
             })
@@ -393,8 +393,8 @@
             this.showLoadingState();
             axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgentsIDs))
             .then((response) => {
-              //Debug
-              //console.log(response.data);
+              // Debug
+              // console.log(response.data);
               this.hideLoadingState();
               this.getHostList();
             })
@@ -404,17 +404,17 @@
             });
           break;
           case 'update':
-            
+
           break;
           case 'config':
-            
+
           break;
           case 'uninstall':
             this.showLoadingState();
             axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgentsIDs))
             .then((response) => {
-              //Debug
-              //console.log(response.data);
+              // Debug
+              // console.log(response.data);
               this.hideLoadingState();
               this.getHostList();
             })

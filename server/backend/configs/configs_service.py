@@ -15,7 +15,7 @@ def get_all_configs():
     return data
 
 
-def create_configs(config_name,config_body):
+def create_configs(config_name):
     if Configuration.objects.filter(NAME=config_name).count() == 0:
         new_config = Configuration(
             NAME=config_name,
@@ -23,15 +23,16 @@ def create_configs(config_name,config_body):
         )
         if not os.path.exists('../configuration_files'):
             os.makedirs('../configuration_files')
-        
-        with open(f'../configuration_files/agent_config_{config_name}.xml', 'w+') as config:
-            for line in config_body.decode("utf-8").split('\n'):
-                config.write(f'{line}\n')
+
+        # What is going on here??
+        with open(f'../configuration_files/agent_config_{config_name}.xml', 'w+'):
+            pass
+        #
         new_config.save()
         log.debug(f'Config with name {config_name} created successfully')
         return 0
     else:
-        log.err(f'Config {config_name} already exists')
+        log.err('Config already exists')
         return -1
 
 
@@ -43,10 +44,9 @@ def retrieve_config(config_name):
             for line in config.readlines():
                 config_retrieved += line
 
-        log.debug(f'{config_name} config retrieved')
         return config_retrieved
     else:
-        log.err(f'Config {config_name} does not exist')
+        log.err('Config does not exist')
         raise Exception
 
 
@@ -54,11 +54,11 @@ def update_config(config_name, config_body):
     config = Configuration.objects.filter(NAME=config_name)
 
     if len(config) == 1:
-        with open(f"../configuration_files/agent_config_{config_name}.xml","a") as config:
+        with open(f"../configuration_files/agent_config_{config_name}.xml", "a") as config:
             config.truncate(0)
             for line in config_body.decode("utf-8").split('\n'):
                 config.write(f'{line}\n')
-        log.debug(f'{config_name} config updated')
+        pass
     else:
         log.err('Config does not exist')
         raise Exception

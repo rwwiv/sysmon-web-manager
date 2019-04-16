@@ -1,24 +1,17 @@
-from heartbeat.models import Agent
-from heartbeat.models import Sysmon
-from heartbeat.models import Configuration
-from logging_service import heartbeat_logging_service as log
 import json
+
+from heartbeat.models import Agent
+from logging_service import heartbeat_logging_service as log
 
 
 def get_sysmon_version():
-    try:
-        return Sysmon.objects.get(IS_CURRENT=True).VERSION
-    except:
-        log.err("No default sysmon version on server")
-        return ""
+    # return Sysmon.objects.get(IS_CURRENT=True)
+    return "8.04"
 
 
 def get_config_name():
-    try:
-        return Configuration.objects.get(IS_DEFAULT=True).NAME
-    except:
-        log.err('No default configuration on server')
-        return ""
+    # return Configuration.objects.get(IS_DEFAULT=True)
+    return "gifnoc"
 
 
 def get_sysmon_update_flag(server_version, client_version):
@@ -40,7 +33,7 @@ def update_agent_status(requested_uuid, incoming_request):
             'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
         }
         if updates_data['sysmon']:
-            updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
+            updates_data['sysmon_verion'] = retrieved_agent.SYSMON_VERSION_NEW
         if updates_data['config']:
             updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
         data = {
@@ -52,9 +45,9 @@ def update_agent_status(requested_uuid, incoming_request):
     elif retrieved_agent.NEEDS_INSTALL:
         updates_data = {
             'sysmon': get_sysmon_update_flag(retrieved_agent.SYSMON_VERSION_NEW, retrieved_agent.SYSMON_VERSION_CURRENT),
-            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW,
+            'sysmon_version': retrieved_agent.SYSMON_VERSION_NEW.NAME,
             'config': get_config_update_flag(retrieved_agent.CONFIG_NAME_NEW, retrieved_agent.CONFIG_NAME_CURRENT),
-            'config_name': retrieved_agent.CONFIG_NAME_NEW
+            'config_name': retrieved_agent.CONFIG_NAME_NEW.NAME
         }
         data = {
             'updates_needed': updates_data,

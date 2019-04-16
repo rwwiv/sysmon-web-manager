@@ -69,16 +69,26 @@
         inputTextToSave: '',
       };
     },
+    beforeCreated() {},
+    created() {
+      axios.get('http://localhost:8000/configs/', this.$router.params.id).then((response) => { this.file = response.data; });
+      this.configName = this.$route.params.id;
+      alert(this.configName);
+    },
+    mounted() {},
+    beforeDestroy() {},
+    destroy() {},
+
     methods: {
-      getParams() {
-        const vars = {};
-        const parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
-          vars[key] = value;
-          console.log(vars);
-          alert('did the url parsing');
-        });
-        return vars;
-      },
+      // getParams() {
+      //   const vars = {};
+      //   const parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
+      //     vars[key] = value;
+      //     console.log(vars);
+      //     alert('did the url parsing');
+      //   });
+      //   return vars;
+      // },
 
 // Now you can get the parameters you want like so:
       //    var abc = params.abc;

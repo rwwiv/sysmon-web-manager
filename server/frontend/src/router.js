@@ -28,16 +28,16 @@ export default new Router({
       name: 'ConfigEditor',
       component: () => import('./views/ConfigEditor.vue'),
     },
+    // {
+    //   path: '/ConfigEditor:id',
+    //   name: 'ConfigEditor',
+    //   // route level code-splitting
+    //   // this generates a separate chunk (about.[hash].js) for this route
+    //   // which is lazy-loaded when the route is visited.
+    //   component: () => import(/* webpackChunkName: "about" */ './views/ConfigEditor.vue'),
+    // },
     {
-      path: '/ConfigEditor:id',
-      name: 'ConfigEditor',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/ConfigEditor.vue'),
-    },
-    {
-      path: '/ConfigEditor/:id',
+      path: '/ConfigEditor/:id?',
       name: 'ConfigEditor/:id',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route

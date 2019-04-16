@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, Http404
 
 from logging_service import configs_logging_service as log
 from .configs_service import create_configs, get_all_configs, retrieve_config, update_config
@@ -9,6 +9,9 @@ def index(request):
     if request.method == 'GET':
         log.debug("GET request received at configs endpoint")
         return JsonResponse(get_all_configs(), safe=False)
+    else:
+        log.err('Request received with no mapping raising 404')
+        raise Http404('404 not found')
 
 
 def configs(request, name):
@@ -38,6 +41,9 @@ def configs(request, name):
         except:
             log.err("Config was not updated successfully")
             return HttpResponseBadRequest()
+    else:
+        log.err('Request received with no mapping raising 404')
+        raise Http404('404 not found')
 
         
 

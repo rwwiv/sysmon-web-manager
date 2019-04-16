@@ -153,7 +153,15 @@
         this.inputTextToSave = document.getElementById('inputTextToSave').value;
         console.log(this.inputTextToSave);
         axios.post('http://localhost:8000/configs/', this.configName);
-        axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
+        // axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
+        axios
+          .put(
+            'http://localhost:8000/configs/',
+            { NAME: this.configName, IS_DEFAULT: document.getElementById('makeDefault').value.checked(), data: this.inputTextToSave },
+            { headers: { 'Content-Type': 'text/plain' } },
+          )
+          .then(r => console.log(r.status))
+          .catch(e => console.log(e));
         // axios.get('http://localhost:8000/configs/', this.configName).then((response) => {
         //   if (response.status !== 400) this.existingConfig = 0;
         //   else this.existingConfig = 1;

@@ -20,8 +20,9 @@ def get_all_agents():
             'exec_last_running_at': agent.EXEC_LAST_RUNNING_AT,
             'needs_install': agent.NEEDS_INSTALL,
             'new_agent': not agent.ATTEMPTED_INSTALL,
-            'group': agent.GROUP.NAME
         }
+        if agent.GROUP is not None:
+            temp['group'] = agent.GROUP.NAME
         data.append(temp)
     log.debug(f"{len(data)} agents retrieved")
     return data
@@ -71,8 +72,8 @@ def update_config(uuid, name):
         retrieved_config = Configuration.objects.get(NAME=name)
         retrieved_agent.CONFIG_NAME_NEW = retrieved_config.NAME
         retrieved_agent.save()
-        log.debug(f"Agent {requested_uuid} configuration set to {name}")
+        log.debug(f"Agent {uuid} configuration set to {name}")
         return 0
-    except Exception as e:
+    except:
         log.err(f"Failed to associate {name} config to agent {uuid}")
         return -1

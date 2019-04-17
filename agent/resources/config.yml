@@ -1,11 +1,11 @@
 agent:
   checked_exec_running: false
-  config_name: gifnoc
+  config_name: ''
   display_name: SysMonager Agent
   exec_last_running: null
   service_name: SysMonagerAgent
-  sysmon_version: '8.04'
-  uuid: adf8fc3d-83fd-4957-bd0d-5be967245ff4
+  sysmon_version: ''
+  uuid: 5bbc3427-a46f-490d-899b-7e9696757463
 api:
   heartbeat: /heartbeat
   retry: 0

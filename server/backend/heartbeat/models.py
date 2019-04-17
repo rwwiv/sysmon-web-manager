@@ -20,7 +20,7 @@ class Sysmon(models.Model):
 
 class Group(models.Model):
     NAME = models.CharField(max_length=200, primary_key=True)
-    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.SET_NULL,null=True)
+    CONFIGURATION = models.ForeignKey(Configuration, on_delete=models.SET_NULL, null=True)
     SYSMON = models.ForeignKey(Sysmon, on_delete=models.SET_NULL, null=True)
 
 

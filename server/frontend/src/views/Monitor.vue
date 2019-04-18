@@ -11,12 +11,7 @@
 <script>
   import AgentList from '../components/AgentList.vue';
 
-  $(document).ready(() => {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_minimal-blue',
-      radioClass: 'iradio_minimal-blue',
-    });
-  });
+  
   export default {
     data() {
       return {

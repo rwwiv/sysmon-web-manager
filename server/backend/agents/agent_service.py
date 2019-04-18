@@ -1,5 +1,4 @@
 from heartbeat.models import Agent, Configuration
-import json
 from logging_service import agents_logging_service as log
 
 

@@ -1,3 +1,5 @@
+from urllib.parse import unquote_plus
+
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse, HttpResponseBadRequest, Http404
 from .groups_service import create_group
@@ -17,13 +19,14 @@ def index(request):
 
 
 def creation(request, name):
+    decoded_name = unquote_plus(name)
     if request.method == 'POST':
         log.debug('Post request received at groups endpoint')
-        success_flag = create_group(name,json.loads(request.body.decode('utf-8')))
+        success_flag = create_group(decoded_name, json.loads(request.body.decode('utf-8')))
         if success_flag < 0:
-            return HttpResponseBadRequest(f"Creation of group {name} failed")
+            return HttpResponseBadRequest(f"Creation of group {decoded_name} failed")
         else:
-            return HttpResponse(f'Creation of group {name} succeeded')
+            return HttpResponse(f'Creation of group {decoded_name} succeeded')
     else:
         log.warn('Request with no mapping received raising 404')
         return Http404()

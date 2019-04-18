@@ -9,17 +9,16 @@
           <label for="configNameBox"> Configuration Name</label><input type="text" @change="nameConfig(document.getElementById('configNameBox').value)" id="configNameBox" width="auto" v-model="text">
           <button class="btn btn-secondary pull-right" @click="saveConfig()">Save Changes </button>
           <b></b>
-          <label>
-            <input type="checkbox" name="makeDefault" value="isDefault" aria-labelledby="default-checkbox">
-          </label>Check the box to set this configuration as the default.<br>
-
+          <div>
+            <input type="checkbox" id="makeDefault" v-model="checked" aria-labelledby="default-checkbox" @toggle="toggleChecked()">
+            <label for="makeDefault">Check to set as default.</label>
+          </div>
       </div>
     </div>
     </div>
   </section>
 </template>
-
-    <!--<div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
+    <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -27,7 +26,7 @@
             <h3>Confirm Save Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
-          &lt;!&ndash; /.modal-header &ndash;&gt;
+          <!-- /.modal-header -->
           <div class="modal-body">
             <h5>{{existingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
           </div>
@@ -36,11 +35,11 @@
             <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
-          &lt;!&ndash; /.modal-footer &ndash;&gt;
+           <!--  modal-footer-->
         </div>
       </div>
     </div>
-    &lt;!&ndash; End EDIT SYSMON CONFIG MODAL &ndash;&gt;
+    <!--End EDIT SYSMON CONFIG MODAL-->
     <div class="modal fade" id="validate-modal" tabindex="-1" role="dialog" aria-labelledby="validate-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -49,15 +48,15 @@
             <h3>Validate Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
-          &lt;!&ndash; /.modal-header &ndash;&gt;
+          <!-- /.modal-header-->
           <div class="modal-body">
             <h5>Please validate the configuration before saving.</h5>
           </div>
-          &lt;!&ndash; /.modal-body &ndash;&gt;
+           <!-- /.modal-body -->
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
           </div>
-          &lt;!&ndash; /.modal-footer &ndash;&gt;
+          <!--/.modal-footer-->
         </div>
       </div>
     </div>-->
@@ -84,7 +83,7 @@
     data() {
       return {
         configName: '',
-        isDefault: '',
+        checked: false,
         didValidate: '',
         existingConfig: '',
         overwriteExisting: '',
@@ -106,9 +105,14 @@
     },
     mounted() {
       this.configName = this.$route.params.id;
+      // const loadReader = new FileReader();
+      // loadReader.addEventListener('load', function () {
+      // document.getElementById('inputTextToSave').innerText = this.result.toString();
+      // });
+      // loadReader.readAsText(configFile);
       document.getElementById('configNameBox').value = this.configName;
-      document.getElementById('inputTextToSave').value = 'eventually the config';
-      axios.get('http://localhost:8000/configs/', this.configName).then((response) => { this.file = response.data; });
+      // document.getElementById('inputTextToSave').value = 'eventually the config';
+      axios.get(`http://localhost:8000/configs/${this.configName}`).then((response) => { this.file = response.data; console.log(response.data); });
       function onload(fileLoadedEvent) {
         document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
         document.getElementById('configNameBox').value = this.file.name;
@@ -121,6 +125,13 @@
     destroy() {},
 
     methods: {
+      toggleChecked() {
+        if (this.checked) {
+          this.checked = false;
+        } else {
+          this.checked = true;
+        }
+      },
       nameConfig(name) {
         this.configName = name;
       },
@@ -151,17 +162,21 @@
         console.log(this.configName);
         // this works
         this.inputTextToSave = document.getElementById('inputTextToSave').value;
+        const parser = new DOMParser();
+        this.file = parser.parseFromString(this.inputTextToSave, 'application/xml');
         console.log(this.inputTextToSave);
-        axios.post('http://localhost:8000/configs/', this.configName);
-        // axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
-        axios
-          .put(
-            'http://localhost:8000/configs/',
-            { NAME: this.configName, IS_DEFAULT: document.getElementById('makeDefault').value.checked(), data: this.inputTextToSave },
-            { headers: { 'Content-Type': 'text/plain' } },
-          )
-          .then(r => console.log(r.status))
-          .catch(e => console.log(e));
+        axios.post(`http://localhost:8000/configs/${this.configName}`);
+        axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
+        // axios
+        //   .put(
+        //     `http://localhost:8000/configs/${this.configName}`,
+        //     { IS_DEFAULT: document.getElementById('makeDefault').value.checked(), data: this.file },
+        //     { headers: { 'Content-Type': 'text/plain' } },
+        //   )
+        //   .then(r => console.log(r.status))
+        //   .catch(e => console.log(e));
+        console.log(this.checked);
+        this.$router.push({ name: 'management' }); // redirects to the list of configs
         // axios.get('http://localhost:8000/configs/', this.configName).then((response) => {
         //   if (response.status !== 400) this.existingConfig = 0;
         //   else this.existingConfig = 1;
@@ -199,7 +214,7 @@
       mounted() {
         this.configName = this.$route.params.id;
         alert(this.configName); // says undefined
-        axios.get('http://localhost:8000/configs/', this.configName).then((response) => {
+        axios.get(`http://localhost:8000/configs/${this.configName}`).then((response) => {
           this.inputTextToSave = response;
         });
         document.getElementById('inputTextToSave').value = this.inputTextToSave;

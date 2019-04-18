@@ -1,7 +1,7 @@
 import datetime
 import os
 
-path = "./logs/configs"
+path = "./logs/groups"
 def err(message):
     date = datetime.datetime.today()
 

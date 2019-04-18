@@ -356,7 +356,7 @@
       // Grab all Agent Objects
       selectAllAgents() {
         this.checkedAgents = [];
-        if (!this.selectAll) {
+        if (this.selectAll) {
           for (let i = 0; i < this.agents.length; i++) {
             this.checkedAgents.push(this.agents[i]);
           }
@@ -436,16 +436,13 @@
       this.getHostList();
       this.timer = setInterval(this.getHostList, 10000);
       this.getAvailableSysmonConfigs();
-      const that = this;
       // Handle iCheckBox in the host list table head.
-      jQuery('#checkAll').on('ifChanged', (e) => {
-        if (e.target.checked) {
-          that.selectAllAgents();
-          that.selectAll = true;
-        } else {
-          that.selectAllAgents();
-          that.selectAll = false;
-        }
+      const that = this;
+      jQuery('#checkAll').change(function(){
+        that.selectAllAgents();
+        //Debug
+        // console.log(that.selectAll);
+        // console.log(that.checkedAgents);
       });
     },
     beforeDestroy() {

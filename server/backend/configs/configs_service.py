@@ -1,21 +1,20 @@
-import os
-
 from heartbeat.models import Configuration
+import json
 from logging_service import configs_logging_service as log
-
+import os
 
 def get_all_configs():
     all_configs = Configuration.objects.all()
     data = []
     for x in all_configs:
-        temp = {'name': x.NAME,
+        temp = {'name': x.NAME, 
                 'is_default': x.IS_DEFAULT}
         data.append(temp)
     log.debug(f"{len(data)} configurations retrieved")
     return data
 
 
-def create_configs(config_name):
+def create_configs(config_name,config_body):
     if Configuration.objects.filter(NAME=config_name).count() == 0:
         new_config = Configuration(
             NAME=config_name,
@@ -23,30 +22,29 @@ def create_configs(config_name):
         )
         if not os.path.exists('../configuration_files'):
             os.makedirs('../configuration_files')
-
-        # What is going on here??
-        with open(f'../configuration_files/agent_config_{config_name}.xml', 'w+'):
-            pass
-        #
+        
+        with open(f'../configuration_files/agent_config_{config_name}.xml', 'wb') as config:
+           config.write(bytes(config_body))
         new_config.save()
-        log.debug(f'Config with name {config_name} created successfully')
+        log.debug(f'Config with name {config_name} created succesfully')
         return 0
     else:
-        log.err('Config already exists')
+        log.err(f'Config {config_name} already exists')
         return -1
 
 
 def retrieve_config(config_name):
     config = Configuration.objects.filter(NAME=config_name)
-    if len(config) == 1:
+    if(len(config) == 1):
         config_retrieved = ''
         with open(f"../configuration_files/agent_config_{config_name}.xml") as config:
             for line in config.readlines():
                 config_retrieved += line
 
+        log.debug(f'{config_name} config retrieved')
         return config_retrieved
     else:
-        log.err('Config does not exist')
+        log.err(f'Config {config_name} does not exist')
         raise Exception
 
 
@@ -54,11 +52,10 @@ def update_config(config_name, config_body):
     config = Configuration.objects.filter(NAME=config_name)
 
     if len(config) == 1:
-        with open(f"../configuration_files/agent_config_{config_name}.xml", "a") as config:
+        with open(f"../configuration_files/agent_config_{config_name}.xml","wb") as config:
             config.truncate(0)
-            for line in config_body.decode("utf-8").split('\n'):
-                config.write(f'{line}\n')
-        pass
+            config.write(bytes(config_body))
+        log.debug(f'{config_name} config updated')
     else:
         log.err('Config does not exist')
         raise Exception

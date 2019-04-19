@@ -18,7 +18,6 @@
     </div>
     </div>
 
-
     <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

@@ -144,7 +144,7 @@
         document.getElementById('isDefault').checked = false;
         // not sure how to send the text data back to the server
       },
-      validateConfig() { // check encoding?
+      isValidConfig() { // check encoding?
         const helper = new DOMParser();
         document.getElementById('errorBox').value = helper.parseFromString(this.inputTextToSave, 'application/xml');
         this.XMLconfig = helper.parseFromString(this.inputTextToSave, 'application/xml');

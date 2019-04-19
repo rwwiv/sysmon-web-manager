@@ -14,14 +14,19 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Is Default?</th>
+            <th></th>
             <th class = "center-text icon-column">View/Edit</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="config in configs" :key="config.name">
             <td>{{ config.name }}</td>
-            <td>{{ config.is_default ? 'Default': '' }}</td>
+            <td v-if="config.default">
+              <span class="label label-primary" v-if="config.default">
+                Default
+              </span>
+            </td>
+            <td v-else></td>
             <td class="center-text">
               <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
                            active-class="active">
@@ -50,12 +55,6 @@ export default {
     };
   },
   methods: {
-    // openConfig(name) {
-    //   axios.get('http://localhost:8000/configs/', name).then((response) => {
-    //       const reader = new FileReader();
-    //       ConfigEditorInput.methods.inputTextToSave = reader.readAsText(response.data)
-    //
-    // },
     getAllConfigs() {
       axios.get('http://localhost:8000/configs')
         .then((response) => {

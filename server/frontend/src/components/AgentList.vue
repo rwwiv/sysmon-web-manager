@@ -208,6 +208,8 @@
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
 
+  const loadingOverlay = $('#loadingOverlay');
+
   export default {
     name: 'AgentList',
     data() {
@@ -256,16 +258,16 @@
         return 'Offline';
       },
       hideLoadingState() {
-        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+        const loaderIsNotVisible = loadingOverlay.hasClass('hidden');
         if (!loaderIsNotVisible) {
-          $('#loadingOverlay').addClass('hidden');
+          loadingOverlay.addClass('hidden');
         }
       },
       showLoadingState() {
-        const loaderIsNotVisible = $('#loadingOverlay').hasClass('hidden');
+        const loaderIsNotVisible = loadingOverlay.hasClass('hidden');
 
         if (loaderIsNotVisible) {
-          $('#loadingOverlay').removeClass('hidden');
+          loadingOverlay.removeClass('hidden');
         }
       },
       saveConfig(agentID, config) {
@@ -299,7 +301,7 @@
       installSysmon(agentID) {
         this.showLoadingState();
         axios.patch(`http://localhost:8000/agents/${agentID}`)
-        .then((response) => {
+        .then(() => {
           // Debug
           // console.log(response);
           this.hideLoadingState();
@@ -378,7 +380,7 @@
             this.showLoadingState();
             this.selectedNewAgents();
             axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgentsIDs))
-            .then((response) => {
+            .then(() => {
               // Debug
               // console.log(response.data);
               this.hideLoadingState();
@@ -392,7 +394,7 @@
           case 'restart':
             this.showLoadingState();
             axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgentsIDs))
-            .then((response) => {
+            .then(() => {
               // Debug
               // console.log(response.data);
               this.hideLoadingState();
@@ -412,7 +414,7 @@
           case 'uninstall':
             this.showLoadingState();
             axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgentsIDs))
-            .then((response) => {
+            .then(() => {
               // Debug
               // console.log(response.data);
               this.hideLoadingState();

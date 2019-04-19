@@ -1,61 +1,184 @@
 <template>
-
   <section class="content">
-    <div class="row">
-      <div class="col-md-12">
-        <div>
-          <button class= "btn btn-secondary pull-left">Select a file to add a new configuration. <input type= "file" @change="loadConfig"></button>
-          <label for="inputTextToSave"></label><textarea id="inputTextToSave" v-model="inputTextToSaveVM" @loadstart="loadConfig" @change="didNotValidate()"></textarea>
-          <button class="btn btn-secondary pull-left" @click="validateConfig">Validate</button>
-          <label for="configNameBox"> Configuration Name</label><input type="text" @change="nameConfig(document.getElementById('configNameBox').value)" id="configNameBox" width="auto" v-model="ConfigNameVM">
-          <button class="btn btn-secondary pull-right" @click="saveConfig()">Save Changes </button>
-          <b></b>
-          <div>
-            <input type="checkbox" id="makeDefault"  aria-labelledby="default-checkbox" >
-            <label for="makeDefault">Check to set as default.</label>
-          </div>
-      </div>
-    </div>
-    </div>
+    <div class="container">
 
-    <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-            <h3>Confirm Save Configuration</h3>
-            <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
+      <div class="box">
+        <div class="box-header with-border">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="input-group">
+                <span class="input-group-addon">
+                  Default?
+                  <input type="checkbox" id="makeDefault" @click="makeDefault()" :checked="this.defaultCheck">
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="configNameBox"
+                  width="auto"
+                  v-model="configName"
+                  placeholder="Configuration name"
+                >
+                <span class="input-group-addon">.xml</span>
+              </div>
+            </div>
           </div>
-          <div class="modal-body">
-            <h5>{{checkExistingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
+        </div>
+        <div class="box-body">
+          <codemirror
+            v-model="inputTextToSave"
+            @change="didValidate = false"
+            :options="cmOptions"></codemirror>
+        </div>
+        <div class="box-footer">
+          <label class="btn btn-default btn-file">
+            Browse for file <input type="file" style="display: none;" @input="loadConfig()" id="file">
+          </label>
+          <button class="btn btn-default pull-right" type="submit" @click="submitConfig()">Save Configuration</button>
+        </div>
+      </div>
+      <div class="alert alert-warning alert-dismissible" role="alert" v-if="isValidConfig && didValidate">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Warning!</strong> There are errors in your xml.
+      </div>
+      <!-- End of currently used html -->
+      <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+              <h3>Confirm Save Configuration</h3>
+              <h4 class="modal-title"><b>Name: </b> {{this.configName}}</h4>
+            </div>
+            <div class="modal-body">
+              <h5 v-if="existingConfig">
+                You are about to make changes to an existing configuration.
+                Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.
+              </h5>
+              <h5 v-else>
+                You are about to save this new configuration. Press OK to proceed or cancel to make changes.
+              </h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+
+      <div class="modal fade" id="validate-modal" tabindex="-1" role="dialog" aria-labelledby="validate-modal-label">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+              <h3>Validate Configuration</h3>
+              <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
+            </div>
+            <div class="modal-body">
+              <h5>Please validate the configuration before saving.</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal fade" id="validate-modal" tabindex="-1" role="dialog" aria-labelledby="validate-modal-label">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-            <h3>Validate Configuration</h3>
-            <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
-          </div>
-          <div class="modal-body">
-            <h5>Please validate the configuration before saving.</h5>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </section>
 </template>
+
+
+<script>
+  import axios from 'axios';
+  import { codemirror } from 'vue-codemirror';
+  import 'codemirror/mode/xml/xml';
+  import 'codemirror/lib/codemirror.css';
+
+  export default {
+    components: {
+      codemirror,
+    },
+    name: 'ConfigEditorInput.vue',
+    data() {
+      return {
+        cmOptions: {
+          tabSize: 4,
+          mode: {
+            name: 'xml',
+            matchClosing: true,
+          },
+          lineNumbers: true,
+        },
+        configName: '',
+        defaultCheck: false,
+        didValidate: false,
+        existingConfig: false,
+        inputTextToSave: '',
+      };
+    },
+    computed: {
+      isValidConfig() { // check encoding?
+        const oParser = new DOMParser();
+        const oDOM = oParser.parseFromString(this.inputTextToSave, 'text/xml');
+        return oDOM.documentElement.nodeName !== 'parsererror';
+      },
+    },
+    mounted() {
+      if (this.$route.params.id !== undefined) {
+        this.configName = this.$route.params.id;
+        document.getElementById('configNameBox').value = this.configName;
+        axios.get(`http://localhost:8000/configs/${this.configName}`)
+          .then((response) => {
+            this.inputTextToSave = atob(response.data.content);
+            this.defaultCheck = response.data.default;
+            this.existingConfig = true;
+            console.log(this.existingConfig);
+          });
+      }
+    },
+    beforeDestroy() {},
+    destroy() {},
+
+    methods: {
+      makeDefault() {
+        this.defaultCheck = $('#makeDefault').is(':checked');
+      },
+      submitConfig() {
+        if (this.isValidConfig) {
+          this.saveConfig();
+        }
+      },
+      loadConfig() {
+        const fr = new FileReader();
+        const file = document.getElementById('file').files[0];
+          fr.onload = (inputFile => (e) => {
+            this.inputTextToSave = e.target.result;
+            [this.configName] = inputFile.name.split('.xml');
+          })(file);
+          fr.readAsText(file);
+      },
+      didNotValidate() {
+        this.didValidate = 0;
+      },
+      saveConfig() {
+        const data = {
+          name: this.configName,
+          content: btoa(this.inputTextToSave),
+          default: this.defaultCheck,
+        };
+        console.log(this.existingConfig);
+        if (!this.existingConfig) {
+          axios.post('http://localhost:8000/configs/', data);
+        } else {
+          axios.put('http://localhost:8000/configs/', data);
+        }
+      },
+
+    },
+  };
+</script>
+
 <style scoped>
   textarea
   {
@@ -65,191 +188,23 @@
     overflow-y: auto;
     overflow-x: auto;
   }
-
-</style>
-
-<script>
-
-  import axios from 'axios';
-  import tmp from 'tmp';
-
-  const fs = require('fs');
-
-  export default {
-    name: 'ConfigEditorInput.vue',
-    data() {
-      return {
-        configName: '',
-        configNameVM: false,
-        checked: false,
-        didValidate: false,
-        existingConfig: false,
-        overwriteExisting: false,
-        XMLconfig: XMLDocument,
-        file: '',
-        inputTextToSave: '',
-        inputTextToSaveVM: '',
-        text: '',
-        document: '',
-      };
-    },
-    beforeCreated() {
-      console.log('beforeCreated');
-      this.configName = this.$route.params.id;
-      console.log(this.configName);
-      console.log(this.route);
-    },
-    created() {
-      console.log('created');
-      console.log(this.$route.params.id);
-      // alert(this.$route.params.id);
-    },
-    mounted() {
-      const that = this;
-      jQuery('#makeDefault').change(() => {
-          // console.log('clicked');
-          that.checked = !!jQuery(this).is(':checked');
-      });
-      if (this.$route.params.id !== undefined) {
-        this.configName = this.$route.params.id;
-        document.getElementById('configNameBox').value = this.configName;
-        axios.get(`http://localhost:8000/configs/${this.configName}`).then((response) => { this.file = response.data; console.log(response.data); });
-        const reader = new FileReader();
-        reader.onload = this.onload;
-        this.inputTextToSave = reader.readAsText(this.file);
-      }
-    },
-    beforeDestroy() {},
-    destroy() {},
-
-    methods: {
-      nameConfig(name) {
-        this.configName = name;
-      },
-      loadConfig(ev) {
-        const file = ev.target.files[0];
-        const reader = new FileReader();
-
-        function onload(fileLoadedEvent) {
-          document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
-          document.getElementById('configNameBox').value = file.name;
-          this.file = file;
-        }
-
-        reader.onload = onload;
-        reader.readAsText(file);
-      },
-      didNotValidate() {
-        this.didValidate = 0;
-      },
-      checkExistingConfig(name) {
-        axios.get(`http://localhost:8000/configs/${name}`).then((response) => {
-          this.existingConfig = response.status === 400;
-        });
-      },
-      saveConfig() {
-        this.configName = document.getElementById('configNameBox').value;
-        console.log(this.configName);
-        // this works
-        this.inputTextToSave = document.getElementById('inputTextToSave').value;
-        console.log(this.inputTextToSave);
-        const tmpFile = tmp.fileSync();
-        const fileStream = fs.createWriteStream(tmpFile);
-        fileStream.write(this.inputTextToSave);
-        console.log(this.inputTextToSave);
-        if (this.existingConfig) {
-          axios.post(`http://localhost:8000/configs/${this.configName}`, tmpFile);
-        } else {
-          axios.put(`http://localhost:8000/configs/${this.configName}`, tmpFile).then((response) => { console.log(response); });
-        }
-        fileStream.close();
-
-
-        // axios
-        //   .put(
-        //     `http://localhost:8000/configs/${this.configName}`,
-        //     { IS_DEFAULT: document.getElementById('makeDefault').value.checked(), data: this.file },
-        //     { headers: { 'Content-Type': 'text/plain' } },
-        //   )
-        //   .then(r => console.log(r.status))
-        //   .catch(e => console.log(e));
-
-
-         console.log(this.checked);
-         this.$router.push({ name: 'management' }); // redirects to the list of configs
-
-
-        // axios.get('http://localhost:8000/configs/', this.configName).then((response) => {
-        //   if (response.status !== 400) this.existingConfig = 0;
-        //   else this.existingConfig = 1;
-        // });
-        // if (this.didValidate === 0) $('#validate-modal').modal('hide');
-        // if (this.existingConfig === 1 && this.overwriteExisting === 0) {
-        //   $('#confirm-modal').modal('hide');
-        // }
-        // const formData = new FormData();
-        // formData.append('file', this.file);
-        // axios.post(`http://localhost:8000/configs/${this.configName}`, formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data',
-        //   },
-        // }).then((response) => {
-        //   console.log(response.status);
-        // }); // , document.getElementById('isDefault').checked
-        // document.getElementById('inputTextToSave').value = 'File saved.';
-        // document.getElementById('configNameBox').value = '';
-        // document.getElementById('isDefault').checked = false;
-        // // not sure how to send the text data back to the server
-      },
-      validateConfig() { // check encoding?
-        const helper = new DOMParser();
-        document.getElementById('errorBox').value = helper.parseFromString(this.inputTextToSave, 'application/xml');
-        this.XMLconfig = helper.parseFromString(this.inputTextToSave, 'application/xml');
-        this.didValidate = true;
-        alert('Validation Complete');
-        // alert('XML Parsing Error');
-        // this.didValidate = 0;
-        // if ((this.XMLconfig))
-        //  {
-        //  }
-      },
-      // mounted() {
-      //  this.configName = this.$route.params.id;
-      //  alert(this.configName); // says undefined
-      //  axios.get(`http://localhost:8000/configs/${this.configName}`).then((response) => {
-      //    this.inputTextToSave = response;
-      //  });
-      //  document.getElementById('inputTextToSave').value = this.inputTextToSave;
-      //  document.getElementById('configNameBox').value = this.configName;
-      // },
-      onload(fileLoadedEvent) {
-        document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
-        document.getElementById('configNameBox').value = this.file.name;
-      },
-    },
-  };
-
-  // import axios from 'axios';
-
-  // import ConfigEd from '../components/ConfigEditorInput.vue';
-
-  $(document).ready(() => {
-    // $('#makeDefault').change(function(){
-    //   if($(this).is("checked")){
-    //     console.log("it's checked");
-    //   }
-    //   else {
-    //     console.log("not checked");
-    //   }
-    // });
-
-   // $('input').iCheck({
-   //   checkboxClass: 'icheckbox_minimal-blue',
-   //   radioClass: 'iradio_minimal-blue',
-   // });
-  });
-</script>
-
-<style scoped>
-
+  .btn-file {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+  }
 </style>

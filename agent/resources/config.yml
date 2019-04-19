@@ -3,7 +3,6 @@ agent:
   config_name: ''
   display_name: SysMonager Agent
   exec_last_running: null
-  installed: false
   service_name: SysMonagerAgent
   sysmon_version: ''
   uuid: 5bbc3427-a46f-490d-899b-7e9696757463

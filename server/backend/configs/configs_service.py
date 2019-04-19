@@ -52,16 +52,9 @@ def update_config(config_name, config_body):
     config = Configuration.objects.filter(NAME=config_name)
 
     if len(config) == 1:
-<<<<<<< HEAD
         with open(f"../configuration_files/agent_config_{config_name}.xml","wb") as config:
             config.truncate(0)
             config.write(bytes(config_body))
-=======
-        with open(f"../configuration_files/agent_config_{config_name}.xml","a") as config:
-            config.truncate(0)
-            for line in config_body.decode("utf-8").split('\n'):
-                config.write(f'{line}\n')
->>>>>>> 66a834f4755af16db6a88878675c5f4ae317be46
         log.debug(f'{config_name} config updated')
     else:
         log.err('Config does not exist')

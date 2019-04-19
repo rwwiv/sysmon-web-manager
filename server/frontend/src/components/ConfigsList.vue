@@ -19,12 +19,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="config in configs" :key="config.NAME">
-            <td>{{ config.NAME }}Name</td>
-            <td>{{ config.IS_DEFAULT ? 'Default': '' }}Default Status</td>
+          <tr v-for="config in configs" :key="config.name">
+            <td>{{ config.name }}</td>
+            <td>{{ config.is_default ? 'Default': '' }}</td>
             <td class="center-text">
-              <router-link to="ConfigEditor" active-class="active">
-                <a><i class="fa fa-search-plus"></i> </a>
+              <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
+                           active-class="active">
+                <a>
+                  <i class="fa fa-search-plus"></i>
+                </a>
               </router-link>
             </td>
           </tr>
@@ -47,6 +50,12 @@ export default {
     };
   },
   methods: {
+    // openConfig(name) {
+    //   axios.get('http://localhost:8000/configs/', name).then((response) => {
+    //       const reader = new FileReader();
+    //       ConfigEditorInput.methods.inputTextToSave = reader.readAsText(response.data)
+    //
+    // },
     getAllConfigs() {
       axios.get('http://localhost:8000/configs')
         .then((response) => {
@@ -63,6 +72,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  td a {
+    cursor:pointer;
+  }
+  .center-text {
+    text-align:center;
+  }
+  .icon-column{
+    width:10%;
+  }
+</style>
 
 <style scoped>
   td a {

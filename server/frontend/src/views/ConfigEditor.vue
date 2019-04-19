@@ -18,16 +18,14 @@
     </div>
     </div>
 
-
     <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
             <h3>Confirm Save Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
-          &lt;!&ndash; /.modal-header &ndash;&gt;
           <div class="modal-body">
             <h5>{{existingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
           </div>
@@ -42,7 +40,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
             <h3>Validate Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
@@ -52,7 +50,6 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
           </div>
-          &lt;!&ndash;/.modal-footer&ndash;&gt;
         </div>
       </div>
     </div>

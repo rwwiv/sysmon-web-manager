@@ -27,7 +27,7 @@
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
           <div class="modal-body">
-            <h5>{{existingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
+            <h5>{{checkExistingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
@@ -77,7 +77,7 @@
     data() {
       return {
         configName: '',
-        configNameVM: '',
+        ConfigNameVM: '',
         checked: false,
         didValidate: '',
         existingConfig: '',
@@ -154,6 +154,7 @@
          const parser = new DOMParser();
          this.file = parser.parseFromString(this.inputTextToSave, 'application/xml');
          console.log(this.inputTextToSave);
+
          axios.post(`http://localhost:8000/configs/${this.configName}`);
          axios.put(`http://localhost:8000/configs/${this.configName}`, this.file).then((response) => { console.log(response); });
 

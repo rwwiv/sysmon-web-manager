@@ -1,6 +1,11 @@
 from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import HttpResponse
-
+from django.http import Http404, JsonResponse, HttpResponseBadRequest
+from .agent_service import get_all_agents
+from .agent_service import update_needs_install
+from .agent_service import update_needs_restart
+from .agent_service import update_needs_uninstall
+from .agent_service import update_config
 from logging_service import agents_logging_service as log
 from .agent_service import get_all_agents, update_config, update_needs_install, update_needs_restart, \
     update_needs_uninstall

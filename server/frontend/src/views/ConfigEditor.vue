@@ -95,6 +95,7 @@
         inputTextToSave: '',
         inputTextToSaveVM: '',
         text: '',
+        document: '',
       };
     },
     beforeCreated() {
@@ -109,6 +110,17 @@
       // alert(this.$route.params.id);
     },
     mounted() {
+      const that = this;
+      jQuery('#makeDefault').change(function () {
+          // console.log('clicked');
+          if(jQuery(this).is(':checked')) {
+            // console.log("it's checked");
+            that.checked = true;
+          } else {
+            // console.log("not checked");
+            that.checked = false;
+          }
+      });
       if (this.$route.params.id !== undefined) {
         this.configName = this.$route.params.id;
         document.getElementById('configNameBox').value = this.configName;
@@ -146,7 +158,7 @@
         this.didValidate = 0;
       },
       checkExistingConfig(name) {
-        axios.get('http://localhost:8000/configs/', name).then((response) => {
+        axios.get(`http://localhost:8000/configs/${name}`).then((response) => {
           if (response.status !== 400) this.existingConfig = 0;
           else this.existingConfig = 1;
         });

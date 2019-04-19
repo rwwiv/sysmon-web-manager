@@ -8,7 +8,13 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "about" */ './views/Login.vue'),
+    },
+    {
       path: '/',
+      redirect: { name: 'login' },
       name: 'monitor',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
@@ -17,6 +23,7 @@ export default new Router({
     },
     {
       path: '/management',
+      redirect: { name: 'login' },
       name: 'management',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
@@ -25,6 +32,7 @@ export default new Router({
     },
     {
       path: '/ConfigEditor',
+      redirect: { name: 'login' },
       name: 'ConfigEditor',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route

@@ -1,4 +1,5 @@
 <template>
+
   <section class="content">
     <div class="row">
       <div class="col-md-12">
@@ -16,9 +17,8 @@
       </div>
     </div>
     </div>
-  </section>
-</template>
-<!--
+
+
     <div class="modal fade" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -31,16 +31,13 @@
           <div class="modal-body">
             <h5>{{existingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
           </div>
-          &lt;!&ndash; /.modal-body &ndash;&gt;
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
-           &lt;!&ndash;  modal-footer&ndash;&gt;
         </div>
       </div>
     </div>
-    &lt;!&ndash;End EDIT SYSMON CONFIG MODAL&ndash;&gt;
     <div class="modal fade" id="validate-modal" tabindex="-1" role="dialog" aria-labelledby="validate-modal-label">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -49,21 +46,19 @@
             <h3>Validate Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
-          &lt;!&ndash; /.modal-header&ndash;&gt;
           <div class="modal-body">
             <h5>Please validate the configuration before saving.</h5>
           </div>
-           &lt;!&ndash; /.modal-body &ndash;&gt;
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
           </div>
           &lt;!&ndash;/.modal-footer&ndash;&gt;
         </div>
       </div>
-    </div>&ndash;&gt;
-    &lt;!&ndash; End EDIT SYSMON CONFIG MODAL &ndash;&gt;
--->
+    </div>
 
+  </section>
+</template>
 <style scoped>
   textarea
   {
@@ -111,26 +106,16 @@
     },
     mounted() {
       const that = this;
-      jQuery('#makeDefault').change(function () {
+      jQuery('#makeDefault').change(() => {
           // console.log('clicked');
-          if(jQuery(this).is(':checked')) {
-            // console.log("it's checked");
-            that.checked = true;
-          } else {
-            // console.log("not checked");
-            that.checked = false;
-          }
+          that.checked = !!jQuery(this).is(':checked');
       });
       if (this.$route.params.id !== undefined) {
         this.configName = this.$route.params.id;
         document.getElementById('configNameBox').value = this.configName;
         axios.get(`http://localhost:8000/configs/${this.configName}`).then((response) => { this.file = response.data; console.log(response.data); });
-        function onload(fileLoadedEvent) {
-          document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
-          document.getElementById('configNameBox').value = this.file.name;
-        }
         const reader = new FileReader();
-        reader.onload = onload;
+        reader.onload = this.onload;
         this.inputTextToSave = reader.readAsText(this.file);
       }
     },
@@ -233,6 +218,10 @@
       //  document.getElementById('inputTextToSave').value = this.inputTextToSave;
       //  document.getElementById('configNameBox').value = this.configName;
       // },
+      onload(fileLoadedEvent) {
+        document.getElementById('inputTextToSave').value = fileLoadedEvent.target.result;
+        document.getElementById('configNameBox').value = this.file.name;
+      },
     },
   };
 
@@ -248,7 +237,7 @@
     //   else {
     //     console.log("not checked");
     //   }
-    //});
+    // });
 
    // $('input').iCheck({
    //   checkboxClass: 'icheckbox_minimal-blue',

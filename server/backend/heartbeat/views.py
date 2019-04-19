@@ -1,7 +1,7 @@
 from django.http import Http404, JsonResponse
-
+from .heartbeat_service import update_agent_status
+from .heartbeat_service import create_agent
 from logging_service import heartbeat_logging_service as log
-from .heartbeat_service import create_agent, update_agent_status
 
 
 def index(request, id):

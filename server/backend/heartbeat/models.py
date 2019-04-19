@@ -25,7 +25,7 @@ class Group(models.Model):
 
 
 class Agent(models.Model):
-    UUID = models.CharField(max_length=200)
+    UUID = models.CharField(max_length=200, primary_key=True)
     IP_ADDRESS = models.CharField(max_length=200)
     ONLINE = models.BooleanField()
     SYSMON_VERSION_CURRENT = models.CharField(max_length=200)

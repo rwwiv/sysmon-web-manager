@@ -155,7 +155,7 @@
          this.file = parser.parseFromString(this.inputTextToSave, 'application/xml');
          console.log(this.inputTextToSave);
          axios.post(`http://localhost:8000/configs/${this.configName}`);
-         axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
+         axios.put(`http://localhost:8000/configs/${this.configName}`, this.file).then((response) => { console.log(response); });
 
 
         // axios

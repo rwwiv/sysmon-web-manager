@@ -438,9 +438,9 @@
       this.getAvailableSysmonConfigs();
       // Handle iCheckBox in the host list table head.
       const that = this;
-      jQuery('#checkAll').change(function(){
+      jQuery('#checkAll').change(() => {
         that.selectAllAgents();
-        //Debug
+        // Debug
         // console.log(that.selectAll);
         // console.log(that.checkedAgents);
       });

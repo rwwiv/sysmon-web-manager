@@ -11,7 +11,7 @@
 <script>
   import AgentList from '../components/AgentList.vue';
 
-  
+
   export default {
     data() {
       return {

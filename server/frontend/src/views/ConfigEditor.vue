@@ -23,13 +23,12 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
             <h3>Confirm Save Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
-          &lt;!&ndash; /.modal-header &ndash;&gt;
           <div class="modal-body">
-            <h5>{{existingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
+            <h5>{{checkExistingConfig(this.configName) ? 'You are about to make changes to an existing configuration. Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.' : 'You are about to save this new configuration. Press OK to proceed or cancel to make changes.'}}</h5>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
@@ -42,7 +41,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
             <h3>Validate Configuration</h3>
             <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
           </div>
@@ -52,7 +51,6 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
           </div>
-          &lt;!&ndash;/.modal-footer&ndash;&gt;
         </div>
       </div>
     </div>
@@ -74,17 +72,20 @@
 <script>
 
   import axios from 'axios';
+  import tmp from 'tmp';
+
+  const fs = require('fs');
 
   export default {
     name: 'ConfigEditorInput.vue',
     data() {
       return {
         configName: '',
-        configNameVM: '',
+        configNameVM: false,
         checked: false,
-        didValidate: '',
-        existingConfig: '',
-        overwriteExisting: '',
+        didValidate: false,
+        existingConfig: false,
+        overwriteExisting: false,
         XMLconfig: XMLDocument,
         file: '',
         inputTextToSave: '',
@@ -144,8 +145,7 @@
       },
       checkExistingConfig(name) {
         axios.get(`http://localhost:8000/configs/${name}`).then((response) => {
-          if (response.status !== 400) this.existingConfig = 0;
-          else this.existingConfig = 1;
+          this.existingConfig = response.status === 400;
         });
       },
       saveConfig() {
@@ -154,11 +154,16 @@
         // this works
         this.inputTextToSave = document.getElementById('inputTextToSave').value;
         console.log(this.inputTextToSave);
-         const parser = new DOMParser();
-         this.file = parser.parseFromString(this.inputTextToSave, 'application/xml');
-         console.log(this.inputTextToSave);
-         axios.post(`http://localhost:8000/configs/${this.configName}`);
-         axios.put('http://localhost:8000/configs/', this.configName, this.file).then((response) => { console.log(response); });
+        const tmpFile = tmp.fileSync();
+        const fileStream = fs.createWriteStream(tmpFile);
+        fileStream.write(this.inputTextToSave);
+        console.log(this.inputTextToSave);
+        if (this.existingConfig) {
+          axios.post(`http://localhost:8000/configs/${this.configName}`, tmpFile);
+        } else {
+          axios.put(`http://localhost:8000/configs/${this.configName}`, tmpFile).then((response) => { console.log(response); });
+        }
+        fileStream.close();
 
 
         // axios
@@ -201,7 +206,7 @@
         const helper = new DOMParser();
         document.getElementById('errorBox').value = helper.parseFromString(this.inputTextToSave, 'application/xml');
         this.XMLconfig = helper.parseFromString(this.inputTextToSave, 'application/xml');
-        this.didValidate = 1;
+        this.didValidate = true;
         alert('Validation Complete');
         // alert('XML Parsing Error');
         // this.didValidate = 0;

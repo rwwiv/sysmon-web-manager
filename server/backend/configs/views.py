@@ -13,6 +13,7 @@ def index(request):
         log.debug("GET request recieved at configs endpoint")
         return JsonResponse(get_all_configs(), safe=False)
 
+
 def configs(request, name):
     if request.method == 'POST':
         log.debug(f"POST request received at configs endpoint for {name} config")

@@ -23,9 +23,8 @@ def create_configs(config_name,config_body):
         if not os.path.exists('../configuration_files'):
             os.makedirs('../configuration_files')
         
-        with open(f'../configuration_files/agent_config_{config_name}.xml', 'w+') as config:
-            for line in config_body.decode("utf-8").split('\n'):
-                config.write(f'{line}\n')
+        with open(f'../configuration_files/agent_config_{config_name}.xml', 'wb') as config:
+           config.write(bytes(config_body))
         new_config.save()
         log.debug(f'Config with name {config_name} created succesfully')
         return 0
@@ -53,10 +52,9 @@ def update_config(config_name, config_body):
     config = Configuration.objects.filter(NAME=config_name)
 
     if len(config) == 1:
-        with open(f"../configuration_files/agent_config_{config_name}.xml","a") as config:
+        with open(f"../configuration_files/agent_config_{config_name}.xml","wb") as config:
             config.truncate(0)
-            for line in config_body.decode("utf-8").split('\n'):
-                config.write(f'{line}\n')
+            config.write(bytes(config_body))
         log.debug(f'{config_name} config updated')
     else:
         log.err('Config does not exist')

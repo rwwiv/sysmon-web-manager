@@ -14,17 +14,25 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Is Default?</th>
+            <th></th>
             <th class = "center-text icon-column">View/Edit</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="config in configs" :key="config.NAME">
-            <td>{{ config.NAME }}Name</td>
-            <td>{{ config.IS_DEFAULT ? 'Default': '' }}Default Status</td>
+          <tr v-for="config in configs" :key="config.name">
+            <td>{{ config.name }}</td>
+            <td v-if="config.default">
+              <span class="label label-primary" v-if="config.default">
+                Default
+              </span>
+            </td>
+            <td v-else></td>
             <td class="center-text">
-              <router-link to="ConfigEditor" active-class="active">
-                <a><i class="fa fa-search-plus"></i> </a>
+              <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
+                           active-class="active">
+                <a>
+                  <i class="fa fa-search-plus"></i>
+                </a>
               </router-link>
             </td>
           </tr>
@@ -63,6 +71,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  td a {
+    cursor:pointer;
+  }
+  .center-text {
+    text-align:center;
+  }
+  .icon-column{
+    width:10%;
+  }
+</style>
 
 <style scoped>
   td a {

@@ -17,6 +17,7 @@ module.exports = {
     'max-len': 'off',
     'no-plusplus': 'off',
     indent: 'off',
+    'no-unused-expressions': ['error', { allowTernary: true }],
   },
   parserOptions: {
     parser: 'babel-eslint',

@@ -12,10 +12,10 @@
 import ConfigsList from '../components/ConfigsList.vue';
 
 $(document).ready(() => {
-  $('input').iCheck({
-    checkboxClass: 'icheckbox_minimal-blue',
-    radioClass: 'iradio_minimal-blue',
-  });
+  // $('input').iCheck({
+  //   checkboxClass: 'icheckbox_minimal-blue',
+  //   radioClass: 'iradio_minimal-blue',
+  // });
 });
 export default {
   components: { ConfigsList },

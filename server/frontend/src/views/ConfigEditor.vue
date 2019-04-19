@@ -173,7 +173,7 @@
         } else {
           axios.put('http://localhost:8000/configs/', data);
         }
-        this.$router.push({ name: 'management' }); // redirects to the list of configs
+        this.$router.push({ name: 'management' });
       },
 
     },

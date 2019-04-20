@@ -1,38 +1,38 @@
-<!--<template>-->
-<!--  <div class="box">-->
-<!--    <div class="box-header with-border">-->
-<!--      <h4 class="box-title">-->
-<!--        Sysmon Versions-->
-<!--      </h4>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; /.box-header &ndash;&gt;-->
-<!--    <div class="box-body">-->
-<!--      <div class="col-auto">-->
-<!--        <button type="button" class="btn btn-primary" @click="checkSysmonVersion()">Check for updates to Sysmon.</button>-->
-<!--      </div>-->
-<!--      <table class="table no-margin">-->
-<!--        <thead>-->
-<!--          <tr>-->
-<!--            <th>Version Number</th>-->
-<!--            <th></th>-->
-<!--            <th>Current?</th>-->
-<!--          </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--          <tr v-for="version in sysmonVersions" :key="version.name">-->
-<!--            <td>{{ version.name }}</td>-->
-<!--            <td v-if="version.is_current">-->
-<!--              <span class="label label-primary" v-if="version.is_current">-->
-<!--                Current Version-->
-<!--              </span>-->
-<!--            </td>-->
-<!--            <td v-else></td>-->
-<!--          </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</template>-->
+<template>
+  <div class="box">
+    <div class="box-header with-border">
+      <h4 class="box-title">
+        Sysmon Versions
+      </h4>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="col-auto">
+        <button type="button" class="btn btn-primary" @click="checkSysmonVersion()">Check for updates to Sysmon.</button>
+      </div>
+      <table class="table no-margin">
+        <thead>
+          <tr>
+            <th>Version Number</th>
+            <th></th>
+            <th>Current?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="version in sysmonVersions" :key="version.name">
+            <td>{{ version.name }}</td>
+            <td v-if="version.is_current">
+              <span class="label label-primary" v-if="version.is_current">
+                Current Version
+              </span>
+            </td>
+            <td v-else></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
 <script>
   import axios from 'axios';
 
@@ -60,7 +60,6 @@ export default {
     },
   },
   mounted() {
-    console.log('at VersionsLIst');
     this.getAllVersions();
   },
 };

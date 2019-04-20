@@ -11,13 +11,18 @@
 <script>
 import VersionList from '../components/VersionList.vue';
 
-console.log('at versions');
+
 export default {
   data() {
     return {
     };
   },
   components: { VersionList },
+  methods: {
+    mounted() {
+      console.log('at Versions');
+    },
+  },
 };
 </script>
 

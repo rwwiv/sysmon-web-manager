@@ -34,7 +34,7 @@
           <router-link tag="li" to="management" active-class="active">
             <a><i class="fa fa-cog"></i> <span>Management</span></a>
           </router-link>
-          <router-link tag="li" to="versionList" active-class="active">
+          <router-link tag="li" to="Versions" active-class="active">
             <a><i class="fa fa-cog"></i> <span>Sysmon Versions</span></a>
           </router-link>
 

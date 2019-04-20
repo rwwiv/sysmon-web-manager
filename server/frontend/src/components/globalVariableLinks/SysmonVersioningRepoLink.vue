@@ -1,7 +1,7 @@
 <template>
 <tr>
   <th>Sysmon Versioning Repo Link</th>
-  <input v-model="retrievedLink" placeholder="No link found please enter a link">
+  <input v-model="retrievedLink" placeholder="No link found please enter a link" data-toggle="tooltip" :title="retrievedLink">
   <button class="btn btn-secondary pull-right" @click="setVersioningLink()">Save</button>
 </tr>
 </template>
@@ -9,7 +9,11 @@
 <script>
   import axios from 'axios';
 
-export default {
+  $(document).ready(() => {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+  export default {
   name: 'SysmonVersioningRepoLink',
   data() {
     return {
@@ -64,5 +68,11 @@ export default {
   }
   .icon-column{
     width:10%;
+  }
+</style>
+
+<style scoped>
+  tr input{
+    width:40%;
   }
 </style>

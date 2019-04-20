@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from heartbeat.models import Group
+from models.models import Group
 
 
 class GroupsConfig(AppConfig):

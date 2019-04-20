@@ -1,6 +1,5 @@
-from heartbeat.models import Sysmon
+from models.models import Sysmon
 import os
-import time
 import zipfile
 import requests
 from io import StringIO

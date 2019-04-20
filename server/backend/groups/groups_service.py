@@ -1,4 +1,4 @@
-from heartbeat.models import Group, Sysmon, Configuration, Agent
+from models.models import Group, Sysmon, Configuration, Agent
 from logging_service import groups_logging_service as log
 
 

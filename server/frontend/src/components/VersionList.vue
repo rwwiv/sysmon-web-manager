@@ -14,16 +14,15 @@
         <thead>
           <tr>
             <th>Version Number</th>
-            <th></th>
             <th>Current?</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="version in sysmonVersions" :key="version.name">
-            <td>{{ version.name }}</td>
+          <tr v-for="version in sysmonVersions" :key="version.version">
+            <td>{{ version.version }}</td>
             <td v-if="version.is_current">
               <span class="label label-primary" v-if="version.is_current">
-                Current Version
+                Current
               </span>
             </td>
             <td v-else></td>
@@ -47,7 +46,17 @@ export default {
   },
   methods: {
     checkSysmonVersion() {
-      axios.post('http://localhost:8000/sysmon/').then(this.getAllVersions());
+      axios.post('http://localhost:8000/sysmon/',
+        {
+          sysmon_repo: 'https://raw.githubusercontent.com/Neo23x0/sysmon-version-history/master/README.md',
+        }).then((response) => {
+        this.getAllVersions();
+        console.log('got all versions?');
+        console.log(response);
+      })
+        .catch((e) => {
+          this.errors.push(e);
+        });
     },
     getAllVersions() {
       axios.get('http://localhost:8000/sysmon').then((response) => {

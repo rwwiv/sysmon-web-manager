@@ -34,7 +34,7 @@ def create_group(name, json):
 
 
 def associate_agent_to_group(group_name, agent_uuid):
-    if not Agent.objects.filter(UUID=agent_uuid).exists() and not Group.objects.filter(NAME=group_name).exists():
+    if Agent.objects.filter(UUID=agent_uuid).exists() and Group.objects.filter(NAME=group_name).exists():
         agent = Agent.objects.get(UUID=agent_uuid)
         group = Group.objects.get(NAME=group_name)
 

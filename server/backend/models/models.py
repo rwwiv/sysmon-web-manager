@@ -39,3 +39,8 @@ class Agent(models.Model):
     NEEDS_INSTALL = models.BooleanField()
     ATTEMPTED_INSTALL = models.BooleanField()
     GROUP = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
+
+
+class Global_Variables(models.Model):
+    VARIABLE_TYPE = models.CharField(max_length=100, primary_key=True)
+    VARIABLE_VALUE = models.CharField(max_length=500)

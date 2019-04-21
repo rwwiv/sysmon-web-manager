@@ -33,8 +33,10 @@ def updates(request, uuid):
         
         success = update_needs_restart(uuid)
         
-        if success == 0:
+        if success > 0:
             return HttpResponse("succesful update")
+        elif success == 1:
+            return HttpResponseBadRequest("No default config or sysmon version on server please make these before attempting an install")
         else:
             return HttpResponseBadRequest("update failed")
 

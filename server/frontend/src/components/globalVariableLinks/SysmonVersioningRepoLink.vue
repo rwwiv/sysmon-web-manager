@@ -1,9 +1,15 @@
 <template>
-<tr>
-  <th>Sysmon Versioning Repo Link</th>
-  <input v-model="link" placeholder="No link found please enter a link" data-toggle="tooltip" :title="link">
-  <button class="btn btn-secondary pull-right" @click="setVersioningLink()">Save</button>
-</tr>
+  <div class="row">
+    <div class="col-md-3 flex-container">
+      <p class="center-align">Sysmon Versioning Repo Link</p>
+    </div>
+    <div class="col-md-8 flex-container">
+      <input class="fill-width" v-model="link" placeholder="No link found please enter a link" data-toggle="tooltip" :title="link">
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-secondary pull-right" @click="setVersioningLink()">Save</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,16 +31,10 @@
       supportAPI.getSysmonVersionRepoLink()
         .then((response) => {
           this.link = response.data.link;
-        })
-        .catch((e) => {
-          this.errors.push(e);
         });
     },
     setVersioningLink() {
-      supportAPI.setSysmonVersionRepoLink(this.link)
-        .catch((e) => {
-          this.errors.push(e);
-        });
+      supportAPI.setSysmonVersionRepoLink(this.link);
     },
   },
   mounted() {
@@ -44,6 +44,12 @@
 </script>
 
 <style scoped>
+  .row {
+    display: flex;
+  }
+  .fill-width {
+    flex: 1
+  }
   td a {
     cursor:pointer;
   }
@@ -53,21 +59,12 @@
   .icon-column{
     width:10%;
   }
-</style>
-
-<style scoped>
-  td a {
-    cursor:pointer;
+  .flex-container {
+    display: flex;
   }
-  .center-text {
-    text-align:center;
+  .fill-width {
+    flex: 1
   }
-  .icon-column{
-    width:10%;
-  }
-</style>
-
-<style scoped>
   tr input{
     width:40%;
   }

@@ -26,6 +26,12 @@
           </div>
         </div>
       </form>
+      <div class="text-center">
+        <p>- OR -</p>
+        <router-link to="/register">
+          <a>Register</a>
+        </router-link>
+      </div>
     </div>
     <div class="callout callout-danger login-failure" v-if="loginSubmitHasFailed">
       <h4>Credentials invalid.</h4>
@@ -35,8 +41,6 @@
 </template>
 
 <script>
-  import userAPI from '../api/users';
-
   export default {
     name: 'Login',
     data() {
@@ -55,7 +59,8 @@
     },
     methods: {
       authenticateUser(username, password) {
-        this.$store.dispatch('authUser', username, password);
+        this.$store.dispatch('authUser', username, password)
+          .then();
       },
     },
   };

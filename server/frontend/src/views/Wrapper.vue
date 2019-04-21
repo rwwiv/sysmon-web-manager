@@ -4,12 +4,14 @@
     <!-- Main Header -->
     <header class="main-header">
       <!-- Logo -->
-      <a href="index2.html" class="logo">
-        <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>S</b>Mgr</span>
-        <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Sys</b>Monager</span>
-      </a>
+      <router-link to="/">
+        <a class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini"><b>S</b>Mgr</span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg"><b>Sys</b>Monager</span>
+        </a>
+      </router-link>
 
       <!-- Header Navbar -->
       <nav class="navbar navbar-static-top" role="navigation">
@@ -36,18 +38,26 @@
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">Main Menu</li>
           <!-- Optionally, you can add icons to the links -->
-          <router-link tag="li" to="/" exact-active-class="active" exact>
+          <router-link tag="li" to="/monitor" exact-active-class="active" exact>
             <a><i class="fa fa-desktop"></i> <span>Monitor</span></a>
           </router-link>
-          <router-link tag="li" to="management" active-class="active">
-            <a><i class="fa fa-cog"></i> <span>Management</span></a>
-          </router-link>
-          <router-link tag="li" to="Versions" active-class="active">
-            <a><i class="fa fa-cog"></i> <span>Sysmon Versions</span></a>
-          </router-link>
-          <router-link tag="li" to="support" active-class="active">
-            <a><i class="fa fa-link"></i> <span>Support</span></a>
-          </router-link>
+          <li class="treeview">
+            <a href="">
+              <i class="fa fa-cog"></i>
+              <span>Management</span>
+            </a>
+            <ul class="treeview-menu">
+              <router-link tag="li" to="/config-manager" active-class="active">
+                <a><i class="fa fa-cog"></i> <span>Configurations</span></a>
+              </router-link>
+              <router-link tag="li" to="/versions" active-class="active">
+                <a><i class="fa fa-cog"></i> <span>Sysmon Versions</span></a>
+              </router-link>
+              <router-link tag="li" to="/support" active-class="active">
+                <a><i class="fa fa-link"></i> <span>Links</span></a>
+              </router-link>
+            </ul>
+          </li>
         </ul>
         <!-- /.sidebar-menu -->
       </section>

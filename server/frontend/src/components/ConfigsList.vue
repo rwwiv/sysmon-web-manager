@@ -4,12 +4,12 @@
       <h4 class="box-title">
         Configurations
       </h4>
+      <div class="pull-right">
+        <router-link to="ConfigEditor" tag="button" class="btn btn-secondary">Add New Configuration</router-link>
+      </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <div class="col-auto">
-        <router-link to="ConfigEditor" active-class="active" button class="btn btn-secondary pull-right">Add New Configuration</router-link>
-      </div>
       <table class="table no-margin">
         <thead>
           <tr>
@@ -60,9 +60,6 @@ export default {
         .then((response) => {
           this.configs = response.data;
           console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
         });
     },
   },

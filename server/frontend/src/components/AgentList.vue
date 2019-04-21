@@ -333,9 +333,6 @@
           this.agents = response.data;
           // Debug
           // console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
         });
       },
       getAvailableSysmonConfigs() {
@@ -344,9 +341,6 @@
           this.sysmonConfigs = response.data;
           // Debug
           // console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
         });
       },
       // Grab IDs from Selected Agents

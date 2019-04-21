@@ -45,9 +45,6 @@
         configAPI.getAllConfigs()
           .then((response) => {
             this.configs = response.data;
-          })
-          .catch((e) => {
-            this.errors.push(e);
           });
       },
     },

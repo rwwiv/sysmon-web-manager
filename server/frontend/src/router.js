@@ -25,7 +25,12 @@ export default new Router({
     },
     {
       path: '/',
-      beforeEach: requireAuth(),
+      redirect: {
+        name: 'monitor',
+      },
+      beforeEach: (to, from, next) => {
+        requireAuth(to, from, next);
+      },
       name: 'wrapper',
       component: () => import('./views/Wrapper.vue'),
       children: [
@@ -38,12 +43,12 @@ export default new Router({
           component: () => import('./views/Monitor.vue'),
         },
         {
-          path: '/management',
-          name: 'management',
+          path: '/config-manager',
+          name: 'config-manager',
           // route level code-splitting
           // this generates a separate chunk (about.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
-          component: () => import('./views/Management.vue'),
+          component: () => import('./views/ConfigManager.vue'),
         },
         {
           path: '/config-editor',
@@ -52,6 +57,16 @@ export default new Router({
           // this generates a separate chunk (about.[hash].js) for this route
           // which is lazy-loaded when the route is visited.
           component: () => import('./views/ConfigEditor.vue'),
+        },
+        {
+          path: '/support',
+          name: 'support',
+          component: () => import('./views/Support.vue'),
+        },
+        {
+          path: '/versions',
+          name: 'versions',
+          component: () => import('./views/Versions.vue'),
         },
       ],
     },

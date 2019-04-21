@@ -17,18 +17,12 @@ export default {
       userAPI.authUser(username, password)
         .then(() => {
           commit('logInUser', username);
-        })
-        .catch(() => {
-          commit('loginFailure');
         });
     },
     createUser({ commit, username, password }) {
       userAPI.createUser(username, password)
         .then(() => {
           commit('logInUser', username);
-        })
-        .catch(() => {
-          commit('loginFailure');
         });
     },
     logoutUser({ commit }) {

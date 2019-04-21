@@ -1,7 +1,6 @@
 import base64
 
-from heartbeat.models import Configuration
-import json
+from models.models import Configuration
 from logging_service import configs_logging_service as log
 import os
 
@@ -10,7 +9,7 @@ def get_all_configs():
     all_configs = Configuration.objects.all()
     data = []
     for x in all_configs:
-        temp = {'name': x.NAME, 
+        temp = {'name': x.NAME,
                 'default': x.IS_DEFAULT}
         data.append(temp)
     log.debug(f"{len(data)} configurations retrieved")

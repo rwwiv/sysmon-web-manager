@@ -88,7 +88,6 @@
   </section>
 </template>
 
-
 <script>
   import { codemirror } from 'vue-codemirror';
   import 'codemirror/mode/xml/xml';

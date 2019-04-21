@@ -1,7 +1,6 @@
 import base64
 
-from heartbeat.models import Configuration
-import json
+from models.models import Configuration
 from logging_service import configs_logging_service as log
 import os
 

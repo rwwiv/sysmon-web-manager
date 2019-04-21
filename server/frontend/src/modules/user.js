@@ -1,16 +1,16 @@
 /* eslint no-param-reassign: 0 */
 import userAPI from '../api/users';
 
+const statusEnum = {
+  LOGIN_SUCCESS: 0,
+  LOGIN_FAILURE: 1,
+  LOGOUT: 2,
+};
+
 export default {
   state: {
-    loggedIn: false,
     username: '',
-  },
-  mutations: {
-    logInUser(state, username) {
-      state.loggedIn = true;
-      state.username = username;
-    },
+    loginStatus: statusEnum.LOGOUT,
   },
   actions: {
     authUser({ commit, username, password }) {
@@ -18,14 +18,34 @@ export default {
         .then(() => {
           commit('logInUser', username);
         })
-        .catch(() => {});
+        .catch(() => {
+          commit('loginFailure');
+        });
     },
     createUser({ commit, username, password }) {
       userAPI.createUser(username, password)
         .then(() => {
           commit('logInUser', username);
         })
-        .catch(() => {});
+        .catch(() => {
+          commit('loginFailure');
+        });
+    },
+    logoutUser({ commit }) {
+      commit('userLogout');
+    },
+  },
+  mutations: {
+    userLogin(state, username) {
+      state.loginStatus = statusEnum.LOGIN_SUCCESS;
+      state.username = username;
+    },
+    userLogout(state) {
+      state.loggedIn = statusEnum.LOGOUT;
+      state.username = '';
+    },
+    loginFailure(state) {
+      state.loginFailed = statusEnum.LOGIN_FAILURE;
     },
   },
 };

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import configAPI from '../api/configs';
 
   export default {
     name: 'ConfigsList',
@@ -42,10 +42,9 @@
     },
     methods: {
       getAllConfigs() {
-        axios.get('http://localhost:8000/configs')
+        configAPI.getAllConfigs()
           .then((response) => {
             this.configs = response.data;
-            console.log(response.data);
           })
           .catch((e) => {
             this.errors.push(e);

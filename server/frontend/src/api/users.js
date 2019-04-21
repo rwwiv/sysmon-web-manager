@@ -7,13 +7,13 @@ export default {
       username,
       password,
     };
-    return axios.post(`${constants.serverUrl}users/auth`, data);
+    return axios.post(`${constants.serverUrl}/users/auth`, data);
   },
   createUser(username, password) {
     const data = {
       username,
       password,
     };
-    return axios.post(`${constants.serverUrl}users/create`, data);
+    return axios.post(`${constants.serverUrl}/users/create`, data);
   },
 };

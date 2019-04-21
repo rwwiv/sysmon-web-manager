@@ -1,62 +1,61 @@
 <template>
-	<section class="content">
-    <div id="loginContainer">
-      <div class="alert alert-warning alert-dismissible" role="alert" v-if="loginFailed">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Warning!</strong> There are errors in your xml.
-      </div>
-      <div class="box" id="loginBox">
-        <div class="box-header with-border">
-          <h5>Login</h5>
-        </div>
-        <div class="box-body">
-          <form class="form-inline" @submit="authUser">
-            <div class="form-group">
-              <label for="userNameInput" class="sr-only"></label>
-              <input
-                type="text"
-                class="form-control"
-                id="userNameInput"
-                placeholder="Username"
-              >
-            </div>
-            <div class="form-group">
-              <label for="passwordInput" class="sr-only"></label>
-              <input
-                type="password"
-                class="form-control"
-                id="passwordInput"
-                placeholder="Password"
-              >
-            </div>
-            <button type="submit" class="btn btn-default"></button>
-          </form>
-        </div>
-      </div>
+  <div>
+    <div class="login-logo">
+      <b>Sys</b>Monager
     </div>
-  </section>
+    <div class="login-box-body">
+      <p class="login-box-msg">Sign in</p>
+      <form @submit="authUser">
+        <div class="form-group has-feedback">
+          <input type="text" class="form-control" placeholder="Username">
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input type="password" class="form-control" placeholder="Password">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="row">
+          <div class="col-xs-8">
+            <input type="checkbox" class="checkbox" id="rememberMeCheckbox">
+            <label for="rememberMeCheckbox">Remember Me</label>
+          </div>
+          <div class="col-xs-4">
+            <button type="submit" class="btn btn-primary btn-block btn-flat">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="callout callout-danger login-failure" v-if="loginSubmitHasFailed">
+      <h4>Credentials invalid.</h4>
+      <p>Try logging in again</p>
+    </div>
+  </div>
 </template>
 
 <script>
-  import axios from 'axios';
+  import userAPI from '../api/users';
 
   export default {
     name: 'Login',
     data() {
       return {
-        loginFailed: false,
+        loginStatus: this.$store.state.loginStatus,
       };
     },
+    computed: {
+
+    },
+    beforeCreate() {
+      $('body').addClass('login-page');
+    },
+    destroyed() {
+      $('body').removeClass('login-page');
+    },
     methods: {
-      authUser(event) {
-        event.preventDefault();
-        axios.post('http://localhost:8000/users/auth')
-          .then(() => {
-            this.$router.push({ name: 'monitor' });
-          })
-          .catch(() => {
-            this.loginFailed = true;
-          });
+      authenticateUser(username, password) {
+        this.$store.dispatch('authUser', username, password);
       },
     },
   };

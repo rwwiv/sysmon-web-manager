@@ -203,10 +203,11 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
+  import agentAPI from '../api/agents';
+  import configAPI from '../api/configs';
 
   const loadingOverlay = $('#loadingOverlay');
 
@@ -272,7 +273,7 @@
       },
       saveConfig(agentID, config) {
         if (config) {
-          axios.patch(`http://localhost:8000/agents/${agentID}/config/${config}`)
+          agentAPI.updateAgentConfig(agentID, config)
           .then((response) => {
             console.log(response);
           })
@@ -287,7 +288,7 @@
       },
       runSysmon(agentID) {
         this.showLoadingState();
-        axios.post(`http://localhost:8000/agents/${agentID}`)
+        agentAPI.runSysmon(agentID)
         .then((response) => {
           console.log(response);
           this.hideLoadingState();
@@ -300,7 +301,7 @@
       },
       installSysmon(agentID) {
         this.showLoadingState();
-        axios.patch(`http://localhost:8000/agents/${agentID}`)
+        agentAPI.installSysmon(agentID)
         .then(() => {
           // Debug
           // console.log(response);
@@ -314,7 +315,7 @@
       },
       uninstallSysmon(agentID) {
         this.showLoadingState();
-        axios.delete(`http://localhost:8000/agents/${agentID}`)
+        agentAPI.uninstallSysmon(agentID)
         .then((response) => {
           // Debug
           console.log(response);
@@ -327,7 +328,7 @@
         });
       },
       getHostList() {
-        axios.get('http://localhost:8000/agents')
+        agentAPI.getAllAgents()
         .then((response) => {
           this.agents = response.data;
           // Debug
@@ -338,7 +339,7 @@
         });
       },
       getAvailableSysmonConfigs() {
-        axios.get('http://localhost:8000/configs')
+        configAPI.getAllConfigs()
         .then((response) => {
           this.sysmonConfigs = response.data;
           // Debug
@@ -379,7 +380,7 @@
           case 'install':
             this.showLoadingState();
             this.selectedNewAgents();
-            axios.post('http://localhost:8000/multi/install', JSON.stringify(this.checkedAgentsIDs))
+            agentAPI.installSysmonMultiple(this.checkedAgentsIDs)
             .then(() => {
               // Debug
               // console.log(response.data);
@@ -393,7 +394,7 @@
           break;
           case 'restart':
             this.showLoadingState();
-            axios.post('http://localhost:8000/multi/restart', JSON.stringify(this.checkedAgentsIDs))
+            agentAPI.runSysmonMultiple(this.checkedAgentsIDs)
             .then(() => {
               // Debug
               // console.log(response.data);
@@ -413,7 +414,7 @@
           break;
           case 'uninstall':
             this.showLoadingState();
-            axios.post('http://localhost:8000/multi/uninstall', JSON.stringify(this.checkedAgentsIDs))
+            agentAPI.uninstallSysmonMultiple(this.checkedAgentsIDs)
             .then(() => {
               // Debug
               // console.log(response.data);

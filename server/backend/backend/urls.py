@@ -22,6 +22,7 @@ urlpatterns = [
     path('updates/', include('updates.urls')),
     path('heartbeat/', include('heartbeat.urls')),
     path('multi/', include('multi.urls')),
-    path('configs/',include('configs.urls')),
+    path('configs/', include('configs.urls')),
+    path('users/', include('users.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -90,10 +90,10 @@
 
 
 <script>
-  import axios from 'axios';
   import { codemirror } from 'vue-codemirror';
   import 'codemirror/mode/xml/xml';
   import 'codemirror/lib/codemirror.css';
+  import configAPI from '../api/configs';
 
   export default {
     components: {
@@ -110,6 +110,7 @@
           },
           lineNumbers: true,
         },
+        initConfigName: '',
         configName: '',
         defaultCheck: false,
         didValidate: false,
@@ -126,9 +127,10 @@
     },
     mounted() {
       if (this.$route.params.id !== undefined) {
-        this.configName = this.$route.params.id;
+        this.initconfigName = this.$route.params.id;
+        this.configName = this.initconfigName;
         document.getElementById('configNameBox').value = this.configName;
-        axios.get(`http://localhost:8000/configs/${this.configName}`)
+        configAPI.getSingleConfig(this.configName)
           .then((response) => {
             this.inputTextToSave = atob(response.data.content);
             this.defaultCheck = response.data.default;
@@ -168,10 +170,10 @@
           default: this.defaultCheck,
         };
         console.log(this.existingConfig);
-        if (!this.existingConfig) {
-          axios.post('http://localhost:8000/configs/', data);
+        if (!this.existingConfig || this.initConfigName !== this.configName) {
+          configAPI.createConfig(data);
         } else {
-          axios.put('http://localhost:8000/configs/', data);
+          configAPI.updateConfig(data);
         }
         this.$router.push({ name: 'management' });
       },

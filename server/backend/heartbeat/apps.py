@@ -22,4 +22,3 @@ class HeartbeatConfig(AppConfig):
                     .get('https://github.com/SwiftOnSecurity/sysmon-config/blob/master/sysmonconfig-export.xml')
                     .content
                 ))
-                

@@ -4,7 +4,7 @@
       <p class="center-align">Initial Config Repo Link</p>
     </div>
     <div class="col-md-8 flex-container">
-      <input class="fill-width" v-model="retrievedLink" placeholder="No link found please enter a link" data-toggle="tooltip" :title="retrievedLink">
+      <input class="fill-width" v-model="link" placeholder="No link found please enter a link" data-toggle="tooltip" :title="link">
     </div>
     <div class="col-md-1">
       <button class="btn btn-secondary pull-right" @click="setConfigLink()">Save</button>
@@ -30,7 +30,7 @@
       getConfigLink() {
         supportAPI.getDefaultConfigDownloadLink()
           .then((response) => {
-            this.retrievedLink = response.data.link;
+            this.link = response.data.link;
           });
       },
       setConfigLink() {

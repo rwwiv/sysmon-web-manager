@@ -30,7 +30,7 @@
       getDownloadLink() {
         supportAPI.getSysmonDownloadLink()
           .then((response) => {
-            this.retrievedLink = response.data.link;
+            this.link = response.data.link;
           });
       },
       setDownloadLink() {

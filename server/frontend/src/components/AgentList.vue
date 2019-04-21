@@ -9,7 +9,7 @@
               <input type="checkbox" value="checkAll" id="checkAll" v-model="selectAll"/>
               <label for="checkAll">Select All</label>
             </td>
-            <td class="edit-all-options" align="left">
+            <td class="edit-all-options pull-left">
               <label for="manage-all">Manage Selected:</label>
               <select id="manage-all" v-model="manageAllSelected">
                 <option disabled value="">
@@ -27,7 +27,7 @@
               </select>
               <button class="btn btn-primary" @click="manageAllAgents('allAgents', true)">Apply</button>
             </td>
-            <td align="right">
+            <td class="pull-right">
               <div v-if="groupSaving" class="" id="container-createGroupBtn">
                 <button type="button" class="btn btn-primary" id="btn-createGroup" data-toggle="modal" data-target="#createGroupModal"><i class="fa fa-refresh fa-spin"></i></button>
               </div>
@@ -83,7 +83,7 @@
   <li class="box" v-for="(agents, group) in groupedAgents">
     <div class="box-header with-border">
       <h4 class="box-title">
-       {{(group == "unassigned") ? "Ungrouped Hosts" : group}}
+       {{(group === "unassigned") ? "Ungrouped Hosts" : group}}
       </h4>
     </div>
     <!-- /.box-header -->
@@ -269,10 +269,11 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
+  import axios from 'axios';
   import agentAPI from '../api/agents';
   import configAPI from '../api/configs';
 
-  const loadingOverlay = $('#loadingOverlay');
+  // const loadingOverlay = $('#loadingOverlay');
 
   export default {
     name: 'AgentList',
@@ -281,7 +282,7 @@
         agents: [],
         availableGroups: [],
         moveToGroup: '',
-        groupedAgents:[],
+        groupedAgents: [],
         errors: [],
         sysmonConfigs: [],
         sysmonVersions: [],
@@ -310,7 +311,6 @@
       displayAgent(agent, group) {
         this.selectedAgent = agent;
         this.selectedGroup = group;
-        //console.log(this.selectedAgent);
       },
       currentCheckAgentIsNew(agentStatus) {
         if (agentStatus) {
@@ -336,47 +336,45 @@
         }
         return 'Offline';
       },
-      getOverlayGroupClassName(groupName){
+      getOverlayGroupClassName(groupName) {
         return groupName;
       },
-      showHideLoadingOverlay(groupName, allSelected = false){
-        //Show / Hide all group loading overlays.
-        if(groupName == 'allAgents' && allSelected){
-          let allHostOverlays = $('.overlay.hostOverlays');
-          let allOverlaysHidden = $('.overlay.hostOverlays').hasClass('hidden');
-          //all loaders are visible, so hide them
-          if(!allOverlaysHidden){
+      showHideLoadingOverlay(groupName, allSelected = false) {
+        if (groupName === 'allAgents' && allSelected) {
+          const allHostOverlays = $('.overlay.hostOverlays');
+          const allOverlaysHidden = $('.overlay.hostOverlays').hasClass('hidden');
+          // all loaders are visible, so hide them
+          if (!allOverlaysHidden) {
             allHostOverlays.addClass('hidden');
             return;
           }
-          else{
+
             allHostOverlays.removeClass('hidden');
             return;
-          }
         }
 
-        //Show / Hide individual group loading overlays.
-        let currentOverlay = $('.overlay.' + groupName);
-        let currentLoadingOverlayHidden = $('.overlay.' + groupName).hasClass('hidden');
-        //Loader is visible, so hide it
-        if(!currentLoadingOverlayHidden){
+        // Show / Hide individual group loading overlays.
+        const currentOverlay = $(`.overlay.${groupName}`);
+        const currentLoadingOverlayHidden = $(`.overlay.${groupName}`).hasClass('hidden');
+        // Loader is visible, so hide it
+        if (!currentLoadingOverlayHidden) {
           currentOverlay.addClass('hidden');
           return;
         }
-        //Show loader
+        // Show loader
         currentOverlay.removeClass('hidden');
-        return;
       },
       saveSettings(agentID, config = '', groupName, moveToGroup = '') {
-        if(config == '' && moveToGroup == ''){
-          $('#settings-error').removeClass('hidden');
+        const settingsError = $('#settings-error');
+        if (config === '' && moveToGroup === '') {
+          settingsError.removeClass('hidden');
           return;
         }
-        else {
-          $('#settings-error').addClass('hidden');
-        }
 
-        if(config || moveToGroup){
+         settingsError.addClass('hidden');
+
+
+        if (config || moveToGroup) {
           this.showHideLoadingOverlay(groupName);
           this.settingsSaving = true;
         }
@@ -384,21 +382,21 @@
         if (config) {
           this.newConfigSaving = true;
           agentAPI.updateAgentConfig(agentID, config)
-          .then((response) => {
+          .then(() => {
             this.newConfigSaving = false;
-            if(this.settingsSaving){
-              if(!this.moveGroupSaving){
+            if (this.settingsSaving) {
+              if (!this.moveGroupSaving) {
                 this.showHideLoadingOverlay(groupName);
                 this.settingsSaving = false;
               }
             }
             this.getHostList();
-            //Debug
-            //console.log(response);
+            // Debug
+            // console.log(response);
           })
           .catch((e) => {
             this.newConfigSaving = false;
-            if(!this.moveGroupSaving){
+            if (!this.moveGroupSaving) {
               this.showHideLoadingOverlay(groupName);
               this.settingsSaving = false;
             }
@@ -408,21 +406,21 @@
         if (moveToGroup) {
           this.moveGroupSaving = true;
           axios.patch(`http://localhost:8000/groups/${agentID}/${moveToGroup}`)
-          .then((response) => {
+          .then(() => {
             this.moveGroupSaving = false;
-            if(this.settingsSaving){
-              if(!this.newConfigSaving){
+            if (this.settingsSaving) {
+              if (!this.newConfigSaving) {
                 this.showHideLoadingOverlay(groupName);
                 this.settingsSaving = false;
               }
             }
             this.getHostList();
-            //Debug
-            //console.log(response);
+            // Debug
+            // console.log(response);
           })
           .catch((e) => {
             this.moveGroupSaving = false;
-            if(!this.newConfigSaving){
+            if (!this.newConfigSaving) {
               this.showHideLoadingOverlay(groupName);
               this.settingsSaving = false;
             }
@@ -430,22 +428,21 @@
           });
         }
         $('#agent-modal').modal('hide');
-        return;
       },
-      saveGroup(groupName, groupConfig, version){
-        if(groupName && groupConfig && version){
-          console.log("group name:" + groupName);
-          console.log("sysmon version:" + version);
+      saveGroup(groupName, groupConfig, version) {
+        if (groupName && groupConfig && version) {
+          console.log(`group name:${groupName}`);
+          console.log(`sysmon version:${version}`);
           $('#create-group-error-message').addClass('hidden');
           $('#createGroupModal').modal('hide');
           this.groupSaving = true;
           axios({
-            method:'post',
+            method: 'post',
             url: `http://localhost:8000/groups/${groupName}`,
-            data:{
-              "sysmon_version":version,
-              "configuration":groupConfig,
-            }
+            data: {
+              sysmon_version: version,
+              configuration: groupConfig,
+            },
           })
           .then((response) => {
             this.groupSaving = false;
@@ -455,8 +452,7 @@
             this.groupSaving = false;
             console.log(e.message);
           });
-        }
-        else {
+        } else {
           $('#create-group-error-message').removeClass('hidden');
         }
       },
@@ -475,7 +471,7 @@
       },
       installSysmon(agentID, groupName) {
         this.showHideLoadingOverlay(groupName);
-        axios.patch(`http://localhost:8000/agents/${agentID}`)
+        agentAPI.installSysmon(agentID)
         .then(() => {
           // Debug
           // console.log(response);
@@ -490,9 +486,9 @@
       uninstallSysmon(agentID, groupName) {
         this.showHideLoadingOverlay(groupName);
         agentAPI.uninstallSysmon(agentID)
-        .then((response) => {
+        .then(() => {
           // Debug
-          //console.log(response);
+          // console.log(response);
          this.showHideLoadingOverlay(groupName);
           this.getHostList();
         })
@@ -509,22 +505,21 @@
           const currentGroups = this.availableGroups;
           console.log(this.availableGroups);
 
-          //If agents belong to a group, add them to the groupedAgents object according to group name.
-          //Else add them to the groupedAgents object as "unassigned"
-          let currentGroupedAgents = {"unassigned":[]};
-          for(let i = 0; i < currentGroups.length; i++){
-            currentGroupedAgents[currentGroups[i]["name"]] = [];
+          // If agents belong to a group, add them to the groupedAgents object according to group name.
+          // Else add them to the groupedAgents object as "unassigned"
+          const currentGroupedAgents = { unassigned: [] };
+          for (let i = 0; i < currentGroups.length; i++) {
+            currentGroupedAgents[currentGroups[i].name] = [];
           }
-          for(let i = 0; i < currentAgents.length; i++){
-            if(currentAgents[i]["group"]){
-              currentGroupedAgents[currentAgents[i]["group"]].push(currentAgents[i]);
-            }
-            else {
-              currentGroupedAgents["unassigned"].push(currentAgents[i]);
+          for (let i = 0; i < currentAgents.length; i++) {
+            if (currentAgents[i].group) {
+              currentGroupedAgents[currentAgents[i].group].push(currentAgents[i]);
+            } else {
+              currentGroupedAgents.unassigned.push(currentAgents[i]);
             }
           }
           this.groupedAgents = currentGroupedAgents;
-          //console.log(currentGroupedAgents);
+          // console.log(currentGroupedAgents);
           // Debug
            // console.log(response.data);
         })
@@ -533,12 +528,12 @@
           this.errors.push(e);
         });
       },
-      getAvailableGroups(){
+      getAvailableGroups() {
         axios.get('http://localhost:8000/groups')
         .then((response) => {
           this.availableGroups = response.data;
-          //Debug
-          //console.log(response.data);
+          // Debug
+          // console.log(response.data);
         })
         .catch((e) => {
           console.log(e.message);
@@ -549,7 +544,7 @@
         .then((response) => {
           this.sysmonConfigs = response.data;
           // Debug
-           //console.log(response.data);
+           // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -560,7 +555,7 @@
         .then((response) => {
           this.sysmonVersions = response.data;
           // Debug
-          //console.log(response.data);
+          // console.log(response.data);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -593,7 +588,7 @@
           }
         }
       },
-      manageAllAgents(groupName, allSelected) {
+      manageAllAgents(groupName) {
         switch (this.manageAllSelected) {
           case 'install':
             this.showHideLoadingOverlay(groupName, true);

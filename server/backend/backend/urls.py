@@ -1,5 +1,4 @@
 """backend URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -23,6 +22,8 @@ urlpatterns = [
     path('heartbeat/', include('heartbeat.urls')),
     path('multi/', include('multi.urls')),
     path('configs/', include('configs.urls')),
-    path('users/', include('users.urls')),
+    path('groups/', include('groups.urls')),
+    path('sysmon/', include('sysmon.urls')),
+    path('support/', include('support.urls')),
     path('admin/', admin.site.urls),
 ]

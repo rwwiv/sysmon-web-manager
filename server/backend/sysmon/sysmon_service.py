@@ -1,4 +1,5 @@
-from models.models import Sysmon
+from models.models import Sysmon, Global_Variables
+from support import support_service
 import os
 import zipfile
 import requests
@@ -14,13 +15,23 @@ def get_all_sysmons():
         data.append(temp)
     return data
 
-def retrieve_and_create_sysmon(link):
+def retrieve_and_create_sysmon():
     sysmon_folder = '../sysmon'
+    if not support_service.get_sysmon_versioning_repo_link():
+        support_service.update_sysmon_versioning_repo_link('https://raw.githubusercontent.com/Neo23x0/sysmon-version-history/master/README.md')
+    repo_link = support_service.get_sysmon_versioning_repo_link()
+
+
+    if not support_service.get_sysmon_download_link():
+        support_service.update_sysmon_download_link('https://download.sysinternals.com/files/Sysmon.zip')
+    download_link = support_service.get_sysmon_download_link()
+
+
     try:
         if not os.path.exists(sysmon_folder):
             os.makedirs(sysmon_folder)
         if not os.listdir(sysmon_folder):
-            sysmon_version_markdown_raw = requests.get(link)\
+            sysmon_version_markdown_raw = requests.get(repo_link)\
                 .content\
                 .decode()
             sysmon_version_markdown_readline = StringIO(sysmon_version_markdown_raw).readlines()
@@ -30,7 +41,7 @@ def retrieve_and_create_sysmon(link):
                 if line.startswith('## v'):
                     sysmon_version = line.split('## v')[1]
                     break
-            sysmon_zip = bytes(requests.get('https://download.sysinternals.com/files/Sysmon.zip').content)
+            sysmon_zip = bytes(requests.get(download_link).content)
             with open(f'{sysmon_folder}/sysmon.zip', 'wb') as sysmon:
                 sysmon.write(sysmon_zip)
             if os.path.isfile(f'{sysmon_folder}/sysmon.zip'):

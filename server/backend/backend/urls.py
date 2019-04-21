@@ -23,6 +23,7 @@ urlpatterns = [
     path('heartbeat/', include('heartbeat.urls')),
     path('multi/', include('multi.urls')),
     path('configs/',include('configs.urls')),
+    path('groups/',include('groups.urls')),
     path('sysmon/', include('sysmon.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -89,7 +89,7 @@
       <li class="box" v-for="(agents, group) in groupedAgents">
         <div class="box-header with-border">
           <h4 class="box-title">
-            {{(group == "unassigned") ? "Ungrouped Hosts" : group}}
+            {{(group === "unassigned") ? "Ungrouped Hosts" : group}}
           </h4>
         </div>
         <!-- /.box-header -->
@@ -660,7 +660,7 @@
       this.getAvailableSysmonConfigs();
       this.getAvailableSysmonVersions();
       this.getHostList();
-      this.timer = setInterval(this.getHostList, 10000);
+      this.timer = setInterval(this.getHostList, 100);
       // Handle iCheckBox in the host list table head.
       const that = this;
       jQuery('#checkAll').change(() => {

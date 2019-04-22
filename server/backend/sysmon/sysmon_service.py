@@ -1,3 +1,5 @@
+import re
+
 from models.models import Sysmon, Global_Variables
 from support import support_service
 import os
@@ -15,17 +17,16 @@ def get_all_sysmons():
         data.append(temp)
     return data
 
+
 def retrieve_and_create_sysmon():
     sysmon_folder = '../sysmon'
     if not support_service.get_sysmon_versioning_repo_link():
         support_service.update_sysmon_versioning_repo_link('https://raw.githubusercontent.com/Neo23x0/sysmon-version-history/master/README.md')
     repo_link = support_service.get_sysmon_versioning_repo_link()
 
-
     if not support_service.get_sysmon_download_link():
         support_service.update_sysmon_download_link('https://download.sysinternals.com/files/Sysmon.zip')
     download_link = support_service.get_sysmon_download_link()
-
 
     try:
         if not os.path.exists(sysmon_folder):
@@ -59,6 +60,17 @@ def retrieve_and_create_sysmon():
             if not Sysmon.objects.filter(VERSION=sysmon_version).exists():
                 new_sysmon_record = Sysmon(VERSION=sysmon_version, IS_CURRENT=True)
                 new_sysmon_record.save()
+        else:
+            newest_version = ''
+            for file in os.listdir(sysmon_folder):
+                regex = re.search("sysmon_(.+?).exe", file)
+                if regex:
+                    Sysmon(VERSION=regex.group(1)).save()
+                    if regex.group(1) > newest_version:
+                        newest_version = regex.group(1)
+            sysmon_record = Sysmon.objects.get(VERSION=newest_version)
+            sysmon_record.IS_CURRENT = True
+            sysmon_record.save()
         return 1
     except:
         return -1

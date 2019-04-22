@@ -56,7 +56,7 @@ def update_needs_uninstall(requested_uuid):
     try:
         retrieved_agent = Agent.objects.get(UUID=requested_uuid)
         retrieved_agent.NEEDS_UNINSTALL = True
-        retrieved_agent.ATTEMPTED_INSTALL = True
+        retrieved_agent.ATTEMPTED_INSTALL = False
         retrieved_agent.save()
         log.debug(f"Agent {requested_uuid} needs uninstall flag updated")
         return 0

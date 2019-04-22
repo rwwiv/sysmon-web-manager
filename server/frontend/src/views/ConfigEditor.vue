@@ -174,7 +174,7 @@
         } else {
           configAPI.updateConfig(data);
         }
-        this.$router.push({ name: 'management' });
+        this.$router.push({ name: 'config-manager' });
       },
 
     },

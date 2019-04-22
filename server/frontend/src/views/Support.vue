@@ -10,19 +10,11 @@
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table class="table no-margin">
-              <thead>
-              <tr>
-                <th>Variable Name</th>
-                <th>Variable Value</th>
-              </tr>
-              </thead>
-              <tbody>
-              <SysmonVersioningRepoLink></SysmonVersioningRepoLink>
-              <SysmonDownloadLink></SysmonDownloadLink>
-              <InitialConfigRepoLink></InitialConfigRepoLink>
-              </tbody>
-            </table>
+            <SysmonVersioningRepoLink></SysmonVersioningRepoLink>
+            <hr>
+            <SysmonDownloadLink></SysmonDownloadLink>
+            <hr>
+            <InitialConfigRepoLink></InitialConfigRepoLink>
           </div>
         </div>
       </div>
@@ -49,4 +41,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
+</style>
+
+<style>
+  .fill-width {
+    flex: 1
+  }
 </style>

@@ -5,7 +5,7 @@ agent:
   exec_last_running: null
   service_name: SysMonagerAgent
   sysmon_version: ''
-  uuid: 5bbc3427-a46f-490d-899b-7e9696757463
+  uuid: af2674ba-6194-4e37-8c93-d6c345cdbf4c
 api:
   heartbeat: /heartbeat
   retry: 0

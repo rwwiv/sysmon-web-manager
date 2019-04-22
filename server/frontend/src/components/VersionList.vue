@@ -4,12 +4,12 @@
       <h4 class="box-title">
         Sysmon Versions
       </h4>
+      <div class="pull-right">
+        <button type="button" class="btn btn-secondary" @click="checkSysmonVersion()">Check for updates to Sysmon</button>
+      </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <div class="col-auto">
-        <button type="button" class="btn btn-primary" @click="checkSysmonVersion()">Check for updates to Sysmon.</button>
-      </div>
       <table class="table no-margin">
         <thead>
           <tr>
@@ -33,9 +33,8 @@
   </div>
 </template>
 <script>
-  import axios from 'axios';
+  import sysmonAPI from '../api/sysmon';
 
-  console.log('at versionlist');
 export default {
   name: 'VersionList',
   data() {
@@ -46,26 +45,19 @@ export default {
   },
   methods: {
     checkSysmonVersion() {
-      axios.post('http://localhost:8000/sysmon/',
-        {
-          sysmon_repo: 'https://raw.githubusercontent.com/Neo23x0/sysmon-version-history/master/README.md',
-        }).then((response) => {
-        this.getAllVersions();
-        console.log('got all versions?');
-        console.log(response);
-      })
-        .catch((e) => {
-          this.errors.push(e);
-        });
+      sysmonAPI.checkSysmonUpdate()
+        .then((response) => {
+          this.getAllVersions();
+          console.log('got all versions?');
+          console.log(response);
+      });
     },
     getAllVersions() {
-      axios.get('http://localhost:8000/sysmon').then((response) => {
+      sysmonAPI.getSysmonVersions()
+        .then((response) => {
         this.sysmonVersions = response.data;
         console.log(response.data);
-      })
-        .catch((e) => {
-          this.errors.push(e);
-        });
+      });
     },
   },
   mounted() {
@@ -75,6 +67,9 @@ export default {
 </script>
 
 <style scoped>
+  thead{
+    background-color:#f3f3f3;
+  }
   td a {
     cursor:pointer;
   }

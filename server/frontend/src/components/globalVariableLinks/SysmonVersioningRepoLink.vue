@@ -1,13 +1,19 @@
 <template>
-<tr>
-  <th>Sysmon Versioning Repo Link</th>
-  <input v-model="retrievedLink" placeholder="No link found please enter a link" data-toggle="tooltip" :title="retrievedLink">
-  <button class="btn btn-secondary pull-right" @click="setVersioningLink()">Save</button>
-</tr>
+  <div class="row">
+    <div class="col-md-3 flex-container">
+      <p class="center-align">Sysmon Versioning Repo Link</p>
+    </div>
+    <div class="col-md-8 flex-container">
+      <input class="fill-width" v-model="link" placeholder="No link found please enter a link" data-toggle="tooltip" :title="link">
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-secondary pull-right" @click="setVersioningLink()">Save</button>
+    </div>
+  </div>
 </template>
 
 <script>
-  import axios from 'axios';
+  import supportAPI from '../../api/support';
 
   $(document).ready(() => {
     $('[data-toggle="tooltip"]').tooltip();
@@ -17,28 +23,18 @@
   name: 'SysmonVersioningRepoLink',
   data() {
     return {
-      retrievedLink: '',
+      link: '',
     };
   },
   methods: {
     getVersioningLink() {
-      axios.get('http://localhost:8000/support/links/sysmon/repo')
+      supportAPI.getSysmonVersionRepoLink()
         .then((response) => {
-          this.retrievedLink = response.data.link;
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
+          this.link = response.data.link;
         });
     },
     setVersioningLink() {
-      axios.post('http://localhost:8000/support/links/sysmon/repo', { link: this.retrievedLink })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
-        });
+      supportAPI.setSysmonVersionRepoLink(this.link);
     },
   },
   mounted() {
@@ -48,6 +44,12 @@
 </script>
 
 <style scoped>
+  .row {
+    display: flex;
+  }
+  .fill-width {
+    flex: 1
+  }
   td a {
     cursor:pointer;
   }
@@ -57,21 +59,12 @@
   .icon-column{
     width:10%;
   }
-</style>
-
-<style scoped>
-  td a {
-    cursor:pointer;
+  .flex-container {
+    display: flex;
   }
-  .center-text {
-    text-align:center;
+  .fill-width {
+    flex: 1
   }
-  .icon-column{
-    width:10%;
-  }
-</style>
-
-<style scoped>
   tr input{
     width:40%;
   }

@@ -279,6 +279,7 @@
   import agentAPI from '../api/agents';
   import configAPI from '../api/configs';
   import sysmonAPI from '../api/sysmon';
+  import groupAPI from '../api/groups';
 
   // const loadingOverlay = $('#loadingOverlay');
 
@@ -412,7 +413,7 @@
         }
         if (moveToGroup) {
           this.moveGroupSaving = true;
-          axios.patch(`http://localhost:8000/groups/${agentID}/${moveToGroup}`)
+          groupAPI.moveAgentToGroup(agentID, moveToGroup)
             .then(() => {
               this.moveGroupSaving = false;
               if (this.settingsSaving) {
@@ -443,14 +444,7 @@
           $('#create-group-error-message').addClass('hidden');
           $('#createGroupModal').modal('hide');
           this.groupSaving = true;
-          axios({
-            method: 'post',
-            url: `http://localhost:8000/groups/${groupName}`,
-            data: {
-              sysmon_version: version,
-              configuration: groupConfig,
-            },
-          })
+          groupAPI.createGroup(version, groupConfig, groupName)
             .then((response) => {
               this.groupSaving = false;
               console.log(response);
@@ -536,7 +530,7 @@
           });
       },
       getAvailableGroups() {
-        axios.get('http://localhost:8000/groups')
+        groupAPI.getAllGroups()
           .then((response) => {
             this.availableGroups = response.data;
             // Debug

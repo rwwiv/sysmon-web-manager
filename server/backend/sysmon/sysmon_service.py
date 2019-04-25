@@ -65,12 +65,12 @@ def retrieve_and_create_sysmon():
             for file in os.listdir(sysmon_folder):
                 regex = re.search("sysmon_(.+?).exe", file)
                 if regex:
-                    Sysmon(VERSION=regex.group(1)).save()
+                    Sysmon(VERSION=regex.group(1),IS_CURRENT=False).save()
                     if regex.group(1) > newest_version:
                         newest_version = regex.group(1)
             sysmon_record = Sysmon.objects.get(VERSION=newest_version)
             sysmon_record.IS_CURRENT = True
             sysmon_record.save()
         return 1
-    except:
+    except Exception as e:
         return -1

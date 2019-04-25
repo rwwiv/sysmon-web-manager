@@ -28,7 +28,7 @@
             </td>
             <td v-else></td>
             <td class="center-text">
-              <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
+              <router-link :to="{name: 'config-editor', params: {id: config.name}}"
                            active-class="active">
                 <a>
                   <i class="fa fa-search-plus"></i>

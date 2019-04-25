@@ -6,7 +6,6 @@ def get_all_agents():
     agents = Agent.objects.all()
     data = []
     for agent in agents:
-        log.debug("ping")
         temp = {
             'uuid': agent.UUID,
             'ip_address': agent.IP_ADDRESS,

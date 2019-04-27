@@ -21,7 +21,7 @@ export default {
     return axios.post(`${constants.serverUrl}/multi/install`, JSON.stringify(array));
   },
   uninstallSysmonMultiple(array) {
-    return axios.post(`${constants.serverUrl}/multi/install`, JSON.stringify(array));
+    return axios.post(`${constants.serverUrl}/multi/uninstall`, JSON.stringify(array));
   },
   runSysmonMultiple(array) {
     return axios.post(`${constants.serverUrl}/multi/restart`, JSON.stringify(array));

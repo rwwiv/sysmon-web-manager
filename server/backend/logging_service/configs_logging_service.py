@@ -2,6 +2,8 @@ import datetime
 import os
 
 path = "./logs/configs"
+
+
 def err(message):
     date = datetime.datetime.today()
 
@@ -20,6 +22,7 @@ def err(message):
             print(f'{date} - {message}\n')
     finally:
         pass
+
 
 def warn(message):
     date = datetime.datetime.today()

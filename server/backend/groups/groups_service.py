@@ -39,6 +39,8 @@ def associate_agent_to_group(group_name, agent_uuid):
         group = Group.objects.get(NAME=group_name)
 
         agent.GROUP = group
+        agent.CONFIG_NAME_NEW = group.CONFIGURATION.NAME
+        agent.SYSMON_VERSION_NEW = group.SYSMON.VERSION
         agent.save()
         log.debug(f'associated agent{agent_uuid} with group {group_name}')
         return 1

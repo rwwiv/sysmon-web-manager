@@ -271,7 +271,6 @@
   import Popper from 'vue-popperjs';
   import 'vue-popperjs/dist/vue-popper.css';
   import '../assets/_css/tooltips.css';
-  import axios from 'axios';
   import agentAPI from '../api/agents';
   import configAPI from '../api/configs';
   import sysmonAPI from '../api/sysmon';

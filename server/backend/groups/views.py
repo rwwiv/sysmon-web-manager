@@ -31,6 +31,13 @@ def single_group(request, name):
             return HttpResponseBadRequest(f"Creation of group {decoded_name} failed")
         else:
             return HttpResponse(f'Creation of group {decoded_name} succeeded')
+    if request.method == 'PUT':
+        log.debug('Put request received at groups endpoint')
+        success_flag = update_group(decoded_name, json.loads(request.body.decode('utf-8')))
+        if success_flag < 0:
+            return HttpResponseBadRequest(f"Update of group {decoded_name} failed")
+        else:
+            return HttpResponse(f'Update of group {decoded_name} succeeded')
     else:
         log.warn('Request with no mapping received raising 404')
         return Http404()

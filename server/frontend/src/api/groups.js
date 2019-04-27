@@ -22,4 +22,14 @@ export default {
     return axios.get(`${constants.serverUrl}/groups`);
   },
 
+  updateGroup(version, groupConfig, groupName) {
+    return axios({
+      method: 'put',
+      url: `${constants.serverUrl}/groups/${groupName}`,
+      data: {
+        sysmon_version: version,
+        configuration: groupConfig,
+      },
+    });
+  }
 };

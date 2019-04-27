@@ -87,11 +87,7 @@
     <!-- /.box -->
     <ul id="group-list">
       <li class="box" v-for="(agents, group) in groupedAgents">
-        <div class="box-header with-border">
-          <h4 class="box-title">
-            {{(group === "unassigned") ? "Ungrouped Hosts" : group}}
-          </h4>
-        </div>
+        <group-header v-bind:group-name="group"></group-header>
         <!-- /.box-header -->
         <div class="box-body">
           <!--
@@ -252,7 +248,7 @@
             <h5><b>Move to Group:</b></h5>
             <select v-model="moveToGroup">
               <option disabled value="">Select Group</option>
-              <option v-for="selection in availableGroups" v-bind:value="selection.name">{{selection.name}}</option>
+              <option v-for="selection in availableGroups" v-bind:key="selection.name">{{selection.name}}</option>
             </select>
             <div id="settings-error" class="hidden">
               <h4 class="error-message">You must select a new group or Sysmon configuration file to save new settings.</h4>
@@ -280,6 +276,7 @@
   import configAPI from '../api/configs';
   import sysmonAPI from '../api/sysmon';
   import groupAPI from '../api/groups';
+  import GroupHeader from './GroupHeader.vue';
 
   // const loadingOverlay = $('#loadingOverlay');
 
@@ -313,6 +310,7 @@
       };
     },
     components: {
+      GroupHeader,
       popper: Popper,
     },
     methods: {
@@ -445,9 +443,9 @@
           $('#createGroupModal').modal('hide');
           this.groupSaving = true;
           groupAPI.createGroup(version, groupConfig, groupName)
-            .then((response) => {
+            .then(() => {
               this.groupSaving = false;
-              console.log(response);
+              // console.log(response);
             })
             .catch((e) => {
               this.groupSaving = false;
@@ -460,8 +458,8 @@
       runSysmon(agentID, groupName) {
         this.showHideLoadingOverlay(groupName);
         agentAPI.runSysmon(agentID)
-          .then((response) => {
-            console.log(response);
+          .then(() => {
+            // console.log(response);
             this.showHideLoadingOverlay(groupName);
             this.getHostList();
           })
@@ -504,7 +502,7 @@
             this.agents = response.data;
             const currentAgents = response.data;
             const currentGroups = this.availableGroups;
-            console.log(this.availableGroups);
+            // console.log(this.availableGroups);
 
             // If agents belong to a group, add them to the groupedAgents object according to group name.
             // Else add them to the groupedAgents object as "unassigned"
@@ -655,6 +653,7 @@
       this.getAvailableSysmonVersions();
       this.getHostList();
       this.timer = setInterval(this.getHostList, 100);
+      this.timer = setInterval(this.getAvailableGroups, 100);
       // Handle iCheckBox in the host list table head.
       const that = this;
       jQuery('#checkAll').change(() => {

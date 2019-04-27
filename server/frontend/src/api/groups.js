@@ -5,7 +5,6 @@ export default {
   moveAgentToGroup(agent, group) {
     return axios.patch(`${constants.serverUrl}/groups/${agent}/${group}`);
   },
-
   createGroup(version, groupConfig, groupName) {
     return axios({
              method: 'post',
@@ -16,7 +15,9 @@ export default {
              },
            });
   },
-
+  getSingleGroup(name) {
+    return axios.get(`${constants.serverUrl}/groups/${name}`);
+  },
   getAllGroups() {
     return axios.get(`${constants.serverUrl}/groups`);
   },

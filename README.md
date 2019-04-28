@@ -32,6 +32,16 @@ docker run -d -p 8000:8000 -p 8080:8080 <container name> sysmonager
 
 * Localhost
 
+> Export environment variables if not already set
+
+``` sh
+export API_PORT=8000
+export API_URL=http://localhost:$API_PORT
+```
+
+> Set up and run Django server
+
+
 ``` sh
 # in <repository>/server/backend
 pip install -r requirements.txt
@@ -39,12 +49,10 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
-> In another terminal window
+> Set up and run VueJS client in another terminal window
 
 ``` sh
 # in <repository>/server/frontend
-export API_PORT=8000
-export API_URL=http://localhost:$API_PORT
 npm install
 npm run serve
 ```
@@ -53,7 +61,7 @@ npm run serve
 
 The agent must be run on a Windows computer since we're managing a Windows only tool.
 
-**\*BEFORE FIRST RUN\*** make sure the config.ini is pointing to the server URL you have set up (for development this will usually be the host IP if running the server through docker or localhost otherwise)
+> **\*BEFORE FIRST RUN\*** make sure the config.ini is pointing to the server URL you have set up (for development this will usually be the host IP if running the server through docker or localhost otherwise)
 
 ``` pwsh 
 # in <repository>/agent

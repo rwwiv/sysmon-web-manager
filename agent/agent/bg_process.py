@@ -120,7 +120,8 @@ def __heartbeat():
                             json=__build_request_dict())
     r_json = response.json()
     if r_json.get('install', False):
-        __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
+        if r_json['updates_needed']['sysmon'] and r_json['updates_needed']['config']:
+            __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
     else:
         threads = []
         if r_json.get('updates_needed', False):

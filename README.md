@@ -26,7 +26,7 @@ There are two methods to run the development server:
 * Docker
 
 ``` sh
-docker built . -t sysmonager --build-arg IP_ADDRESS=<host IP>
+docker build . -t sysmonager --build-arg IP_ADDRESS=<host IP>
 docker run -d -p 8000:8000 -p 8080:8080 <container name> sysmonager
 ```
 

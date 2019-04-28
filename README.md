@@ -55,8 +55,8 @@ The agent must be run on a Windows computer since we're managing a Windows only 
 
 **\*BEFORE FIRST RUN\*** make sure the config.ini is pointing to the server URL you have set up (typically localhost for development)
 
-``` cmd
-REM in <repository>/agent
+``` pwsh 
+# in <repository>/agent
 python install -r requirements.txt
 cd agent
 python .\__init__.py

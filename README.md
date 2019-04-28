@@ -26,8 +26,8 @@ There are two methods to run the development server:
 * Docker
 
 ``` sh
-docker built . -t sysmonager
-docker run -d -t -p 8000:8000 -p 8080:8080 <container name> sysmonager
+docker built . -t sysmonager --build-arg IP_ADDRESS=<host IP>
+docker run -d -p 8000:8000 -p 8080:8080 <container name> sysmonager
 ```
 
 * Localhost
@@ -53,7 +53,7 @@ npm run serve
 
 The agent must be run on a Windows computer since we're managing a Windows only tool.
 
-**\*BEFORE FIRST RUN\*** make sure the config.ini is pointing to the server URL you have set up (typically localhost for development)
+**\*BEFORE FIRST RUN\*** make sure the config.ini is pointing to the server URL you have set up (for development this will usually be the host IP if running the server through docker or localhost otherwise)
 
 ``` pwsh 
 # in <repository>/agent

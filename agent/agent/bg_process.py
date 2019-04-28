@@ -81,10 +81,6 @@ def __setup():
     response = requests.post(f'{__protocol}://{user_config["http"]["url"]}'
                              f'{__env_config_api["heartbeat"]}'
                              f'/{__env_config_agent["uuid"]}')
-    r_json = response.json()
-    __env_config_agent['sysmon_version'] = r_json['sysmon_version']
-    __env_config_agent['config_name'] = r_json['config_name']
-    __write_yaml()
 
 
 def __build_initial_config():
@@ -103,8 +99,8 @@ def __build_request_dict():
     if not __env_config_sysmon['installed']:
         return __data
     if not check_sysmon_running():
-            __data['exec_running'] = False
-            __data['exec_last_running_at'] = __env_config_agent['exec_last_running']
+        __data['exec_running'] = False
+        __data['exec_last_running_at'] = __env_config_agent['exec_last_running']
     else:
         __env_config_agent['checked_exec_running'] = False
         __write_yaml()

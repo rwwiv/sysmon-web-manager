@@ -2,6 +2,22 @@ from models.models import Agent, Configuration, Sysmon
 from logging_service import agents_logging_service as log
 
 
+def get_sysmon_version():
+    try:
+        return Sysmon.objects.get(IS_CURRENT=True).VERSION
+    except:
+        log.err("No default sysmon version on server")
+        return ""
+
+
+def get_config_name():
+    try:
+        return Configuration.objects.get(IS_DEFAULT=True).NAME
+    except:
+        log.err('No default configuration on server')
+        return ""
+
+
 def get_all_agents():
     agents = Agent.objects.all()
     data = []
@@ -34,6 +50,8 @@ def update_needs_install(requested_uuid):
             retrieved_agent.ATTEMPTED_INSTALL = True
             retrieved_agent.NEEDS_RESTART = False
             retrieved_agent.NEEDS_UNINSTALL = False
+            retrieved_agent.SYSMON_VERSION_NEW = get_sysmon_version()
+            retrieved_agent.CONFIG_NAME_NEW = get_config_name()
             retrieved_agent.save()
             log.debug(f"Agent {requested_uuid} needs install flag updated")
             return 1
@@ -42,6 +60,7 @@ def update_needs_install(requested_uuid):
             return -1
     else:
         return 0
+
 
 def update_needs_restart(requested_uuid):
     try:

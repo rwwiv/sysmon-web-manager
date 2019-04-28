@@ -1,27 +1,27 @@
 # Development docker image
-FROM ubuntu:latest
+FROM node:10-alpine
 LABEL maintainer="william.wernert@gmail.com"
 
 # Python + pip setup
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y \
+
+RUN apk add --no-cache --update python3 \
+	python3-dev \
+	py3-setuptools \
 	git \
 	sudo \
 	curl \
-	python3 \
-	python3-dev \
-	python3-setuptools \
-	python3-pip \
+	gcc \
 	g++ \
-	build-essential \
-	supervisor \
-	sqlite3 && \
-	pip3 install -U pip setuptools && \
-   	rm -rf /var/lib/apt/lists/*
-
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-RUN apt-get install -y nodejs
+	make \
+	sqlite \
+	bash \
+	supervisor && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
+    rm -r /root/.cache
 
 # Environment setup
 ARG IP_ADDRESS
@@ -38,4 +38,4 @@ RUN python3 manage.py migrate
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-CMD ["/usr/bin/supervisord"]
+ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]

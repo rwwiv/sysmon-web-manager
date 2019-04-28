@@ -32,8 +32,6 @@ def __write_yaml():
 
 
 def run():
-    if __env_config_api['retry'] > 5:
-        exit()
     if __env_config_agent['uuid'] is None:
         try:
             __setup()
@@ -54,9 +52,6 @@ def run():
 
 
 def testing_run():
-    if __env_config_api['retry'] >= 5:
-        print('Exiting...')
-        exit()
     if __env_config_testing['config_built']:
         try:
             __heartbeat()
@@ -66,6 +61,7 @@ def testing_run():
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
+            pass
     else:
         __build_initial_config()
         __env_config_testing['config_built'] = True
@@ -78,6 +74,7 @@ def testing_run():
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
+            pass
 
 
 def __setup():

@@ -46,12 +46,9 @@ if __name__ == "__main__":
         #
 
         bg_process.__write_yaml()
+        # Testing code
         while True:
-            # bg_process.run()
-
-            # Testing code
             bg_process.testing_run()
-            #
 
             time.sleep(1)
 
@@ -62,6 +59,5 @@ if __name__ == "__main__":
         # else:
         #     win32serviceutil.HandleCommandLine(SysMonagerAgentService)
     except Exception:
-        traceback.print_exc()
-        input("...")
-        exit(-1)
+        print('Uncaught exception.')
+        pass

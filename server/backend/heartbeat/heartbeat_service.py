@@ -9,16 +9,27 @@ def update_agent_status(requested_uuid, incoming_request):
     retrieved_agent = Agent.objects.get(UUID=requested_uuid)
     persist_data = json.loads(incoming_request.body)
 
+
     if persist_data.get('installed', False):
         retrieved_agent.NEEDS_INSTALL = False
-        updates_data = {
-            'sysmon': retrieved_agent.SYSMON_VERSION_NEW != retrieved_agent.SYSMON_VERSION_CURRENT,
-            'config': retrieved_agent.CONFIG_NAME_NEW != retrieved_agent.CONFIG_NAME_CURRENT,
-        }
-        if updates_data['sysmon']:
-            updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
-        if updates_data['config']:
-            updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
+        if retrieved_agent.GROUP is None:#agent has no group
+            updates_data = {
+                'sysmon': retrieved_agent.SYSMON_VERSION_NEW != retrieved_agent.SYSMON_VERSION_CURRENT,
+                'config': retrieved_agent.CONFIG_NAME_NEW != retrieved_agent.CONFIG_NAME_CURRENT,
+            }
+            if updates_data['sysmon']:
+                updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
+            if updates_data['config']:
+                updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
+        else:
+            updates_data = {
+                'sysmon': retrieved_agent.GROUP.SYSMON != retrieved_agent.SYSMON_VERSION_CURRENT,
+                'config': retrieved_agent.GROUP.CONFIGURATION != retrieved_agent.CONFIG_NAME_CURRENT,
+            }
+            if updates_data['sysmon']:
+                updates_data['sysmon_version'] = retrieved_agent.GROUP.SYSMON
+            if updates_data['config']:
+                updates_data['config_name'] = retrieved_agent.GROUP.CONFIGURATION
         data = {
             'updates_needed': updates_data,
             'uninstall': retrieved_agent.NEEDS_UNINSTALL,
@@ -26,14 +37,24 @@ def update_agent_status(requested_uuid, incoming_request):
             'install': retrieved_agent.NEEDS_INSTALL
         }
     elif retrieved_agent.NEEDS_INSTALL:
-        updates_data = {
-            'sysmon': retrieved_agent.SYSMON_VERSION_NEW != retrieved_agent.SYSMON_VERSION_CURRENT,
-            'config': retrieved_agent.CONFIG_NAME_NEW != retrieved_agent.CONFIG_NAME_CURRENT,
-        }
-        if updates_data['sysmon']:
-            updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
-        if updates_data['config']:
-            updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
+        if retrieved_agent.GROUP is None:#agent has no group
+            updates_data = {
+                'sysmon': retrieved_agent.SYSMON_VERSION_NEW != retrieved_agent.SYSMON_VERSION_CURRENT,
+                'config': retrieved_agent.CONFIG_NAME_NEW != retrieved_agent.CONFIG_NAME_CURRENT,
+            }
+            if updates_data['sysmon']:
+                updates_data['sysmon_version'] = retrieved_agent.SYSMON_VERSION_NEW
+            if updates_data['config']:
+                updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
+        else:
+            updates_data = {
+                'sysmon': retrieved_agent.GROUP.SYSMON != retrieved_agent.SYSMON_VERSION_CURRENT,
+                'config': retrieved_agent.GROUP.CONFIGURATION != retrieved_agent.CONFIG_NAME_CURRENT,
+            }
+            if updates_data['sysmon']:
+                updates_data['sysmon_version'] = retrieved_agent.GROUP.SYSMON
+            if updates_data['config']:
+                updates_data['config_name'] = retrieved_agent.GROUP.CONFIGURATION
         data = {
             'updates_needed': updates_data,
             'uninstall': retrieved_agent.NEEDS_UNINSTALL,

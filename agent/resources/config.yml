@@ -1,16 +1,20 @@
 agent:
   checked_exec_running: false
-  config_name: null
+  config_name: sysmonconfig-export
   display_name: SysMonager Agent
   exec_last_running: null
-  installed: false
   service_name: SysMonagerAgent
-  sysmon_version: null
-http:
-  api:
-    heartbeat: /heartbeat
-    updates:
-      config: /updates/config
-      sysmon: /updates/sysmon
-  checked_exec_running: false
-  uuid: null
+  sysmon_version: '9.01'
+  uuid: 7574143b-05ab-465b-9f8f-b350fe31163d
+api:
+  heartbeat: /heartbeat
+  retry: 0
+  updates:
+    config: /updates/config
+    sysmon: /updates/sysmon
+sysmon:
+  config_name: null
+  installed: true
+  version: null
+testing:
+  config_built: true

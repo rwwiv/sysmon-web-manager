@@ -1,36 +1,40 @@
-# Build frontend VueJS project for deployment
-FROM node:lts as frontend
+# Development docker image
+FROM node:10-alpine
+LABEL maintainer="william.wernert@gmail.com"
+
+# Python + pip setup
+
+RUN apk add --no-cache --update python3 \
+	python3-dev \
+	py3-setuptools \
+	git \
+	sudo \
+	curl \
+	gcc \
+	g++ \
+	make \
+	sqlite \
+	bash \
+	supervisor && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
+    rm -r /root/.cache
+
+# Environment setup
+ARG IP_ADDRESS
+ENV API_URL="http://$IP_ADDRESS:8000"
+COPY ./server/backend /backend
 COPY ./server/frontend /frontend
 WORKDIR /frontend
 RUN npm install -g @vue/cli
 RUN npm install
-RUN npm run build
-
-# Set up production environment
-FROM ubuntu:18.04
-MAINTAINER William Wernert <william.wernert@gmail.com>
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y \
-	git \
-	python3 \
-	python3-dev \
-	python3-setuptools \
-	python3-pip \
-	nginx \
-	supervisor \
-	sqlite3 && \
-	pip3 install -U pip setuptools && \
-   rm -rf /var/lib/apt/lists/*
-# Set up Django
-COPY ./server/backend /backend
 WORKDIR /backend
 RUN pip3 install -r requirements.txt
+RUN python3 manage.py migrate
 
-# Copy built frontend from previous image
-COPY --from=frontend /frontend/dist /frontend
-# Set up nginx
-COPY nginx.conf /etc/nginx/sites-available/default
-COPY start.sh /
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-CMD ["/start.sh"]
+ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]

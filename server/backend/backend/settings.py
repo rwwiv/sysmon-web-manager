@@ -25,7 +25,7 @@ SECRET_KEY = 'c#+ar%=vnk^x0a-3v97wrbaplfua0908pdwhp!5&9ydr@!y(z8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -33,7 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'updates.apps.UpdatesConfig',
     'heartbeat.apps.HeartbeatConfig',
+    'models.apps.ModelsConfig',
     'multi.apps.MultiConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'corsheaders',

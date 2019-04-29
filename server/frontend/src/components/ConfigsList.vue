@@ -4,34 +4,36 @@
       <h4 class="box-title">
         Configurations
       </h4>
+      <div class="pull-right">
+        <router-link to="config-editor" tag="button" class="btn btn-secondary">Add New Configuration</router-link>
+      </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-      <div class="col-auto">
-        <button class="btn btn-secondary pull-right">Add New Configuration</button>
-      </div>
       <table class="table no-margin">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Is Default?</th>
-            <th class = "center-text icon-column">View</th>
-            <th class = "center-text icon-column">Edit</th>
+            <th></th>
+            <th class = "center-text icon-column">View/Edit</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="config in configs" :key="config.name">
             <td>{{ config.name }}</td>
-            <td>{{ config.isDefault }}</td>
-            <td class="center-text">
-              <a @click="viewConfig(config.name)">
-                <i class="fa fa-search-plus"></i>
-              </a>
+            <td v-if="config.default">
+              <span class="label label-primary" v-if="config.default">
+                Default
+              </span>
             </td>
+            <td v-else></td>
             <td class="center-text">
-              <a @click="editConfig(config.name)">
-                <i class="fa fa-wrench"></i>
-              </a>
+              <router-link :to="{name: 'config-editor', params: {id: config.name}}"
+                           active-class="active">
+                <a>
+                  <i class="fa fa-search-plus"></i>
+                </a>
+              </router-link>
             </td>
           </tr>
         </tbody>
@@ -40,21 +42,37 @@
   </div>
 </template>
 <script>
-import configs from '../../configsList.json';
+  import configAPI from '../api/configs';
 
 export default {
   name: 'ConfigsList',
   data() {
     return {
-      configs,
+      configs: [],
+      errors: [],
       editConfig: '',
       viewConfig: '',
     };
+  },
+  methods: {
+    getAllConfigs() {
+      configAPI.getAllConfigs()
+        .then((response) => {
+          this.configs = response.data;
+          console.log(response.data);
+        });
+    },
+  },
+  mounted() {
+  this.getAllConfigs();
   },
 };
 </script>
 
 <style scoped>
+  thead{
+    background-color:#f3f3f3;
+  }
   td a {
     cursor:pointer;
   }

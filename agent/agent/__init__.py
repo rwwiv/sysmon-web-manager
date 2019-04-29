@@ -3,6 +3,8 @@ import win32serviceutil
 import win32service
 import win32event
 import servicemanager
+import traceback
+from sys import platform
 
 import bg_process
 
@@ -35,13 +37,35 @@ class SysMonagerAgentService(win32serviceutil.ServiceFramework):
 
 
 if __name__ == "__main__":
-    while True:
-        bg_process.run()
-        time.sleep(30)
+    if platform != 'win32':
+        print('Unsupported OS. Please run on Windows')
+    else:
+        try:
+            __env_config_api = env_config['api']
+            __env_config_api['retry'] = 0
 
-    # if len(sys.argv) == 0:
-    #     servicemanager.Initialize()
-    #     servicemanager.PrepareToHostSingle(SysMonagerAgentService)
-    #     servicemanager.StartServiceCtrlDispatcher()
-    # else:
-    #     win32serviceutil.HandleCommandLine(SysMonagerAgentService)
+            # Testing code
+            __env_config_testing = env_config['testing']
+            __env_config_testing['config_built'] = False
+            #
+
+            bg_process.__write_yaml()
+            # Testing code
+            while True:
+                try:
+                    bg_process.testing_run()
+                except:
+                    print('Uncaught exception.')
+                    # traceback.print_exc()
+                    pass
+                time.sleep(1)
+
+        # if len(sys.argv) == 0:
+        #     servicemanager.Initialize()
+        #     servicemanager.PrepareToHostSingle(SysMonagerAgentService)
+        #     servicemanager.StartServiceCtrlDispatcher()
+        # else:
+        #     win32serviceutil.HandleCommandLine(SysMonagerAgentService)
+        except Exception:
+            print('Uncaught exception.')
+            pass

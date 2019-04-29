@@ -1,6 +1,4 @@
 from models.models import Agent
-from models.models import Sysmon
-from models.models import Configuration
 from logging_service import heartbeat_logging_service as log
 import json
 

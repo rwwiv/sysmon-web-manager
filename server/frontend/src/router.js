@@ -51,7 +51,7 @@ export default new Router({
           component: () => import('./views/ConfigManager.vue'),
         },
         {
-          path: '/config-editor',
+          path: '/config-editor/:id',
           name: 'config-editor',
           // route level code-splitting
           // this generates a separate chunk (about.[hash].js) for this route

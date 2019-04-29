@@ -9,7 +9,7 @@
               <div class="input-group">
                 <span class="input-group-addon">
                   Default?
-                  <input type="checkbox" id="makeDefault" @click="makeDefault()" :checked="this.defaultCheck">
+                  <input type="radio" id="makeDefault" @click="makeDefault()" :checked="this.defaultCheck">
                 </span>
                 <input
                   type="text"
@@ -34,7 +34,7 @@
           <label class="btn btn-default btn-file">
             Browse for file <input type="file" style="display: none;" @input="loadConfig()" id="file">
           </label>
-          <button class="btn btn-default pull-right" type="submit" @click="submitConfig()">Save Configuration</button>
+          <button class="btn btn-default pull-right" type="submit" data-toggle="modal" data-target="#confirm-modal">Save Configuration</button>
         </div>
       </div>
       <div class="alert alert-warning alert-dismissible" role="alert" v-if="isValidConfig && didValidate">
@@ -46,40 +46,21 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-              <h3>Confirm Save Configuration</h3>
-              <h4 class="modal-title"><b>Name: </b> {{this.configName}}</h4>
-            </div>
-            <div class="modal-body">
-              <h5 v-if="existingConfig">
-                You are about to make changes to an existing configuration.
-                Press OK to proceed. To make a new configuration instead, cancel and then change the configuration name.
-              </h5>
-              <h5 v-else>
-                You are about to save this new configuration. Press OK to proceed or cancel to make changes.
-              </h5>
+              <div class="row-no-gutters">
+                <div class="col-sm-11" style="display: flex; justify-content: flex-start">
+                  <h4 v-if="existingConfig">Update configuration <span>{{this.configName}}</span>?</h4>
+                  <h4 v-else>Save new configuration <span>{{this.configName}}</span>?</h4>
+                </div>
+                <div class="col-sm-1" style="display: flex; justify-content: flex-end">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" @click="saveConfig()">OK</button>
+              <button type="button" class="btn btn-primary" @click="submitConfig()" data-dismiss="modal">OK</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="validate-modal" tabindex="-1" role="dialog" aria-labelledby="validate-modal-label">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-              <h3>Validate Configuration</h3>
-              <h4 class="modal-title"><b>Name:</b> {{this.configName}}</h4>
-            </div>
-            <div class="modal-body">
-              <h5>Please validate the configuration before saving.</h5>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
             </div>
           </div>
         </div>
@@ -113,7 +94,6 @@
         configName: '',
         defaultCheck: false,
         didValidate: false,
-        existingConfig: false,
         inputTextToSave: '',
       };
     },
@@ -123,18 +103,20 @@
         const oDOM = oParser.parseFromString(this.inputTextToSave, 'text/xml');
         return oDOM.documentElement.nodeName !== 'parsererror';
       },
+      existingConfig() {
+        return this.initConfigName === this.configName;
+      },
     },
     mounted() {
       if (this.$route.params.id !== undefined) {
-        this.initconfigName = this.$route.params.id;
-        this.configName = this.initconfigName;
+        this.initConfigName = this.$route.params.id;
+        this.configName = this.initConfigName;
         document.getElementById('configNameBox').value = this.configName;
         configAPI.getSingleConfig(this.configName)
           .then((response) => {
             this.inputTextToSave = atob(response.data.content);
             this.defaultCheck = response.data.default;
             this.existingConfig = true;
-            console.log(this.existingConfig);
           });
       }
     },
@@ -146,9 +128,10 @@
         this.defaultCheck = $('#makeDefault').is(':checked');
       },
       submitConfig() {
-        if (this.isValidConfig) {
-          this.saveConfig();
-        }
+        $('confirm-modal').addClass('in');
+        // if (this.isValidConfig) {
+        //   this.saveConfig();
+        // }
       },
       loadConfig() {
         const fr = new FileReader();
@@ -168,7 +151,6 @@
           content: btoa(this.inputTextToSave),
           default: this.defaultCheck,
         };
-        console.log(this.existingConfig);
         if (!this.existingConfig || this.initConfigName !== this.configName) {
           configAPI.createConfig(data);
         } else {
@@ -208,5 +190,9 @@
     background: white;
     cursor: inherit;
     display: block;
+  }
+  h4>span {
+    text-decoration: underline;
+    font-weight: lighter;
   }
 </style>

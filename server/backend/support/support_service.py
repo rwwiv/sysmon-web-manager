@@ -8,6 +8,7 @@ def get_sysmon_versioning_repo_link():
     except:
         return ''
 
+
 def get_sysmon_download_link():
     try:
         variable = Global_Variables.objects.get(VARIABLE_TYPE='sysmon_download')
@@ -16,14 +17,12 @@ def get_sysmon_download_link():
         return ''
 
 
-
 def get_initial_config_download_link():
     try:
         variable = Global_Variables.objects.get(VARIABLE_TYPE='sysmon_config')
         return variable.VARIABLE_VALUE
     except:
         return ''
-
 
 
 def update_sysmon_versioning_repo_link(link):

@@ -1,48 +1,48 @@
 <template>
   <div class="box">
-  <div class="box-header with-border">
-    <h4 class="box-title">
-      Configurations
-    </h4>
-  </div>
-  <!-- /.box-header -->
-  <div class="box-body">
-    <div class="col-auto">
-      <router-link to="ConfigEditor" active-class="active" button class="btn btn-secondary pull-right">Add New Configuration</router-link>
+    <div class="box-header with-border">
+      <h4 class="box-title">
+        Configurations
+      </h4>
+      <div class="pull-right">
+        <router-link to="config-editor" tag="button" class="btn btn-secondary">Add New Configuration</router-link>
+      </div>
     </div>
-    <table class="table no-margin">
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th></th>
-        <th class = "center-text icon-column">View/Edit</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="config in configs" :key="config.name">
-        <td>{{ config.name }}</td>
-        <td v-if="config.default">
+    <!-- /.box-header -->
+    <div class="box-body">
+      <table class="table no-margin">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th></th>
+            <th class = "center-text icon-column">View/Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="config in configs" :key="config.name">
+            <td>{{ config.name }}</td>
+            <td v-if="config.default">
               <span class="label label-primary" v-if="config.default">
                 Default
               </span>
-        </td>
-        <td v-else></td>
-        <td class="center-text">
-          <router-link :to="{name: 'ConfigEditor', params: {id: config.name}}"
-                       active-class="active">
-            <a>
-              <i class="fa fa-search-plus"></i>
-            </a>
-          </router-link>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+            </td>
+            <td v-else></td>
+            <td class="center-text">
+              <router-link :to="{name: 'config-editor', params: {id: config.name}}"
+                           active-class="active">
+                <a>
+                  <i class="fa fa-search-plus"></i>
+                </a>
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 </template>
 <script>
-  import axios from 'axios';
+  import configAPI from '../api/configs';
 
 export default {
   name: 'ConfigsList',
@@ -56,13 +56,10 @@ export default {
   },
   methods: {
     getAllConfigs() {
-      axios.get('http://localhost:8000/configs')
+      configAPI.getAllConfigs()
         .then((response) => {
           this.configs = response.data;
           console.log(response.data);
-        })
-        .catch((e) => {
-          this.errors.push(e);
         });
     },
   },
@@ -73,18 +70,9 @@ export default {
 </script>
 
 <style scoped>
-  td a {
-    cursor:pointer;
+  thead{
+    background-color:#f3f3f3;
   }
-  .center-text {
-    text-align:center;
-  }
-  .icon-column{
-    width:10%;
-  }
-</style>
-
-<style scoped>
   td a {
     cursor:pointer;
   }

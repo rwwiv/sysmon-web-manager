@@ -5,14 +5,12 @@ import win32serviceutil
 import yaml
 from threading import Thread, Lock
 
-
 from agent_config import env_config, env_config_filepath, user_config
 
-
 from sysmon import update_sysmon_config, \
-            install_sysmon, \
-            uninstall_sysmon, \
-            check_sysmon_running
+    install_sysmon, \
+    uninstall_sysmon, \
+    check_sysmon_running
 
 __auth = (user_config['http']['auth_user'], user_config['http']['auth_pass'])
 __env_config_lock = Lock()
@@ -32,8 +30,6 @@ def __write_yaml():
 
 
 def run():
-    if __env_config_api['retry'] > 5:
-        exit()
     if __env_config_agent['uuid'] is None:
         try:
             __setup()
@@ -54,9 +50,6 @@ def run():
 
 
 def testing_run():
-    if __env_config_api['retry'] >= 5:
-        print('Exiting...')
-        exit()
     if __env_config_testing['config_built']:
         try:
             __heartbeat()
@@ -66,6 +59,7 @@ def testing_run():
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
+            pass
     else:
         __build_initial_config()
         __env_config_testing['config_built'] = True
@@ -78,16 +72,13 @@ def testing_run():
             print('Could not reach server, trying again.')
             __env_config_api['retry'] += 1
             __write_yaml()
+            pass
 
 
 def __setup():
-    response = requests.post(f'{__protocol}://{user_config["http"]["url"]}'
-                             f'{__env_config_api["heartbeat"]}'
-                             f'/{__env_config_agent["uuid"]}')
-    r_json = response.json()
-    __env_config_agent['sysmon_version'] = r_json['sysmon_version']
-    __env_config_agent['config_name'] = r_json['config_name']
-    __write_yaml()
+    requests.post(f'{__protocol}://{user_config["http"]["url"]}'
+                  f'{__env_config_api["heartbeat"]}'
+                  f'/{__env_config_agent["uuid"]}')
 
 
 def __build_initial_config():
@@ -106,8 +97,8 @@ def __build_request_dict():
     if not __env_config_sysmon['installed']:
         return __data
     if not check_sysmon_running():
-            __data['exec_running'] = False
-            __data['exec_last_running_at'] = __env_config_agent['exec_last_running']
+        __data['exec_running'] = False
+        __data['exec_last_running_at'] = __env_config_agent['exec_last_running']
     else:
         __env_config_agent['checked_exec_running'] = False
         __write_yaml()
@@ -127,7 +118,8 @@ def __heartbeat():
                             json=__build_request_dict())
     r_json = response.json()
     if r_json.get('install', False):
-        __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
+        if r_json['updates_needed']['sysmon'] and r_json['updates_needed']['config']:
+            __initial_install(r_json['updates_needed']['sysmon_version'], r_json['updates_needed']['config_name'])
     else:
         threads = []
         if r_json.get('updates_needed', False):

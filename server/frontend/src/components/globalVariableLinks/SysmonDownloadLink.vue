@@ -1,13 +1,19 @@
 <template>
-  <tr>
-    <th>Sysmon Download Link</th>
-    <input v-model="retrievedLink" placeholder="No link found please enter a link" data-toggle="tooltip" :title="retrievedLink">
-    <button class="btn btn-secondary pull-right" @click="setDownloadLink()">Save</button>
-  </tr>
+  <div class="row">
+    <div class="col-md-3 flex-container">
+      <p class="center-align">Sysmon Download Link</p>
+    </div>
+    <div class="col-md-8 flex-container">
+      <input class="fill-width" v-model="link" placeholder="No link found please enter a link" data-toggle="tooltip" :title="link">
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-secondary pull-right" @click="setDownloadLink()">Save</button>
+    </div>
+  </div>
 </template>
 
 <script>
-  import axios from 'axios';
+  import supportAPI from '../../api/support';
 
   $(document).ready(() => {
     $('[data-toggle="tooltip"]').tooltip();
@@ -17,28 +23,18 @@
     name: 'SysmonDownloadLink',
     data() {
       return {
-        retrievedLink: '',
+        link: '',
       };
     },
     methods: {
       getDownloadLink() {
-        axios.get('http://localhost:8000/support/links/sysmon/download')
+        supportAPI.getSysmonDownloadLink()
           .then((response) => {
-            this.retrievedLink = response.data.link;
-            console.log(response.data);
-          })
-          .catch((e) => {
-            this.errors.push(e);
+            this.link = response.data.link;
           });
       },
       setDownloadLink() {
-        axios.post('http://localhost:8000/support/links/sysmon/download', { link: this.retrievedLink })
-          .then((response) => {
-            console.log(response.data);
-          })
-          .catch((e) => {
-            this.errors.push(e);
-          });
+        supportAPI.setSysmonDownloadLink(this.link);
       },
     },
     mounted() {
@@ -69,9 +65,12 @@
   .icon-column{
     width:10%;
   }
-</style>
-
-<style scoped>
+  .flex-container {
+    display: flex;
+  }
+  .fill-width {
+    flex: 1
+  }
   tr input{
     width:40%;
   }

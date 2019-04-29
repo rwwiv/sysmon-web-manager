@@ -18,6 +18,7 @@ $(document).ready(() => {
   // });
 });
 export default {
+  name: 'Config Manager',
   components: { ConfigsList },
 };
 </script>

@@ -54,8 +54,9 @@ if __name__ == "__main__":
             while True:
                 try:
                     bg_process.testing_run()
-                except Exception:
+                except:
                     print('Uncaught exception.')
+                    # traceback.print_exc()
                     pass
                 time.sleep(1)
 

@@ -1,11 +1,11 @@
 agent:
   checked_exec_running: false
-  config_name: ''
+  config_name: sysmonconfig-export
   display_name: SysMonager Agent
   exec_last_running: null
   service_name: SysMonagerAgent
-  sysmon_version: ''
-  uuid: af2674ba-6194-4e37-8c93-d6c345cdbf4c
+  sysmon_version: '9.01'
+  uuid: 7574143b-05ab-465b-9f8f-b350fe31163d
 api:
   heartbeat: /heartbeat
   retry: 0

@@ -14,7 +14,6 @@ The following software is needed in order to run the server locally:
 The docker image requires only Docker to be installed.
 
 ## Environment Variables
-* **API_PORT** - defines the port that the Django api server will listen on (default is 8000)
 * **API_URL** - defines the url that directs to the Django api server
 
 ## Local Development
@@ -35,8 +34,7 @@ docker run -d -p 8000:8000 -p 8080:8080 <container name> sysmonager
 > Export environment variables if not already set
 
 ``` sh
-export API_PORT=8000
-export API_URL=http://localhost:$API_PORT
+export API_URL=http://localhost:8000
 ```
 
 > Set up and run Django server

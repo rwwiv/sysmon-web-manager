@@ -5,14 +5,12 @@ import win32serviceutil
 import yaml
 from threading import Thread, Lock
 
-
 from agent_config import env_config, env_config_filepath, user_config
 
-
 from sysmon import update_sysmon_config, \
-            install_sysmon, \
-            uninstall_sysmon, \
-            check_sysmon_running
+    install_sysmon, \
+    uninstall_sysmon, \
+    check_sysmon_running
 
 __auth = (user_config['http']['auth_user'], user_config['http']['auth_pass'])
 __env_config_lock = Lock()
@@ -78,9 +76,9 @@ def testing_run():
 
 
 def __setup():
-    response = requests.post(f'{__protocol}://{user_config["http"]["url"]}'
-                             f'{__env_config_api["heartbeat"]}'
-                             f'/{__env_config_agent["uuid"]}')
+    requests.post(f'{__protocol}://{user_config["http"]["url"]}'
+                  f'{__env_config_api["heartbeat"]}'
+                  f'/{__env_config_agent["uuid"]}')
 
 
 def __build_initial_config():

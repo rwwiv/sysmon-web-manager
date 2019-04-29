@@ -25,8 +25,7 @@ RUN apk add --no-cache --update python3 \
 
 # Environment setup
 ARG IP_ADDRESS
-ENV API_PORT="8000"
-ENV API_URL="http://$IP_ADDRESS:$API_PORT"
+ENV API_URL="http://$IP_ADDRESS:8000"
 COPY ./server/backend /backend
 COPY ./server/frontend /frontend
 WORKDIR /frontend

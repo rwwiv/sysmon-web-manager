@@ -1,3 +1,3 @@
 export default {
-  serverUrl: 'http://localhost:8000',
+  serverUrl: process.env.API_URL,
 };

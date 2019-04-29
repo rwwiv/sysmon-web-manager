@@ -1,7 +1,7 @@
-from agents.agentService import update_needs_install
-from agents.agentService import update_needs_uninstall
-from agents.agentService import update_needs_restart
-from agents.agentService import update_config
+from agents.agent_service import update_needs_install
+from agents.agent_service import update_needs_uninstall
+from agents.agent_service import update_needs_restart
+from agents.agent_service import update_config
 
 
 def multi_sysmon_install(uuids):

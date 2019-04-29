@@ -1,13 +1,13 @@
-from heartbeat.models import Group, Sysmon, Configuration, Agent
+from models.models import Group, Sysmon, Configuration, Agent
 from logging_service import groups_logging_service as log
 
 
 def create_group(name, json):
-    if not Group.objects.exists(name):
-        if not Sysmon.objects.exists(VERSION=json.get('sysmon_version', None)):
-            log.err(f'Configuration {json.get("sysmon_version", "ERR")} is not on server')
+    if not Group.objects.filter(NAME=name).exists():
+        if not Sysmon.objects.filter(VERSION=json.get('sysmon_version')).exists():
+            log.err(f'Sysmon version {json.get("sysmon_version", "ERR")} is not on server')
             return -1
-        if not Configuration.objects.exists(NAME=json.get('configuration', None)):
+        if not Configuration.objects.filter(NAME=json.get('configuration')).exists():
             log.err(f'Configuration {json.get("configuration", "ERR")} is not on server')
             return -1
         if json.get('sysmon_version', False):
@@ -25,8 +25,8 @@ def create_group(name, json):
                           SYSMON=sysmon)
         new_group.save()
         log.debug(
-            f'Group {name} created successfully and is associated with sysmon version {sysmon.version} '
-            f'and configuration {config.name}')
+            f'Group {name} created successfully and is associated with sysmon version {sysmon} '
+            f'and configuration {config}')
         return 1
     else:
         log.err(f'Group with name {name} already exists')
@@ -34,7 +34,7 @@ def create_group(name, json):
 
 
 def associate_agent_to_group(group_name, agent_uuid):
-    if not Agent.objects.exists(agent_uuid) and not Group.objects.exists(group_name):
+    if Agent.objects.filter(UUID=agent_uuid).exists() and Group.objects.filter(NAME=group_name).exists():
         agent = Agent.objects.get(UUID=agent_uuid)
         group = Group.objects.get(NAME=group_name)
 

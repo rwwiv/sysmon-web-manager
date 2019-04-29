@@ -22,8 +22,9 @@ urlpatterns = [
     path('updates/', include('updates.urls')),
     path('heartbeat/', include('heartbeat.urls')),
     path('multi/', include('multi.urls')),
-    path('configs/',include('configs.urls')),
-    path('groups/',include('groups.urls')),
-    path('authentication/',include('authentication.urls')),
+    path('configs/', include('configs.urls')),
+    path('groups/', include('groups.urls')),
+    path('sysmon/', include('sysmon.urls')),
+    path('support/', include('support.urls')),
     path('admin/', admin.site.urls),
 ]

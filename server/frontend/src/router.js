@@ -59,6 +59,14 @@ export default new Router({
           component: () => import('./views/ConfigEditor.vue'),
         },
         {
+          path: '/config-editor',
+          name: 'config-editor',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import('./views/ConfigEditor.vue'),
+        },
+        {
           path: '/support',
           name: 'support',
           component: () => import('./views/Support.vue'),

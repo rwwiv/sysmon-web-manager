@@ -34,7 +34,7 @@
           <label class="btn btn-default btn-file">
             Browse for file <input type="file" style="display: none;" @input="loadConfig()" id="file">
           </label>
-          <button class="btn btn-default pull-right" type="submit" data-toggle="modal" data-target="#confirm-modal">Save Configuration</button>
+          <button class="btn btn-default pull-right" type="submit" data-toggle="modal" data-target="#confirm-modal" @click="configExists">Save Configuration</button>
         </div>
       </div>
       <div class="alert alert-warning alert-dismissible" role="alert" v-if="isValidConfig && didValidate">
@@ -47,9 +47,12 @@
           <div class="modal-content">
             <div class="modal-header">
               <div class="row-no-gutters">
-                <div class="col-sm-11" style="display: flex; justify-content: flex-start">
-                  <h4 v-if="existingConfig">Update configuration <span>{{this.configName}}</span>?</h4>
-                  <h4 v-else>Save new configuration <span>{{this.configName}}</span>?</h4>
+                <div v-if="!configFound" class="col-sm-11" style="display: flex; justify-content: flex-start">
+                  <h4 v-if="!configFound">Update configuration {{this.configName}}?</h4>
+                  <h4 v-else>Save new configuration {{this.configName}}?</h4>
+                </div>
+                <div v-else class="col-sm-11" style="display: flex; justify-content: flex-start">
+                  <h4>Configuration with name {{this.configName}} already exists.</h4>
                 </div>
                 <div class="col-sm-1" style="display: flex; justify-content: flex-end">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -58,9 +61,12 @@
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
+            <div v-if="!configFound" class="modal-footer">
               <button type="button" class="btn btn-primary" @click="submitConfig()" data-dismiss="modal">OK</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+            <div v-else class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
             </div>
           </div>
         </div>
@@ -95,6 +101,7 @@
         defaultCheck: false,
         didValidate: false,
         inputTextToSave: '',
+        configFound: false,
       };
     },
     computed: {
@@ -116,7 +123,6 @@
           .then((response) => {
             this.inputTextToSave = atob(response.data.content);
             this.defaultCheck = response.data.default;
-            this.existingConfig = true;
           });
       }
     },
@@ -128,19 +134,32 @@
         this.defaultCheck = $('#makeDefault').is(':checked');
       },
       submitConfig() {
-        $('confirm-modal').addClass('in');
-        // if (this.isValidConfig) {
-        //   this.saveConfig();
-        // }
+        if (this.isValidConfig) {
+          this.saveConfig();
+        }
       },
       loadConfig() {
         const fr = new FileReader();
         const file = document.getElementById('file').files[0];
           fr.onload = (inputFile => (e) => {
             this.inputTextToSave = e.target.result;
-            [this.configName] = inputFile.name.split('.xml');
+            if (this.configName.isEmpty()) {
+              [this.configName] = inputFile.name.split('.xml');
+            }
           })(file);
           fr.readAsText(file);
+      },
+      configExists() {
+        if (this.initConfigName !== '' && this.initConfigName !== this.configName) {
+          console.log('Ran check');
+          configAPI.getSingleConfig(this.configName)
+            .then(() => {
+              this.configFound = true;
+            })
+            .catch(() => {
+              this.configFound = false;
+            });
+        } else this.configFound = false;
       },
       didNotValidate() {
         this.didValidate = 0;

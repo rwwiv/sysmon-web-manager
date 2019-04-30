@@ -5,7 +5,7 @@
         Configurations
       </h4>
       <div class="pull-right">
-        <router-link to="config-editor" tag="button" class="btn btn-secondary">Add New Configuration</router-link>
+        <router-link to="config-editor-new" tag="button" class="btn btn-secondary">Add New Configuration</router-link>
       </div>
     </div>
     <!-- /.box-header -->

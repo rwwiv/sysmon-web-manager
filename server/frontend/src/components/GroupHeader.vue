@@ -61,19 +61,16 @@
     beforeMount() {
       groupAPI.getSingleGroup(this.groupName)
         .then((response) => {
-          console.log(response);
           this.selectedConfig = response.data.configuration;
           this.selectedVersion = response.data.sysmon;
         })
         .catch(() => {});
       configAPI.getAllConfigs()
         .then((response) => {
-          console.log(response);
           this.allConfigs = response.data;
         });
       sysmonAPI.getSysmonVersions()
         .then((response) => {
-          console.log(response);
           this.allSysmonVersions = response.data;
         });
     },

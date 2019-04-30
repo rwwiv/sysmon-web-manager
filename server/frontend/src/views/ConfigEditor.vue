@@ -143,7 +143,7 @@
         const file = document.getElementById('file').files[0];
           fr.onload = (inputFile => (e) => {
             this.inputTextToSave = e.target.result;
-            if (this.configName.isEmpty()) {
+            if (this.configName === '') {
               [this.configName] = inputFile.name.split('.xml');
             }
           })(file);

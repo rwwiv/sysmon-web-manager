@@ -15,13 +15,13 @@ def build_json_response(retrieved_agent):
             updates_data['config_name'] = retrieved_agent.CONFIG_NAME_NEW
     else:
         updates_data = {
-            'sysmon': retrieved_agent.GROUP.SYSMON != retrieved_agent.SYSMON_VERSION_CURRENT,
-            'config': retrieved_agent.GROUP.CONFIGURATION != retrieved_agent.CONFIG_NAME_CURRENT,
+            'sysmon': retrieved_agent.GROUP.SYSMON.VERSION != retrieved_agent.SYSMON_VERSION_CURRENT,
+            'config': retrieved_agent.GROUP.CONFIGURATION.NAME != retrieved_agent.CONFIG_NAME_CURRENT,
         }
         if updates_data['sysmon']:
-            updates_data['sysmon_version'] = retrieved_agent.GROUP.SYSMON
+            updates_data['sysmon_version'] = retrieved_agent.GROUP.SYSMON.VERSION
         if updates_data['config']:
-            updates_data['config_name'] = retrieved_agent.GROUP.CONFIGURATION
+            updates_data['config_name'] = retrieved_agent.GROUP.CONFIGURATION.NAME
     return {
         'updates_needed': updates_data,
         'uninstall': retrieved_agent.NEEDS_UNINSTALL,

@@ -12,6 +12,6 @@ export default {
     return axios.post(`${constants.serverUrl}/configs/`, data);
   },
   updateConfig(data) {
-    return axios.post(`${constants.serverUrl}/configs/`, data);
+    return axios.put(`${constants.serverUrl}/configs/`, data);
   },
 };

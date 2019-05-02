@@ -305,7 +305,8 @@
         checkedAgentsIDs: [],
         selectAll: false,
         manageAllSelected: '',
-        timer: '',
+        agentTimer: '',
+        groupTimer: '',
       };
     },
     components: {
@@ -399,13 +400,13 @@
               // Debug
               // console.log(response);
             })
-            .catch((e) => {
+            .catch(() => {
               this.newConfigSaving = false;
               if (!this.moveGroupSaving) {
                 this.showHideLoadingOverlay(groupName);
                 this.settingsSaving = false;
               }
-              console.log(e.message);
+              // console.log(e.message);
             });
         }
         if (moveToGroup) {
@@ -423,21 +424,19 @@
               // Debug
               // console.log(response);
             })
-            .catch((e) => {
+            .catch(() => {
               this.moveGroupSaving = false;
               if (!this.newConfigSaving) {
                 this.showHideLoadingOverlay(groupName);
                 this.settingsSaving = false;
               }
-              console.log(e.message);
+              // console.log(e.message);
             });
         }
         $('#agent-modal').modal('hide');
       },
       saveGroup(groupName, groupConfig, version) {
         if (groupName && groupConfig && version) {
-          console.log(`group name:${groupName}`);
-          console.log(`sysmon version:${version}`);
           $('#create-group-error-message').addClass('hidden');
           $('#createGroupModal').modal('hide');
           this.groupSaving = true;
@@ -446,9 +445,9 @@
               this.groupSaving = false;
               // console.log(response);
             })
-            .catch((e) => {
+            .catch(() => {
               this.groupSaving = false;
-              console.log(e.message);
+              // console.log(e.message);
             });
         } else {
           $('#create-group-error-message').removeClass('hidden');
@@ -462,8 +461,7 @@
             this.showHideLoadingOverlay(groupName);
             this.getHostList();
           })
-          .catch((e) => {
-            console.log(e.message);
+          .catch(() => {
             this.showHideLoadingOverlay(groupName);
           });
       },
@@ -476,9 +474,8 @@
             this.showHideLoadingOverlay(groupName);
             this.getHostList();
           })
-          .catch((e) => {
+          .catch(() => {
             this.showHideLoadingOverlay(groupName);
-            console.log(e.message);
           });
       },
       uninstallSysmon(agentID, groupName) {
@@ -490,8 +487,7 @@
             this.showHideLoadingOverlay(groupName);
             this.getHostList();
           })
-          .catch((e) => {
-            console.log(e.message);
+          .catch(() => {
             this.showHideLoadingOverlay(groupName);
           });
       },
@@ -522,7 +518,6 @@
             // console.log(response.data);
           })
           .catch((e) => {
-            console.log(e.message);
             this.errors.push(e);
           });
       },
@@ -533,8 +528,7 @@
             // Debug
             // console.log(response.data);
           })
-          .catch((e) => {
-            console.log(e.message);
+          .catch(() => {
           });
       },
       getAvailableSysmonConfigs() {
@@ -557,7 +551,6 @@
           })
           .catch((e) => {
             this.errors.push(e);
-            console.log(e.message);
           });
       },
       // Grab IDs from Selected Agents
@@ -598,8 +591,7 @@
                 this.showHideLoadingOverlay(groupName, true);
                 this.getHostList();
               })
-              .catch((e) => {
-                console.log(e.message);
+              .catch(() => {
                 this.showHideLoadingOverlay(groupName, true);
               });
             break;
@@ -612,8 +604,7 @@
                 this.showHideLoadingOverlay(groupName, true);
                 this.getHostList();
               })
-              .catch((e) => {
-                console.log(e.message);
+              .catch(() => {
                 this.showHideLoadingOverlay(groupName, true);
               });
             break;
@@ -632,8 +623,7 @@
                 this.showHideLoadingOverlay(groupName, true);
                 this.getHostList();
               })
-              .catch((e) => {
-                console.log(e.message);
+              .catch(() => {
                 this.showHideLoadingOverlay(groupName, true);
               });
             break;
@@ -651,19 +641,12 @@
       this.getAvailableSysmonConfigs();
       this.getAvailableSysmonVersions();
       this.getHostList();
-      this.timer = setInterval(this.getHostList, 100);
-      this.timer = setInterval(this.getAvailableGroups, 100);
-      // Handle iCheckBox in the host list table head.
-      const that = this;
-      jQuery('#checkAll').change(() => {
-        that.selectAllAgents();
-        // Debug
-        // console.log(that.selectAll);
-        // console.log(that.checkedAgents);
-      });
+      this.agentTimer = setInterval(this.getHostList, 100);
+      this.groupTimer = setInterval(this.getAvailableGroups, 100);
     },
     beforeDestroy() {
-      clearInterval(this.timer);
+      clearInterval(this.agentTimer);
+      clearInterval(this.groupTimer);
     },
   };
 

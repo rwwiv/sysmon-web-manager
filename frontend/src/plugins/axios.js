@@ -3,15 +3,20 @@
 import Vue from 'vue';
 import axios from "axios";
 
+const API_URL = (process.env.VUE_APP_API_URL === undefined) ? window.location.hostname : process.env.VUE_APP_API_URL;
+const API_PORT = (process.env.VUE_APP_API_PORT === undefined) ? 8000 : process.env.VUE_APP_API_PORT;
+const AUTH_TOKEN = process.env.VUE_APP_AUTH_TOKEN;
+
 // Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.baseURL = `https://${API_URL}:${API_PORT}`;
+axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 
 let config = {
-  // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
-  // withCredentials: true, // Check cross-site Access-Control
+  // baseURL: `${API_URL}:${API_PORT}`,
+  timeout: 60 * 1000, // Timeout
+  withCredentials: true, // Check cross-site Access-Control
 };
 
 const _axios = axios.create(config);
@@ -56,6 +61,6 @@ Plugin.install = function(Vue, options) {
   });
 };
 
-Vue.use(Plugin)
+Vue.use(Plugin);
 
 export default Plugin;

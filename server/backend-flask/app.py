@@ -1,10 +1,8 @@
 import os
-from datetime import datetime, timedelta
 
 from flask import Flask
-from flask_apscheduler import APScheduler
 from flask_socketio import SocketIO
-from scheduler import jobs, scheduler
+from scheduler import scheduler
 from models import db
 from models.auth import user
 from flask_user import UserManager

@@ -85,10 +85,11 @@ def update_agent(uuid):
 
                 if action == ActionTypes.INSTALL or agent.pending_action == ActionTypes.UPDATE:
                     update_values = Updates.query.get(agent=uuid)
-                    if update_values.sysmon is not None:
-                        response['sysmon_version'] = update_values.sysmon
-                    if update_values.config is not None:
-                        response['config_name'] = update_values.config
+                    if update_values is not None:
+                        if update_values.sysmon is not None:
+                            response['sysmon_version'] = update_values.sysmon
+                        if update_values.config is not None:
+                            response['config_name'] = update_values.config
 
                 save_agent(agent)
                 return jsonify(response), 200

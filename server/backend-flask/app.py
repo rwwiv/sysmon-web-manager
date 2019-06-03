@@ -40,7 +40,6 @@ def create_app():
 
 if __name__ == '__main__':
     flask_app = create_app()
-    flask_app.app_context().push()
     socketio = SocketIO(flask_app)
 
     socketio.run(app=flask_app, host='0.0.0.0', port=8080)

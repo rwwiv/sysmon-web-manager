@@ -13,7 +13,7 @@
     "admin-lte": "^2.4.9",
     "axios": "^0.18.0",
     "bootstrap": "^3.4.0",
-    "codemirror": "^5.45.0",
+    "codemirror": "^5.58.2",
     "es6-promise": "^4.2.6",
     "font-awesome": "^4.7.0",
     "ionicons": "^4.5.5",

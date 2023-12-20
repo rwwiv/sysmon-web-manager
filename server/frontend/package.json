@@ -10,8 +10,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "admin-lte": "^2.4.9",
-    "axios": "^0.18.0",
+    "admin-lte": "^3.0.0",
+    "axios": "^0.21.1",
     "bootstrap": "^3.4.0",
     "codemirror": "^5.45.0",
     "es6-promise": "^4.2.6",
